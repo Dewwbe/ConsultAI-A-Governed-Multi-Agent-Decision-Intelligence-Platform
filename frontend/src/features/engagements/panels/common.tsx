@@ -40,7 +40,7 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
     <div className="rounded-lg border bg-card p-3">
       <dt className="text-xs text-muted-foreground">{label}</dt>
       <dd className="mt-0.5 text-lg font-semibold tabular-nums">{value}</dd>
-      {hint && <p className="mt-0.5 text-xs text-muted-foreground">{hint}</p>}
+      {hint && <dd className="mt-0.5 text-xs text-muted-foreground">{hint}</dd>}
     </div>
   );
 }
@@ -49,7 +49,7 @@ export function Section({ title, description, children, ...props }: { title: str
   return (
     <section className="space-y-3" {...props}>
       <div>
-        <h3 className="text-sm font-semibold">{title}</h3>
+        <h2 className="text-sm font-semibold">{title}</h2>
         {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </div>
       {children}

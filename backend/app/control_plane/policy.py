@@ -1,6 +1,7 @@
 """Layer 1 — deterministic policy engine with versioned cache. No LLM involved."""
 from __future__ import annotations
 
+import hashlib
 import time
 from dataclasses import dataclass
 from enum import Enum
@@ -24,8 +25,10 @@ class PolicyResult:
 
 
 class PolicyEngine:
-    def __init__(self, policy: dict[str, Any], cache_ttl_sec: int = 300):
+    def __init__(self, policy: dict[str, Any], cache_ttl_sec: int = 300, source_text: str = ""):
         self._policy = policy
+        self.source_text = source_text
+        self.sha256 = hashlib.sha256(source_text.encode("utf-8")).hexdigest() if source_text else ""
         self._ttl = cache_ttl_sec
         self._cache: dict[tuple, tuple[float, PolicyResult]] = {}
         self.cache_hits = 0
@@ -33,7 +36,11 @@ class PolicyEngine:
 
     @classmethod
     def from_file(cls, path: str | Path) -> PolicyEngine:
-        return cls(yaml.safe_load(Path(path).read_text()))
+        text = Path(path).read_text(encoding="utf-8")
+        return cls(yaml.safe_load(text), source_text=text)
+
+    def as_dict(self) -> dict[str, Any]:
+        return dict(self._policy)
 
     @property
     def version(self) -> str:
@@ -42,6 +49,22 @@ class PolicyEngine:
     @property
     def thresholds(self) -> dict[str, float]:
         return self._policy.get("thresholds", {})
+
+    @property
+    def degradation(self) -> dict[str, Any]:
+        return self._policy.get("degradation", {})
+
+    @property
+    def rbac(self) -> dict[str, list[str]]:
+        return self._policy.get("rbac", {})
+
+    def pii_mode(self, data_classification: str) -> str:
+        """`redact` unless policy explicitly allows personal identifiers for this classification."""
+        return str(self._policy.get("pii", {}).get(data_classification, "redact"))
+
+    @property
+    def limits(self) -> dict[str, Any]:
+        return self._policy.get("limits", {})
 
     def agent_spec(self, agent: str) -> dict[str, Any]:
         return self._policy.get("agents", {}).get(agent, {})

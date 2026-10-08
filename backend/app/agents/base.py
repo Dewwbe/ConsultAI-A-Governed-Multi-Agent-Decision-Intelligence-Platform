@@ -3,10 +3,11 @@ ctx.llm / ctx.tools, which enforce policy, schema, budget and tracing."""
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from app.control_plane.budget import Budget
+from app.control_plane.degradation import DegradationState
 from app.control_plane.executor import ToolExecutor
 from app.control_plane.guardian import Guardian
 from app.control_plane.llm import LLMGateway
@@ -34,6 +35,7 @@ class RuntimeContext:
     retriever: Retriever
     memory: MemoryStore
     log: dict[str, list]  # guardian_decisions, failures (shared with ToolExecutor)
+    degradation: DegradationState = field(default_factory=DegradationState)  # how cautious to be for this run
 
 
 class BaseAgent(ABC):

@@ -1,72 +1,72 @@
-id: 1
+id: 49
 event: run_started
-data: {"ts": "2026-10-08T08:21:12.635234+00:00"}
+data: {"ts": "2026-10-08T10:46:43.259702+00:00"}
 
-id: 2
+id: 50
 event: step_started
-data: {"ts": "2026-10-08T08:21:12.649649+00:00", "name": "discovery_agent", "kind": "agent"}
+data: {"ts": "2026-10-08T10:46:43.261702+00:00", "name": "discovery_agent", "kind": "agent"}
 
-id: 3
+id: 51
 event: step_finished
-data: {"ts": "2026-10-08T08:21:12.651850+00:00", "name": "discovery_agent", "kind": "agent", "status": "ok", "latency_ms": 2.1}
+data: {"ts": "2026-10-08T10:46:43.262702+00:00", "name": "discovery_agent", "kind": "agent", "status": "ok", "latency_ms": 0.9}
 
-id: 4
+id: 52
 event: step_started
-data: {"ts": "2026-10-08T08:21:12.654930+00:00", "name": "research_agent", "kind": "agent"}
+data: {"ts": "2026-10-08T10:46:43.263704+00:00", "name": "research_agent", "kind": "agent"}
 
-id: 5
+id: 53
 event: step_finished
-data: {"ts": "2026-10-08T08:21:12.661930+00:00", "name": "research_agent", "kind": "agent", "status": "ok", "latency_ms": 5.9}
+data: {"ts": "2026-10-08T10:46:43.266784+00:00", "name": "research_agent", "kind": "agent", "status": "ok", "latency_ms": 2.6}
 
-id: 6
+id: 54
 event: step_started
-data: {"ts": "2026-10-08T08:21:12.664926+00:00", "name": "data_agent", "kind": "agent"}
+data: {"ts": "2026-10-08T10:46:43.268786+00:00", "name": "data_agent", "kind": "agent"}
 
-id: 7
+id: 55
 event: step_finished
-data: {"ts": "2026-10-08T08:21:12.667445+00:00", "name": "data_agent", "kind": "agent", "status": "ok", "latency_ms": 2.4}
+data: {"ts": "2026-10-08T10:46:43.270802+00:00", "name": "data_agent", "kind": "agent", "status": "ok", "latency_ms": 1.5}
 
-id: 8
+id: 56
 event: step_started
-data: {"ts": "2026-10-08T08:21:12.669445+00:00", "name": "financial_agent", "kind": "agent"}
+data: {"ts": "2026-10-08T10:46:43.271699+00:00", "name": "financial_agent", "kind": "agent"}
 
-id: 9
+id: 57
 event: step_finished
-data: {"ts": "2026-10-08T08:21:12.673443+00:00", "name": "financial_agent", "kind": "agent", "status": "ok", "latency_ms": 3.3}
+data: {"ts": "2026-10-08T10:46:43.284072+00:00", "name": "financial_agent", "kind": "agent", "status": "ok", "latency_ms": 12.4}
 
-id: 10
+id: 58
 event: step_started
-data: {"ts": "2026-10-08T08:21:12.675444+00:00", "name": "risk_agent", "kind": "agent"}
+data: {"ts": "2026-10-08T10:46:43.285159+00:00", "name": "risk_agent", "kind": "agent"}
 
-id: 11
+id: 59
 event: step_finished
-data: {"ts": "2026-10-08T08:21:12.677445+00:00", "name": "risk_agent", "kind": "agent", "status": "ok", "latency_ms": 1.5}
+data: {"ts": "2026-10-08T10:46:43.288158+00:00", "name": "risk_agent", "kind": "agent", "status": "ok", "latency_ms": 2.5}
 
-id: 12
+id: 60
 event: step_started
-data: {"ts": "2026-10-08T08:21:12.677955+00:00", "name": "solution_agent", "kind": "agent"}
+data: {"ts": "2026-10-08T10:46:43.288158+00:00", "name": "solution_agent", "kind": "agent"}
 
-id: 13
+id: 61
 event: step_finished
-data: {"ts": "2026-10-08T08:21:12.679969+00:00", "name": "solution_agent", "kind": "agent", "status": "ok", "latency_ms": 0.9}
+data: {"ts": "2026-10-08T10:46:43.290073+00:00", "name": "solution_agent", "kind": "agent", "status": "ok", "latency_ms": 1.6}
 
-id: 14
+id: 62
 event: step_started
-data: {"ts": "2026-10-08T08:21:12.680998+00:00", "name": "evaluator", "kind": "evaluator"}
+data: {"ts": "2026-10-08T10:46:43.292073+00:00", "name": "evaluator", "kind": "evaluator"}
 
-id: 15
+id: 63
 event: step_finished
-data: {"ts": "2026-10-08T08:21:12.681968+00:00", "name": "evaluator", "kind": "evaluator", "status": "ok", "latency_ms": 1.0}
+data: {"ts": "2026-10-08T10:46:43.294172+00:00", "name": "evaluator", "kind": "evaluator", "status": "ok", "latency_ms": 2.3}
 
-id: 16
+id: 64
 event: step_started
-data: {"ts": "2026-10-08T08:21:12.683626+00:00", "name": "guardian", "kind": "guardian"}
+data: {"ts": "2026-10-08T10:46:43.295157+00:00", "name": "guardian", "kind": "guardian"}
 
-id: 17
+id: 65
 event: step_finished
-data: {"ts": "2026-10-08T08:21:12.684631+00:00", "name": "guardian", "kind": "guardian", "status": "ok", "latency_ms": 1.2}
+data: {"ts": "2026-10-08T10:46:43.296715+00:00", "name": "guardian", "kind": "guardian", "status": "ok", "latency_ms": 1.6}
 
-id: 18
+id: 66
 event: approval_requested
-data: {"ts": "2026-10-08T08:21:12.689633+00:00", "status": "awaiting_approval", "risk_level": "high", "recommendation": "Pilot", "halted_reason": null}
+data: {"ts": "2026-10-08T10:46:43.299777+00:00", "status": "awaiting_approval", "risk_level": "high", "recommendation": "Pilot", "halted_reason": null}
 

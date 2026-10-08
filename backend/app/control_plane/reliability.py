@@ -42,6 +42,13 @@ class CircuitBreaker:
         self.reset_after = reset_after_sec
         self.failures = 0
         self.opened_at: float | None = None
+        self.trips = 0  # how many times it has opened
+
+    @property
+    def state(self) -> str:
+        if self.opened_at is None:
+            return "closed"
+        return "half_open" if time.monotonic() - self.opened_at >= self.reset_after else "open"
 
     def before_call(self) -> None:
         if self.opened_at is None:
@@ -59,6 +66,8 @@ class CircuitBreaker:
     def on_failure(self) -> None:
         self.failures += 1
         if self.failures >= self.threshold:
+            if self.opened_at is None:
+                self.trips += 1
             self.opened_at = time.monotonic()
 
 

@@ -201,6 +201,191 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/metrics/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Metrics Summary
+         * @description Intent, tool, safety, business and economics metrics over the runs in the window, plus quality flags.
+         */
+        get: operations["getMetricsSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/metrics/timeseries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Metrics Timeseries */
+        get: operations["getMetricsTimeseries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/engagements/{workflow_id}/cost": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Cost Breakdown */
+        get: operations["getCostBreakdown"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/governance/policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Policy
+         * @description The policy in force: tool permissions per agent, thresholds, provider rules, PII, limits and RBAC.
+         */
+        get: operations["getPolicy"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/governance/policy/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Policy Versions */
+        get: operations["listPolicyVersions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/governance/policy/versions/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Policy Version
+         * @description The exact text of a past policy (by version or content hash), for comparing what changed.
+         */
+        get: operations["getPolicyVersion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/governance/tools": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Tools */
+        get: operations["listTools"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/governance/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Providers
+         * @description Provider health: circuit-breaker state, rate-limit use, which data each may see, and recent fallbacks.
+         */
+        get: operations["getProviders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/governance/budgets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Budgets */
+        get: operations["getBudgets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/governance/degradation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Degradation
+         * @description How cautious the system currently is, and the history of why it changed.
+         */
+        get: operations["getDegradation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -222,6 +407,19 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AgentPolicy */
+        AgentPolicy: {
+            /** Name */
+            name: string;
+            /** Allowed Tools */
+            allowed_tools: string[];
+            /** Blocked Tools */
+            blocked_tools: string[];
+            /** Requires Approval */
+            requires_approval: string[];
+            /** Allowed Tables */
+            allowed_tables: string[];
+        };
         /** AnalysisResult */
         AnalysisResult: {
             /** Query */
@@ -289,6 +487,46 @@ export interface components {
              */
             reason: string;
         };
+        /** BreakerOut */
+        BreakerOut: {
+            /** Provider */
+            provider: string;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "closed" | "open" | "half_open";
+            /** Consecutive Failures */
+            consecutive_failures: number;
+            /** Failure Threshold */
+            failure_threshold: number;
+            /** Trips */
+            trips: number;
+            /** Retry In Sec */
+            retry_in_sec: number | null;
+            /** Last Error */
+            last_error: string | null;
+            /** Last Error At */
+            last_error_at: string | null;
+        };
+        /** BudgetDefaults */
+        BudgetDefaults: {
+            /** Max Tokens */
+            max_tokens: number;
+            /** Max Cost Usd */
+            max_cost_usd: number;
+            /** Max Duration Sec */
+            max_duration_sec: number;
+            /** Max Tool Calls */
+            max_tool_calls: number;
+        };
+        /** BudgetLine */
+        BudgetLine: {
+            /** Used */
+            used: number;
+            /** Limit */
+            limit: number;
+        };
         /** BudgetUsage */
         BudgetUsage: {
             /** Tokens */
@@ -298,6 +536,160 @@ export interface components {
             /** Tool Calls */
             tool_calls: number;
         };
+        /** BudgetUse */
+        BudgetUse: {
+            tokens: components["schemas"]["BudgetLine"];
+            cost_usd: components["schemas"]["BudgetLine"];
+            tool_calls: components["schemas"]["BudgetLine"];
+            duration_sec: components["schemas"]["BudgetLine"];
+        };
+        /** BudgetsOut */
+        BudgetsOut: {
+            defaults: components["schemas"]["BudgetDefaults"];
+            /** Running */
+            running: components["schemas"]["RunBudgetUse"][];
+            /** Recent */
+            recent: components["schemas"]["RunBudgetUse"][];
+            /** Near Limit Count */
+            near_limit_count: number;
+        };
+        /** BusinessMetrics */
+        BusinessMetrics: {
+            /** Decided */
+            decided: number;
+            /** Approval Rate */
+            approval_rate: number | null;
+            /** Modification Rate */
+            modification_rate: number | null;
+            /** Rejection Rate */
+            rejection_rate: number | null;
+            /** Awaiting Approval */
+            awaiting_approval: number;
+            /** Median Decision Seconds */
+            median_decision_seconds: number | null;
+        };
+        /** CostBreakdownOut */
+        CostBreakdownOut: {
+            /** Workflow Id */
+            workflow_id: string;
+            /** Total Cost Usd */
+            total_cost_usd: number;
+            /** Input Tokens */
+            input_tokens: number;
+            /** Output Tokens */
+            output_tokens: number;
+            /** Successful */
+            successful: boolean;
+            /** Cost Per Successful Task */
+            cost_per_successful_task: number | null;
+            /** By Agent */
+            by_agent: components["schemas"]["CostByAgent"][];
+            /** By Model */
+            by_model: components["schemas"]["CostByModel"][];
+            budget: components["schemas"]["BudgetUse"];
+        };
+        /** CostByAgent */
+        CostByAgent: {
+            /** Agent */
+            agent: string;
+            /** Calls */
+            calls: number;
+            /** Input Tokens */
+            input_tokens: number;
+            /** Output Tokens */
+            output_tokens: number;
+            /** Cost Usd */
+            cost_usd: number;
+        };
+        /** CostByModel */
+        CostByModel: {
+            /** Model */
+            model: string;
+            /** Tier */
+            tier: string;
+            /** Calls */
+            calls: number;
+            /** Input Tokens */
+            input_tokens: number;
+            /** Output Tokens */
+            output_tokens: number;
+            /** Cost Usd */
+            cost_usd: number;
+        };
+        /** DegradationActions */
+        DegradationActions: {
+            /** Tier Boost */
+            tier_boost: number;
+            /** Retrieval K Multiplier */
+            retrieval_k_multiplier: number;
+            /** Require Review */
+            require_review: boolean;
+        };
+        /** DegradationEventOut */
+        DegradationEventOut: {
+            /** Ts */
+            ts: string;
+            /** From Level */
+            from_level: string;
+            /** To Level */
+            to_level: string;
+            /** Reasons */
+            reasons: string[];
+            /** Metrics */
+            metrics: {
+                [key: string]: number;
+            };
+            /** Runs Considered */
+            runs_considered: number;
+        };
+        /** DegradationOut */
+        DegradationOut: {
+            state: components["schemas"]["DegradationStateOut"];
+            /** Events */
+            events: components["schemas"]["DegradationEventOut"][];
+        };
+        /** DegradationStateOut */
+        DegradationStateOut: {
+            /**
+             * Level
+             * @enum {string}
+             */
+            level: "normal" | "cautious" | "restricted";
+            /** Since */
+            since: string;
+            /** Reasons */
+            reasons: string[];
+            /** Metrics */
+            metrics: {
+                [key: string]: number;
+            };
+            /** Runs Considered */
+            runs_considered: number;
+            actions: components["schemas"]["DegradationActions"];
+        };
+        /** EconomicsMetrics */
+        EconomicsMetrics: {
+            /** Total Cost Usd */
+            total_cost_usd: number;
+            /** Avg Cost Usd */
+            avg_cost_usd: number | null;
+            /** Successful Runs */
+            successful_runs: number;
+            /** Success Rate */
+            success_rate: number | null;
+            /** Cost Per Successful Task */
+            cost_per_successful_task: number | null;
+            /** Avg Tokens */
+            avg_tokens: number | null;
+            /** P50 Duration Sec */
+            p50_duration_sec: number | null;
+            /** P95 Duration Sec */
+            p95_duration_sec: number | null;
+            /** Cost By Agent */
+            cost_by_agent: components["schemas"]["CostByAgent"][];
+            /** Cost By Model */
+            cost_by_model: components["schemas"]["CostByModel"][];
+        };
         /** EngagementDetail */
         EngagementDetail: {
             /** Workflow Id */
@@ -306,13 +698,15 @@ export interface components {
              * Status
              * @enum {string}
              */
-            status: "running" | "awaiting_approval" | "completed" | "rejected" | "escalated" | "failed";
+            status: "queued" | "running" | "awaiting_approval" | "completed" | "rejected" | "escalated" | "failed";
             /** Pending Node */
             pending_node: string[];
             /** Halted Reason */
             halted_reason?: string | null;
             /** Error */
             error?: string | null;
+            /** Policy Version */
+            policy_version?: string | null;
             state: components["schemas"]["EngagementState"];
             /** Guardian Decisions */
             guardian_decisions: components["schemas"]["GuardianDecision"][];
@@ -465,7 +859,7 @@ export interface components {
              * Status
              * @enum {string}
              */
-            status: "running" | "awaiting_approval" | "completed" | "rejected" | "escalated" | "failed";
+            status: "queued" | "running" | "awaiting_approval" | "completed" | "rejected" | "escalated" | "failed";
             /** Business Problem */
             business_problem: string;
             /** Industry */
@@ -516,6 +910,23 @@ export interface components {
             retrievals: components["schemas"]["RetrievalRecordOut"][];
             /** Rejected Claims */
             rejected_claims: components["schemas"]["RejectedClaim"][];
+        };
+        /** FallbackOut */
+        FallbackOut: {
+            /** Ts */
+            ts: string;
+            /** Task */
+            task: string;
+            /** Agent */
+            agent: string;
+            /** From Provider */
+            from_provider: string;
+            /** To Provider */
+            to_provider: string | null;
+            /** Reason */
+            reason: string;
+            /** Data Classification */
+            data_classification: string;
         };
         /** FinancialAssumptions */
         FinancialAssumptions: {
@@ -592,6 +1003,8 @@ export interface components {
             };
             /** Feedback */
             feedback?: string;
+            /** Policy Version */
+            policy_version?: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -608,6 +1021,34 @@ export interface components {
             /** Llm Provider */
             llm_provider: string;
         };
+        /** IntentMetrics */
+        IntentMetrics: {
+            /** Task Adherence */
+            task_adherence: number | null;
+            /** Constraint Satisfaction */
+            constraint_satisfaction: number | null;
+            /** Completeness */
+            completeness: number | null;
+        };
+        /** LimiterOut */
+        LimiterOut: {
+            /** Requests Available */
+            requests_available: number;
+            /** Requests Capacity */
+            requests_capacity: number;
+            /** Tokens Available */
+            tokens_available: number;
+            /** Tokens Capacity */
+            tokens_capacity: number;
+            /** In Flight */
+            in_flight: number;
+            /** Max Concurrent */
+            max_concurrent: number;
+            /** Queued Calls */
+            queued_calls: number;
+            /** Rejected Calls */
+            rejected_calls: number;
+        };
         /** Me */
         Me: {
             /** User Id */
@@ -618,6 +1059,43 @@ export interface components {
             roles: string[];
             /** Can Approve */
             can_approve: boolean;
+            /** Permissions */
+            permissions: string[];
+        };
+        /** MetricsSummary */
+        MetricsSummary: {
+            /** Runs */
+            runs: number;
+            /** By Status */
+            by_status: {
+                [key: string]: number;
+            };
+            intent: components["schemas"]["IntentMetrics"];
+            tool: components["schemas"]["ToolMetrics"];
+            safety: components["schemas"]["SafetyMetrics"];
+            business: components["schemas"]["BusinessMetrics"];
+            economics: components["schemas"]["EconomicsMetrics"];
+            /** Flags */
+            flags: components["schemas"]["QualityFlag"][];
+            /** Policy Version */
+            policy_version: string;
+            /** Thresholds */
+            thresholds: {
+                [key: string]: number;
+            };
+            /** Since */
+            since?: string | null;
+            /** Until */
+            until?: string | null;
+        };
+        /** ModelRouteOut */
+        ModelRouteOut: {
+            /** Tier */
+            tier: string;
+            /** Deployment */
+            deployment: string;
+            /** Price Per 1K Usd */
+            price_per_1k_usd: number;
         };
         /** Option */
         Option: {
@@ -647,6 +1125,105 @@ export interface components {
             within_constraints?: boolean;
             /** Constraint Violations */
             constraint_violations?: string[];
+        };
+        /** PolicyContentOut */
+        PolicyContentOut: {
+            /** Version */
+            version: string;
+            /** Sha256 */
+            sha256: string;
+            /** Loaded At */
+            loaded_at: string;
+            /** Drift */
+            drift: boolean;
+            /** Content */
+            content: string;
+        };
+        /** PolicyOut */
+        PolicyOut: {
+            /** Version */
+            version: string;
+            /** Sha256 */
+            sha256: string;
+            /** Agents */
+            agents: components["schemas"]["AgentPolicy"][];
+            /** Thresholds */
+            thresholds: {
+                [key: string]: number;
+            };
+            /** Risk Tiers */
+            risk_tiers: {
+                [key: string]: string[];
+            };
+            /** Data Classification */
+            data_classification: {
+                [key: string]: string[];
+            };
+            /** Pii */
+            pii: {
+                [key: string]: string;
+            };
+            /** Rbac */
+            rbac: {
+                [key: string]: string[];
+            };
+            /** Limits */
+            limits: {
+                [key: string]: unknown;
+            };
+            /** Degradation */
+            degradation: {
+                [key: string]: unknown;
+            };
+            /** Timeouts Sec */
+            timeouts_sec: {
+                [key: string]: unknown;
+            };
+        };
+        /** PolicyVersionOut */
+        PolicyVersionOut: {
+            /** Version */
+            version: string;
+            /** Sha256 */
+            sha256: string;
+            /** Loaded At */
+            loaded_at: string;
+            /** Drift */
+            drift: boolean;
+        };
+        /** ProviderOut */
+        ProviderOut: {
+            /** Name */
+            name: string;
+            /** Configured */
+            configured: boolean;
+            /** Primary */
+            primary: boolean;
+            /** Allowed Classifications */
+            allowed_classifications: string[];
+            breaker: components["schemas"]["BreakerOut"];
+            limits: components["schemas"]["LimiterOut"] | null;
+        };
+        /** ProvidersOut */
+        ProvidersOut: {
+            /** Providers */
+            providers: components["schemas"]["ProviderOut"][];
+            /** Routing */
+            routing: components["schemas"]["ModelRouteOut"][];
+            /** Fallbacks */
+            fallbacks: components["schemas"]["FallbackOut"][];
+            scheduler: components["schemas"]["SchedulerOut"];
+        };
+        /** QualityFlag */
+        QualityFlag: {
+            /** Metric */
+            metric: string;
+            /** Value */
+            value: number;
+            /** Threshold */
+            threshold: number;
+            /** Message */
+            message: string;
         };
         /** QueryRun */
         QueryRun: {
@@ -689,6 +1266,21 @@ export interface components {
             alternatives_considered: number;
             /** Assumptions */
             assumptions: string[];
+        };
+        /** RedactionOut */
+        RedactionOut: {
+            /**
+             * Payloads Redacted
+             * @default false
+             */
+            payloads_redacted: boolean;
+            /**
+             * Pii Scrubbed
+             * @default 0
+             */
+            pii_scrubbed: number;
+            /** Reason */
+            reason?: string | null;
         };
         /** RejectedClaim */
         RejectedClaim: {
@@ -772,6 +1364,54 @@ export interface components {
             /** Precedents */
             precedents?: string[];
         };
+        /** RunBudgetUse */
+        RunBudgetUse: {
+            /** Workflow Id */
+            workflow_id: string;
+            /** Status */
+            status: string;
+            /** Tokens */
+            tokens: number;
+            /** Cost Usd */
+            cost_usd: number;
+            /** Tool Calls */
+            tool_calls: number;
+            /** Duration Sec */
+            duration_sec: number;
+            /** Utilization */
+            utilization: number;
+            /**
+             * Tightest
+             * @enum {string}
+             */
+            tightest: "tokens" | "cost_usd" | "tool_calls" | "duration_sec";
+            /** Near Limit */
+            near_limit: boolean;
+        };
+        /** SafetyMetrics */
+        SafetyMetrics: {
+            /** Groundedness */
+            groundedness: number | null;
+            /** Contradiction Free */
+            contradiction_free: number | null;
+            /** Escalation Rate */
+            escalation_rate: number | null;
+            /** Unauthorized Action Rate */
+            unauthorized_action_rate: number | null;
+            /** Runs Halted */
+            runs_halted: number;
+        };
+        /** SchedulerOut */
+        SchedulerOut: {
+            /** Running */
+            running: number;
+            /** Queued */
+            queued: number;
+            /** Max Concurrent */
+            max_concurrent: number;
+            /** Max Queued */
+            max_queued: number;
+        };
         /** SensitivityPoint */
         SensitivityPoint: {
             /** Benefit Delta */
@@ -837,6 +1477,82 @@ export interface components {
             /** Queries */
             queries: components["schemas"]["QueryRun"][];
         };
+        /** TimeseriesOut */
+        TimeseriesOut: {
+            /**
+             * Metric
+             * @enum {string}
+             */
+            metric: "runs" | "cost_usd" | "tokens" | "duration_sec" | "success_rate" | "escalation_rate" | "groundedness" | "citation_validity" | "task_adherence" | "contradiction_free" | "tool_call_accuracy" | "constraint_satisfaction" | "completeness" | "quality";
+            /**
+             * Bucket
+             * @enum {string}
+             */
+            bucket: "hour" | "day";
+            /** Points */
+            points: components["schemas"]["TimeseriesPoint"][];
+        };
+        /** TimeseriesPoint */
+        TimeseriesPoint: {
+            /** T */
+            t: string;
+            /** Value */
+            value: number | null;
+            /** N */
+            n: number;
+        };
+        /** ToolMetrics */
+        ToolMetrics: {
+            /** Tool Calls */
+            tool_calls: number;
+            /** Tool Call Success Rate */
+            tool_call_success_rate: number | null;
+            /** Tool Call Accuracy */
+            tool_call_accuracy: number | null;
+            /** Invalid Schema Rate */
+            invalid_schema_rate: number | null;
+            /** Llm Repair Rate */
+            llm_repair_rate: number | null;
+            /** Llm Fallback Rate */
+            llm_fallback_rate: number | null;
+            /** Schema Escalations */
+            schema_escalations: number;
+        };
+        /** ToolOut */
+        ToolOut: {
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
+            /** Input Schema */
+            input_schema: {
+                [key: string]: unknown;
+            };
+            /** Risk Level */
+            risk_level: string;
+            timeouts: components["schemas"]["ToolTimeoutsOut"];
+            /** Max Retries */
+            max_retries: number;
+            /** Cost Usd */
+            cost_usd: number;
+            /** Audit */
+            audit: boolean;
+            /** Requires Approval */
+            requires_approval: boolean;
+            /** Allowed Agents */
+            allowed_agents: string[];
+            /** Blocked Agents */
+            blocked_agents: string[];
+        };
+        /** ToolTimeoutsOut */
+        ToolTimeoutsOut: {
+            /** Connect Ms */
+            connect_ms: number;
+            /** Read Ms */
+            read_ms: number;
+            /** Total Ms */
+            total_ms: number;
+        };
         /** TraceOut */
         TraceOut: {
             /** Trace Id */
@@ -857,6 +1573,13 @@ export interface components {
             tool_errors: number;
             /** Spans */
             spans: components["schemas"]["SpanOut"][];
+            /**
+             * @default {
+             *       "payloads_redacted": false,
+             *       "pii_scrubbed": 0
+             *     }
+             */
+            redaction: components["schemas"]["RedactionOut"];
         };
         /** ValidationError */
         ValidationError: {
@@ -910,7 +1633,7 @@ export interface operations {
     listEngagements: {
         parameters: {
             query?: {
-                status?: ("running" | "awaiting_approval" | "completed" | "rejected" | "escalated" | "failed") | null;
+                status?: ("queued" | "running" | "awaiting_approval" | "completed" | "rejected" | "escalated" | "failed") | null;
                 limit?: number;
                 offset?: number;
             };
@@ -986,6 +1709,13 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
+            };
+            /** @description too many engagements in progress; see Retry-After */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -1413,6 +2143,389 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
+            };
+        };
+    };
+    getMetricsSummary: {
+        parameters: {
+            query?: {
+                since?: string | null;
+                until?: string | null;
+                status?: ("queued" | "running" | "awaiting_approval" | "completed" | "rejected" | "escalated" | "failed") | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MetricsSummary"];
+                };
+            };
+            /** @description missing or invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getMetricsTimeseries: {
+        parameters: {
+            query: {
+                metric: "runs" | "cost_usd" | "tokens" | "duration_sec" | "success_rate" | "escalation_rate" | "groundedness" | "citation_validity" | "task_adherence" | "contradiction_free" | "tool_call_accuracy" | "constraint_satisfaction" | "completeness" | "quality";
+                bucket?: "hour" | "day";
+                since?: string | null;
+                until?: string | null;
+                status?: ("queued" | "running" | "awaiting_approval" | "completed" | "rejected" | "escalated" | "failed") | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TimeseriesOut"];
+                };
+            };
+            /** @description missing or invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getCostBreakdown: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflow_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CostBreakdownOut"];
+                };
+            };
+            /** @description missing or invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description engagement not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getPolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PolicyOut"];
+                };
+            };
+            /** @description missing or invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description needs the governance:view permission */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    listPolicyVersions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PolicyVersionOut"][];
+                };
+            };
+            /** @description missing or invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description needs the governance:view permission */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getPolicyVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PolicyContentOut"];
+                };
+            };
+            /** @description missing or invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description needs the governance:view permission */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description no such policy version */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listTools: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ToolOut"][];
+                };
+            };
+            /** @description missing or invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description needs the governance:view permission */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getProviders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProvidersOut"];
+                };
+            };
+            /** @description missing or invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description needs the governance:view permission */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getBudgets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BudgetsOut"];
+                };
+            };
+            /** @description missing or invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description needs the governance:view permission */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getDegradation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DegradationOut"];
+                };
+            };
+            /** @description missing or invalid credentials */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description needs the governance:view permission */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

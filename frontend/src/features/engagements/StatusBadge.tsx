@@ -1,4 +1,4 @@
-import { CircleCheck, CircleX, LoaderCircle, OctagonAlert, ShieldAlert, UserCheck } from "lucide-react";
+import { CircleCheck, CircleX, Clock, LoaderCircle, OctagonAlert, ShieldAlert, UserCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { EngagementStatus } from "@/api/types";
 
@@ -12,6 +12,7 @@ interface Meta {
 
 /** One place that decides how a status looks. The icon and the word carry the meaning, not just colour. */
 export const STATUS_META: Record<EngagementStatus, Meta> = {
+  queued: { label: "Queued", variant: "outline", Icon: Clock, description: "Waiting for a free slot; it starts on its own" },
   running: { label: "Running", variant: "default", Icon: LoaderCircle, spin: true, description: "Agents are working on it" },
   awaiting_approval: { label: "Awaiting approval", variant: "warning", Icon: UserCheck, description: "A partner must decide" },
   completed: { label: "Completed", variant: "success", Icon: CircleCheck, description: "Finished with a report" },
@@ -20,7 +21,7 @@ export const STATUS_META: Record<EngagementStatus, Meta> = {
   failed: { label: "Failed", variant: "destructive", Icon: OctagonAlert, description: "The run crashed" },
 };
 
-export const STATUS_ORDER: EngagementStatus[] = ["running", "awaiting_approval", "completed", "rejected", "escalated", "failed"];
+export const STATUS_ORDER: EngagementStatus[] = ["queued", "running", "awaiting_approval", "completed", "rejected", "escalated", "failed"];
 
 export function StatusBadge({ status }: { status: EngagementStatus }) {
   const { label, variant, Icon, spin, description } = STATUS_META[status];

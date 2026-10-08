@@ -37,12 +37,12 @@ describe("engagement detail: header and pipeline", () => {
     expect(await screen.findByText("Up to date")).toBeInTheDocument();
   });
 
-  it("explains why approval is needed and where the decision will be made", async () => {
+  it("explains why approval is needed and links to the review screen", async () => {
     open();
     const notice = await screen.findByText("Waiting for a partner's decision");
     const alert = notice.closest("[role=alert]")!;
     expect(alert).toHaveTextContent(/high-risk action/i);
-    expect(alert).toHaveTextContent(/review screen/i);
+    expect(within(alert as HTMLElement).getByRole("link", { name: /review and decide/i })).toHaveAttribute("href", `/engagements/${AWAITING}/review`);
   });
 
   it("shows a typed not-found error for an engagement that does not exist", async () => {

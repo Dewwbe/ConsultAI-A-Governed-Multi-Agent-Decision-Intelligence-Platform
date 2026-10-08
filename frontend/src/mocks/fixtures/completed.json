@@ -1,13 +1,14 @@
 {
- "workflow_id": "wf_797bb3031c",
+ "workflow_id": "wf_f9d2cfb8a7",
  "status": "completed",
  "pending_node": [],
  "halted_reason": null,
  "error": null,
+ "policy_version": "2026.10.7",
  "state": {
-  "conversation_id": "conv_797bb3031c",
-  "workflow_id": "wf_797bb3031c",
-  "engagement_id": "wf_797bb3031c",
+  "conversation_id": "conv_f9d2cfb8a7",
+  "workflow_id": "wf_f9d2cfb8a7",
+  "engagement_id": "wf_f9d2cfb8a7",
   "user_id": "pat",
   "preferences": {},
   "data_classification": "confidential",
@@ -69,7 +70,7 @@
     "claim": "SYNTHETIC DEMO DATA (fictional). Funding and currency in the UAE scenario: the dirham is pegged to the US dollar, so currency risk on revenue is low, and import duties of 5% apply to most retail goods, which affects profitability.",
     "source": "synthetic://uae-currency-and-duties",
     "publication_date": "2026-03-01",
-    "retrieved_at": "2026-10-08T08:21:12.655927+00:00",
+    "retrieved_at": "2026-10-08T10:46:43.118295+00:00",
     "evidence": "SYNTHETIC DEMO DATA (fictional). Funding and currency in the UAE scenario: the dirham is pegged to the US dollar, so currency risk on revenue is low, and import duties of 5% apply to most retail goods, which affects profitability.",
     "confidence": 0.7,
     "relevance": 0.678,
@@ -82,7 +83,7 @@
     "claim": "SYNTHETIC DEMO DATA (fictional). Regulatory requirements and market-entry risks in the UAE scenario: foreign retailers need a trade licence, assumed to take 3 to 6 months and longer if documentation is incomplete. Free-zone entities follow different ownership rules. Market-entry risk is concentrated in licence delays and dependence on a local partner.",
     "source": "synthetic://uae-market-entry-regulation",
     "publication_date": "2026-03-01",
-    "retrieved_at": "2026-10-08T08:21:12.655927+00:00",
+    "retrieved_at": "2026-10-08T10:46:43.118295+00:00",
     "evidence": "SYNTHETIC DEMO DATA (fictional). Regulatory requirements and market-entry risks in the UAE scenario: foreign retailers need a trade licence, assumed to take 3 to 6 months and longer if documentation is incomplete. Free-zone entities follow different ownership rules. Market-entry risk is concentrated in licence delays and dependence on a local partner.",
     "confidence": 0.75,
     "relevance": 0.623,
@@ -95,7 +96,7 @@
     "claim": "competition competitor landscape market share placeholder demo evidence",
     "source": "demo://competitor-scan",
     "publication_date": "2026-01-01",
-    "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+    "retrieved_at": "2026-10-08T10:46:43.119281+00:00",
     "evidence": "competition competitor landscape market share placeholder demo evidence",
     "confidence": 0.7,
     "relevance": 0.783,
@@ -108,7 +109,7 @@
     "claim": "SYNTHETIC DEMO DATA (fictional). In this scenario the UAE competitive landscape is led by three regional operators holding 55% market share. International entrants typically reach 2 to 4% share within three years, and competition is strongest in large shopping malls.",
     "source": "synthetic://uae-competitor-landscape",
     "publication_date": "2026-03-01",
-    "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+    "retrieved_at": "2026-10-08T10:46:43.119281+00:00",
     "evidence": "SYNTHETIC DEMO DATA (fictional). In this scenario the UAE competitive landscape is led by three regional operators holding 55% market share. International entrants typically reach 2 to 4% share within three years, and competition is strongest in large shopping malls.",
     "confidence": 0.7,
     "relevance": 0.758,
@@ -121,7 +122,7 @@
     "claim": "SYNTHETIC DEMO DATA (fictional). In this scenario, UAE retail customer segments are tourists at 25% of spend, resident expatriates at 50% and nationals at 25%. Expatriate customers are the most price sensitive, and demand peaks during the winter tourism season.",
     "source": "synthetic://uae-customer-segments",
     "publication_date": "2026-03-01",
-    "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+    "retrieved_at": "2026-10-08T10:46:43.119281+00:00",
     "evidence": "SYNTHETIC DEMO DATA (fictional). In this scenario, UAE retail customer segments are tourists at 25% of spend, resident expatriates at 50% and nationals at 25%. Expatriate customers are the most price sensitive, and demand peaks during the winter tourism season.",
     "confidence": 0.65,
     "relevance": 0.755,
@@ -134,7 +135,7 @@
     "claim": "retail market growth expansion demand placeholder demo evidence",
     "source": "demo://market-overview",
     "publication_date": "2026-01-01",
-    "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+    "retrieved_at": "2026-10-08T10:46:43.119281+00:00",
     "evidence": "retail market growth expansion demand placeholder demo evidence",
     "confidence": 0.8,
     "relevance": 0.484,
@@ -147,7 +148,7 @@
     "claim": "regulatory approval licensing timeline risk placeholder demo evidence",
     "source": "demo://regulatory-guide",
     "publication_date": "2026-01-01",
-    "retrieved_at": "2026-10-08T08:21:12.659926+00:00",
+    "retrieved_at": "2026-10-08T10:46:43.121281+00:00",
     "evidence": "regulatory approval licensing timeline risk placeholder demo evidence",
     "confidence": 0.75,
     "relevance": 0.731,
@@ -550,7 +551,8 @@
     "subject": "data_agent.run_sql_readonly",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -562,7 +564,8 @@
     "subject": "data_agent.run_sql_readonly",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -574,7 +577,8 @@
     "subject": "data_agent.run_sql_readonly",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -586,7 +590,8 @@
     "subject": "financial_agent.calculate_margin",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -598,7 +603,8 @@
     "subject": "financial_agent.calculate_growth",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -610,7 +616,8 @@
     "subject": "financial_agent.derive_annual_benefit",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -622,7 +629,8 @@
     "subject": "financial_agent.calculate_roi",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -634,7 +642,8 @@
     "subject": "financial_agent.calculate_payback",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -646,7 +655,8 @@
     "subject": "financial_agent.calculate_npv",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -658,7 +668,8 @@
     "subject": "financial_agent.scenario_analysis",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -670,7 +681,8 @@
     "subject": "financial_agent.sensitivity_analysis",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -682,7 +694,8 @@
     "subject": "financial_agent.derive_annual_benefit",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -694,7 +707,8 @@
     "subject": "financial_agent.calculate_roi",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -706,7 +720,8 @@
     "subject": "financial_agent.calculate_payback",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -718,7 +733,8 @@
     "subject": "financial_agent.calculate_npv",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -730,7 +746,8 @@
     "subject": "financial_agent.scenario_analysis",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -742,7 +759,8 @@
     "subject": "financial_agent.sensitivity_analysis",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -754,7 +772,8 @@
     "subject": "financial_agent.derive_annual_benefit",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -766,7 +785,8 @@
     "subject": "financial_agent.calculate_roi",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -778,7 +798,8 @@
     "subject": "financial_agent.calculate_payback",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -790,7 +811,8 @@
     "subject": "financial_agent.calculate_npv",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -802,7 +824,8 @@
     "subject": "financial_agent.scenario_analysis",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -814,7 +837,8 @@
     "subject": "financial_agent.sensitivity_analysis",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ALLOW",
@@ -826,7 +850,8 @@
     "subject": "risk_agent.risk_lookup",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    },
    {
     "action": "ESCALATE",
@@ -840,7 +865,8 @@
     "subject": "workflow",
     "source": "deterministic",
     "modifications": {},
-    "feedback": ""
+    "feedback": "",
+    "policy_version": "2026.10.7"
    }
   ],
   "guardian_feedback": "",
@@ -861,7 +887,8 @@
    "subject": "data_agent.run_sql_readonly",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -873,7 +900,8 @@
    "subject": "data_agent.run_sql_readonly",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -885,7 +913,8 @@
    "subject": "data_agent.run_sql_readonly",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -897,7 +926,8 @@
    "subject": "financial_agent.calculate_margin",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -909,7 +939,8 @@
    "subject": "financial_agent.calculate_growth",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -921,7 +952,8 @@
    "subject": "financial_agent.derive_annual_benefit",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -933,7 +965,8 @@
    "subject": "financial_agent.calculate_roi",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -945,7 +978,8 @@
    "subject": "financial_agent.calculate_payback",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -957,7 +991,8 @@
    "subject": "financial_agent.calculate_npv",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -969,7 +1004,8 @@
    "subject": "financial_agent.scenario_analysis",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -981,7 +1017,8 @@
    "subject": "financial_agent.sensitivity_analysis",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -993,7 +1030,8 @@
    "subject": "financial_agent.derive_annual_benefit",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1005,7 +1043,8 @@
    "subject": "financial_agent.calculate_roi",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1017,7 +1056,8 @@
    "subject": "financial_agent.calculate_payback",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1029,7 +1069,8 @@
    "subject": "financial_agent.calculate_npv",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1041,7 +1082,8 @@
    "subject": "financial_agent.scenario_analysis",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1053,7 +1095,8 @@
    "subject": "financial_agent.sensitivity_analysis",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1065,7 +1108,8 @@
    "subject": "financial_agent.derive_annual_benefit",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1077,7 +1121,8 @@
    "subject": "financial_agent.calculate_roi",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1089,7 +1134,8 @@
    "subject": "financial_agent.calculate_payback",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1101,7 +1147,8 @@
    "subject": "financial_agent.calculate_npv",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1113,7 +1160,8 @@
    "subject": "financial_agent.scenario_analysis",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1125,7 +1173,8 @@
    "subject": "financial_agent.sensitivity_analysis",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ALLOW",
@@ -1137,7 +1186,8 @@
    "subject": "risk_agent.risk_lookup",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   },
   {
    "action": "ESCALATE",
@@ -1151,7 +1201,8 @@
    "subject": "workflow",
    "source": "deterministic",
    "modifications": {},
-   "feedback": ""
+   "feedback": "",
+   "policy_version": "2026.10.7"
   }
  ],
  "metrics": {

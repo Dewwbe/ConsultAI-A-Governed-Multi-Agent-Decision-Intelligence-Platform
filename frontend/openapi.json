@@ -2,7 +2,7 @@
  "openapi": "3.1.0",
  "info": {
   "title": "ConsultAI",
-  "version": "0.3.0"
+  "version": "0.4.0"
  },
  "paths": {
   "/me": {
@@ -67,6 +67,9 @@
      "401": {
       "description": "missing or invalid credentials"
      },
+     "429": {
+      "description": "too many engagements in progress; see Retry-After"
+     },
      "422": {
       "description": "Validation Error",
       "content": {
@@ -91,6 +94,7 @@
        "anyOf": [
         {
          "enum": [
+          "queued",
           "running",
           "awaiting_approval",
           "completed",
@@ -616,6 +620,475 @@
     }
    }
   },
+  "/metrics/summary": {
+   "get": {
+    "summary": "Metrics Summary",
+    "description": "Intent, tool, safety, business and economics metrics over the runs in the window, plus quality flags.",
+    "operationId": "getMetricsSummary",
+    "parameters": [
+     {
+      "name": "since",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Since"
+      }
+     },
+     {
+      "name": "until",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Until"
+      }
+     },
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "enum": [
+          "queued",
+          "running",
+          "awaiting_approval",
+          "completed",
+          "rejected",
+          "escalated",
+          "failed"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MetricsSummary"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/metrics/timeseries": {
+   "get": {
+    "summary": "Metrics Timeseries",
+    "operationId": "getMetricsTimeseries",
+    "parameters": [
+     {
+      "name": "metric",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "enum": [
+        "runs",
+        "cost_usd",
+        "tokens",
+        "duration_sec",
+        "success_rate",
+        "escalation_rate",
+        "groundedness",
+        "citation_validity",
+        "task_adherence",
+        "contradiction_free",
+        "tool_call_accuracy",
+        "constraint_satisfaction",
+        "completeness",
+        "quality"
+       ],
+       "type": "string",
+       "title": "Metric"
+      }
+     },
+     {
+      "name": "bucket",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "enum": [
+        "hour",
+        "day"
+       ],
+       "type": "string",
+       "default": "day",
+       "title": "Bucket"
+      }
+     },
+     {
+      "name": "since",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Since"
+      }
+     },
+     {
+      "name": "until",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Until"
+      }
+     },
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "enum": [
+          "queued",
+          "running",
+          "awaiting_approval",
+          "completed",
+          "rejected",
+          "escalated",
+          "failed"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TimeseriesOut"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/engagements/{workflow_id}/cost": {
+   "get": {
+    "summary": "Cost Breakdown",
+    "operationId": "getCostBreakdown",
+    "parameters": [
+     {
+      "name": "workflow_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Workflow Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CostBreakdownOut"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "engagement not found"
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/governance/policy": {
+   "get": {
+    "summary": "Get Policy",
+    "description": "The policy in force: tool permissions per agent, thresholds, provider rules, PII, limits and RBAC.",
+    "operationId": "getPolicy",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PolicyOut"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "403": {
+      "description": "needs the governance:view permission"
+     }
+    }
+   }
+  },
+  "/governance/policy/versions": {
+   "get": {
+    "summary": "List Policy Versions",
+    "operationId": "listPolicyVersions",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/PolicyVersionOut"
+         },
+         "type": "array",
+         "title": "Response Listpolicyversions"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "403": {
+      "description": "needs the governance:view permission"
+     }
+    }
+   }
+  },
+  "/governance/policy/versions/{key}": {
+   "get": {
+    "summary": "Get Policy Version",
+    "description": "The exact text of a past policy (by version or content hash), for comparing what changed.",
+    "operationId": "getPolicyVersion",
+    "parameters": [
+     {
+      "name": "key",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Key"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PolicyContentOut"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "403": {
+      "description": "needs the governance:view permission"
+     },
+     "404": {
+      "description": "no such policy version"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/governance/tools": {
+   "get": {
+    "summary": "List Tools",
+    "operationId": "listTools",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ToolOut"
+         },
+         "type": "array",
+         "title": "Response Listtools"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "403": {
+      "description": "needs the governance:view permission"
+     }
+    }
+   }
+  },
+  "/governance/providers": {
+   "get": {
+    "summary": "Get Providers",
+    "description": "Provider health: circuit-breaker state, rate-limit use, which data each may see, and recent fallbacks.",
+    "operationId": "getProviders",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ProvidersOut"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "403": {
+      "description": "needs the governance:view permission"
+     }
+    }
+   }
+  },
+  "/governance/budgets": {
+   "get": {
+    "summary": "Get Budgets",
+    "operationId": "getBudgets",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BudgetsOut"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "403": {
+      "description": "needs the governance:view permission"
+     }
+    }
+   }
+  },
+  "/governance/degradation": {
+   "get": {
+    "summary": "Get Degradation",
+    "description": "How cautious the system currently is, and the history of why it changed.",
+    "operationId": "getDegradation",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/DegradationOut"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "403": {
+      "description": "needs the governance:view permission"
+     }
+    }
+   }
+  },
   "/health": {
    "get": {
     "summary": "Health",
@@ -637,6 +1110,51 @@
  },
  "components": {
   "schemas": {
+   "AgentPolicy": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "allowed_tools": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Allowed Tools"
+     },
+     "blocked_tools": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Blocked Tools"
+     },
+     "requires_approval": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Requires Approval"
+     },
+     "allowed_tables": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Allowed Tables"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "allowed_tools",
+     "blocked_tools",
+     "requires_approval",
+     "allowed_tables"
+    ],
+    "title": "AgentPolicy"
+   },
    "AnalysisResult": {
     "properties": {
      "query": {
@@ -775,6 +1293,126 @@
     ],
     "title": "ApprovalRequest"
    },
+   "BreakerOut": {
+    "properties": {
+     "provider": {
+      "type": "string",
+      "title": "Provider"
+     },
+     "state": {
+      "type": "string",
+      "enum": [
+       "closed",
+       "open",
+       "half_open"
+      ],
+      "title": "State"
+     },
+     "consecutive_failures": {
+      "type": "integer",
+      "title": "Consecutive Failures"
+     },
+     "failure_threshold": {
+      "type": "integer",
+      "title": "Failure Threshold"
+     },
+     "trips": {
+      "type": "integer",
+      "title": "Trips"
+     },
+     "retry_in_sec": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Retry In Sec"
+     },
+     "last_error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Error"
+     },
+     "last_error_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Error At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "provider",
+     "state",
+     "consecutive_failures",
+     "failure_threshold",
+     "trips",
+     "retry_in_sec",
+     "last_error",
+     "last_error_at"
+    ],
+    "title": "BreakerOut"
+   },
+   "BudgetDefaults": {
+    "properties": {
+     "max_tokens": {
+      "type": "integer",
+      "title": "Max Tokens"
+     },
+     "max_cost_usd": {
+      "type": "number",
+      "title": "Max Cost Usd"
+     },
+     "max_duration_sec": {
+      "type": "integer",
+      "title": "Max Duration Sec"
+     },
+     "max_tool_calls": {
+      "type": "integer",
+      "title": "Max Tool Calls"
+     }
+    },
+    "type": "object",
+    "required": [
+     "max_tokens",
+     "max_cost_usd",
+     "max_duration_sec",
+     "max_tool_calls"
+    ],
+    "title": "BudgetDefaults"
+   },
+   "BudgetLine": {
+    "properties": {
+     "used": {
+      "type": "number",
+      "title": "Used"
+     },
+     "limit": {
+      "type": "number",
+      "title": "Limit"
+     }
+    },
+    "type": "object",
+    "required": [
+     "used",
+     "limit"
+    ],
+    "title": "BudgetLine"
+   },
    "BudgetUsage": {
     "properties": {
      "tokens": {
@@ -798,6 +1436,506 @@
     ],
     "title": "BudgetUsage"
    },
+   "BudgetUse": {
+    "properties": {
+     "tokens": {
+      "$ref": "#/components/schemas/BudgetLine"
+     },
+     "cost_usd": {
+      "$ref": "#/components/schemas/BudgetLine"
+     },
+     "tool_calls": {
+      "$ref": "#/components/schemas/BudgetLine"
+     },
+     "duration_sec": {
+      "$ref": "#/components/schemas/BudgetLine"
+     }
+    },
+    "type": "object",
+    "required": [
+     "tokens",
+     "cost_usd",
+     "tool_calls",
+     "duration_sec"
+    ],
+    "title": "BudgetUse"
+   },
+   "BudgetsOut": {
+    "properties": {
+     "defaults": {
+      "$ref": "#/components/schemas/BudgetDefaults"
+     },
+     "running": {
+      "items": {
+       "$ref": "#/components/schemas/RunBudgetUse"
+      },
+      "type": "array",
+      "title": "Running"
+     },
+     "recent": {
+      "items": {
+       "$ref": "#/components/schemas/RunBudgetUse"
+      },
+      "type": "array",
+      "title": "Recent"
+     },
+     "near_limit_count": {
+      "type": "integer",
+      "title": "Near Limit Count"
+     }
+    },
+    "type": "object",
+    "required": [
+     "defaults",
+     "running",
+     "recent",
+     "near_limit_count"
+    ],
+    "title": "BudgetsOut"
+   },
+   "BusinessMetrics": {
+    "properties": {
+     "decided": {
+      "type": "integer",
+      "title": "Decided"
+     },
+     "approval_rate": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Approval Rate"
+     },
+     "modification_rate": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Modification Rate"
+     },
+     "rejection_rate": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Rejection Rate"
+     },
+     "awaiting_approval": {
+      "type": "integer",
+      "title": "Awaiting Approval"
+     },
+     "median_decision_seconds": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Median Decision Seconds"
+     }
+    },
+    "type": "object",
+    "required": [
+     "decided",
+     "approval_rate",
+     "modification_rate",
+     "rejection_rate",
+     "awaiting_approval",
+     "median_decision_seconds"
+    ],
+    "title": "BusinessMetrics"
+   },
+   "CostBreakdownOut": {
+    "properties": {
+     "workflow_id": {
+      "type": "string",
+      "title": "Workflow Id"
+     },
+     "total_cost_usd": {
+      "type": "number",
+      "title": "Total Cost Usd"
+     },
+     "input_tokens": {
+      "type": "integer",
+      "title": "Input Tokens"
+     },
+     "output_tokens": {
+      "type": "integer",
+      "title": "Output Tokens"
+     },
+     "successful": {
+      "type": "boolean",
+      "title": "Successful"
+     },
+     "cost_per_successful_task": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cost Per Successful Task"
+     },
+     "by_agent": {
+      "items": {
+       "$ref": "#/components/schemas/CostByAgent"
+      },
+      "type": "array",
+      "title": "By Agent"
+     },
+     "by_model": {
+      "items": {
+       "$ref": "#/components/schemas/CostByModel"
+      },
+      "type": "array",
+      "title": "By Model"
+     },
+     "budget": {
+      "$ref": "#/components/schemas/BudgetUse"
+     }
+    },
+    "type": "object",
+    "required": [
+     "workflow_id",
+     "total_cost_usd",
+     "input_tokens",
+     "output_tokens",
+     "successful",
+     "cost_per_successful_task",
+     "by_agent",
+     "by_model",
+     "budget"
+    ],
+    "title": "CostBreakdownOut"
+   },
+   "CostByAgent": {
+    "properties": {
+     "agent": {
+      "type": "string",
+      "title": "Agent"
+     },
+     "calls": {
+      "type": "integer",
+      "title": "Calls"
+     },
+     "input_tokens": {
+      "type": "integer",
+      "title": "Input Tokens"
+     },
+     "output_tokens": {
+      "type": "integer",
+      "title": "Output Tokens"
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd"
+     }
+    },
+    "type": "object",
+    "required": [
+     "agent",
+     "calls",
+     "input_tokens",
+     "output_tokens",
+     "cost_usd"
+    ],
+    "title": "CostByAgent"
+   },
+   "CostByModel": {
+    "properties": {
+     "model": {
+      "type": "string",
+      "title": "Model"
+     },
+     "tier": {
+      "type": "string",
+      "title": "Tier"
+     },
+     "calls": {
+      "type": "integer",
+      "title": "Calls"
+     },
+     "input_tokens": {
+      "type": "integer",
+      "title": "Input Tokens"
+     },
+     "output_tokens": {
+      "type": "integer",
+      "title": "Output Tokens"
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd"
+     }
+    },
+    "type": "object",
+    "required": [
+     "model",
+     "tier",
+     "calls",
+     "input_tokens",
+     "output_tokens",
+     "cost_usd"
+    ],
+    "title": "CostByModel"
+   },
+   "DegradationActions": {
+    "properties": {
+     "tier_boost": {
+      "type": "integer",
+      "title": "Tier Boost"
+     },
+     "retrieval_k_multiplier": {
+      "type": "integer",
+      "title": "Retrieval K Multiplier"
+     },
+     "require_review": {
+      "type": "boolean",
+      "title": "Require Review"
+     }
+    },
+    "type": "object",
+    "required": [
+     "tier_boost",
+     "retrieval_k_multiplier",
+     "require_review"
+    ],
+    "title": "DegradationActions"
+   },
+   "DegradationEventOut": {
+    "properties": {
+     "ts": {
+      "type": "string",
+      "title": "Ts"
+     },
+     "from_level": {
+      "type": "string",
+      "title": "From Level"
+     },
+     "to_level": {
+      "type": "string",
+      "title": "To Level"
+     },
+     "reasons": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Reasons"
+     },
+     "metrics": {
+      "additionalProperties": {
+       "type": "number"
+      },
+      "type": "object",
+      "title": "Metrics"
+     },
+     "runs_considered": {
+      "type": "integer",
+      "title": "Runs Considered"
+     }
+    },
+    "type": "object",
+    "required": [
+     "ts",
+     "from_level",
+     "to_level",
+     "reasons",
+     "metrics",
+     "runs_considered"
+    ],
+    "title": "DegradationEventOut"
+   },
+   "DegradationOut": {
+    "properties": {
+     "state": {
+      "$ref": "#/components/schemas/DegradationStateOut"
+     },
+     "events": {
+      "items": {
+       "$ref": "#/components/schemas/DegradationEventOut"
+      },
+      "type": "array",
+      "title": "Events"
+     }
+    },
+    "type": "object",
+    "required": [
+     "state",
+     "events"
+    ],
+    "title": "DegradationOut"
+   },
+   "DegradationStateOut": {
+    "properties": {
+     "level": {
+      "type": "string",
+      "enum": [
+       "normal",
+       "cautious",
+       "restricted"
+      ],
+      "title": "Level"
+     },
+     "since": {
+      "type": "string",
+      "title": "Since"
+     },
+     "reasons": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Reasons"
+     },
+     "metrics": {
+      "additionalProperties": {
+       "type": "number"
+      },
+      "type": "object",
+      "title": "Metrics"
+     },
+     "runs_considered": {
+      "type": "integer",
+      "title": "Runs Considered"
+     },
+     "actions": {
+      "$ref": "#/components/schemas/DegradationActions"
+     }
+    },
+    "type": "object",
+    "required": [
+     "level",
+     "since",
+     "reasons",
+     "metrics",
+     "runs_considered",
+     "actions"
+    ],
+    "title": "DegradationStateOut"
+   },
+   "EconomicsMetrics": {
+    "properties": {
+     "total_cost_usd": {
+      "type": "number",
+      "title": "Total Cost Usd"
+     },
+     "avg_cost_usd": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Avg Cost Usd"
+     },
+     "successful_runs": {
+      "type": "integer",
+      "title": "Successful Runs"
+     },
+     "success_rate": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Success Rate"
+     },
+     "cost_per_successful_task": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cost Per Successful Task"
+     },
+     "avg_tokens": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Avg Tokens"
+     },
+     "p50_duration_sec": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "P50 Duration Sec"
+     },
+     "p95_duration_sec": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "P95 Duration Sec"
+     },
+     "cost_by_agent": {
+      "items": {
+       "$ref": "#/components/schemas/CostByAgent"
+      },
+      "type": "array",
+      "title": "Cost By Agent"
+     },
+     "cost_by_model": {
+      "items": {
+       "$ref": "#/components/schemas/CostByModel"
+      },
+      "type": "array",
+      "title": "Cost By Model"
+     }
+    },
+    "type": "object",
+    "required": [
+     "total_cost_usd",
+     "avg_cost_usd",
+     "successful_runs",
+     "success_rate",
+     "cost_per_successful_task",
+     "avg_tokens",
+     "p50_duration_sec",
+     "p95_duration_sec",
+     "cost_by_agent",
+     "cost_by_model"
+    ],
+    "title": "EconomicsMetrics"
+   },
    "EngagementDetail": {
     "properties": {
      "workflow_id": {
@@ -807,6 +1945,7 @@
      "status": {
       "type": "string",
       "enum": [
+       "queued",
        "running",
        "awaiting_approval",
        "completed",
@@ -844,6 +1983,17 @@
        }
       ],
       "title": "Error"
+     },
+     "policy_version": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Policy Version"
      },
      "state": {
       "$ref": "#/components/schemas/EngagementState"
@@ -1241,6 +2391,7 @@
      "status": {
       "type": "string",
       "enum": [
+       "queued",
        "running",
        "awaiting_approval",
        "completed",
@@ -1403,6 +2554,56 @@
      "rejected_claims"
     ],
     "title": "EvidenceOut"
+   },
+   "FallbackOut": {
+    "properties": {
+     "ts": {
+      "type": "string",
+      "title": "Ts"
+     },
+     "task": {
+      "type": "string",
+      "title": "Task"
+     },
+     "agent": {
+      "type": "string",
+      "title": "Agent"
+     },
+     "from_provider": {
+      "type": "string",
+      "title": "From Provider"
+     },
+     "to_provider": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "To Provider"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     },
+     "data_classification": {
+      "type": "string",
+      "title": "Data Classification"
+     }
+    },
+    "type": "object",
+    "required": [
+     "ts",
+     "task",
+     "agent",
+     "from_provider",
+     "to_provider",
+     "reason",
+     "data_classification"
+    ],
+    "title": "FallbackOut"
    },
    "FinancialAssumptions": {
     "properties": {
@@ -1582,6 +2783,10 @@
      "feedback": {
       "type": "string",
       "title": "Feedback"
+     },
+     "policy_version": {
+      "type": "string",
+      "title": "Policy Version"
      }
     },
     "type": "object",
@@ -1626,6 +2831,98 @@
     ],
     "title": "Health"
    },
+   "IntentMetrics": {
+    "properties": {
+     "task_adherence": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Task Adherence"
+     },
+     "constraint_satisfaction": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Constraint Satisfaction"
+     },
+     "completeness": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Completeness"
+     }
+    },
+    "type": "object",
+    "required": [
+     "task_adherence",
+     "constraint_satisfaction",
+     "completeness"
+    ],
+    "title": "IntentMetrics"
+   },
+   "LimiterOut": {
+    "properties": {
+     "requests_available": {
+      "type": "number",
+      "title": "Requests Available"
+     },
+     "requests_capacity": {
+      "type": "number",
+      "title": "Requests Capacity"
+     },
+     "tokens_available": {
+      "type": "number",
+      "title": "Tokens Available"
+     },
+     "tokens_capacity": {
+      "type": "number",
+      "title": "Tokens Capacity"
+     },
+     "in_flight": {
+      "type": "integer",
+      "title": "In Flight"
+     },
+     "max_concurrent": {
+      "type": "integer",
+      "title": "Max Concurrent"
+     },
+     "queued_calls": {
+      "type": "integer",
+      "title": "Queued Calls"
+     },
+     "rejected_calls": {
+      "type": "integer",
+      "title": "Rejected Calls"
+     }
+    },
+    "type": "object",
+    "required": [
+     "requests_available",
+     "requests_capacity",
+     "tokens_available",
+     "tokens_capacity",
+     "in_flight",
+     "max_concurrent",
+     "queued_calls",
+     "rejected_calls"
+    ],
+    "title": "LimiterOut"
+   },
    "Me": {
     "properties": {
      "user_id": {
@@ -1646,6 +2943,13 @@
      "can_approve": {
       "type": "boolean",
       "title": "Can Approve"
+     },
+     "permissions": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Permissions"
      }
     },
     "type": "object",
@@ -1653,9 +2957,117 @@
      "user_id",
      "name",
      "roles",
-     "can_approve"
+     "can_approve",
+     "permissions"
     ],
     "title": "Me"
+   },
+   "MetricsSummary": {
+    "properties": {
+     "runs": {
+      "type": "integer",
+      "title": "Runs"
+     },
+     "by_status": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "type": "object",
+      "title": "By Status"
+     },
+     "intent": {
+      "$ref": "#/components/schemas/IntentMetrics"
+     },
+     "tool": {
+      "$ref": "#/components/schemas/ToolMetrics"
+     },
+     "safety": {
+      "$ref": "#/components/schemas/SafetyMetrics"
+     },
+     "business": {
+      "$ref": "#/components/schemas/BusinessMetrics"
+     },
+     "economics": {
+      "$ref": "#/components/schemas/EconomicsMetrics"
+     },
+     "flags": {
+      "items": {
+       "$ref": "#/components/schemas/QualityFlag"
+      },
+      "type": "array",
+      "title": "Flags"
+     },
+     "policy_version": {
+      "type": "string",
+      "title": "Policy Version"
+     },
+     "thresholds": {
+      "additionalProperties": {
+       "type": "number"
+      },
+      "type": "object",
+      "title": "Thresholds"
+     },
+     "since": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Since"
+     },
+     "until": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Until"
+     }
+    },
+    "type": "object",
+    "required": [
+     "runs",
+     "by_status",
+     "intent",
+     "tool",
+     "safety",
+     "business",
+     "economics",
+     "flags",
+     "policy_version",
+     "thresholds"
+    ],
+    "title": "MetricsSummary"
+   },
+   "ModelRouteOut": {
+    "properties": {
+     "tier": {
+      "type": "string",
+      "title": "Tier"
+     },
+     "deployment": {
+      "type": "string",
+      "title": "Deployment"
+     },
+     "price_per_1k_usd": {
+      "type": "number",
+      "title": "Price Per 1K Usd"
+     }
+    },
+    "type": "object",
+    "required": [
+     "tier",
+     "deployment",
+     "price_per_1k_usd"
+    ],
+    "title": "ModelRouteOut"
    },
    "Option": {
     "properties": {
@@ -1735,6 +3147,270 @@
      "within_budget"
     ],
     "title": "Option"
+   },
+   "PolicyContentOut": {
+    "properties": {
+     "version": {
+      "type": "string",
+      "title": "Version"
+     },
+     "sha256": {
+      "type": "string",
+      "title": "Sha256"
+     },
+     "loaded_at": {
+      "type": "string",
+      "title": "Loaded At"
+     },
+     "drift": {
+      "type": "boolean",
+      "title": "Drift"
+     },
+     "content": {
+      "type": "string",
+      "title": "Content"
+     }
+    },
+    "type": "object",
+    "required": [
+     "version",
+     "sha256",
+     "loaded_at",
+     "drift",
+     "content"
+    ],
+    "title": "PolicyContentOut"
+   },
+   "PolicyOut": {
+    "properties": {
+     "version": {
+      "type": "string",
+      "title": "Version"
+     },
+     "sha256": {
+      "type": "string",
+      "title": "Sha256"
+     },
+     "agents": {
+      "items": {
+       "$ref": "#/components/schemas/AgentPolicy"
+      },
+      "type": "array",
+      "title": "Agents"
+     },
+     "thresholds": {
+      "additionalProperties": {
+       "type": "number"
+      },
+      "type": "object",
+      "title": "Thresholds"
+     },
+     "risk_tiers": {
+      "additionalProperties": {
+       "items": {
+        "type": "string"
+       },
+       "type": "array"
+      },
+      "type": "object",
+      "title": "Risk Tiers"
+     },
+     "data_classification": {
+      "additionalProperties": {
+       "items": {
+        "type": "string"
+       },
+       "type": "array"
+      },
+      "type": "object",
+      "title": "Data Classification"
+     },
+     "pii": {
+      "additionalProperties": {
+       "type": "string"
+      },
+      "type": "object",
+      "title": "Pii"
+     },
+     "rbac": {
+      "additionalProperties": {
+       "items": {
+        "type": "string"
+       },
+       "type": "array"
+      },
+      "type": "object",
+      "title": "Rbac"
+     },
+     "limits": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Limits"
+     },
+     "degradation": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Degradation"
+     },
+     "timeouts_sec": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Timeouts Sec"
+     }
+    },
+    "type": "object",
+    "required": [
+     "version",
+     "sha256",
+     "agents",
+     "thresholds",
+     "risk_tiers",
+     "data_classification",
+     "pii",
+     "rbac",
+     "limits",
+     "degradation",
+     "timeouts_sec"
+    ],
+    "title": "PolicyOut"
+   },
+   "PolicyVersionOut": {
+    "properties": {
+     "version": {
+      "type": "string",
+      "title": "Version"
+     },
+     "sha256": {
+      "type": "string",
+      "title": "Sha256"
+     },
+     "loaded_at": {
+      "type": "string",
+      "title": "Loaded At"
+     },
+     "drift": {
+      "type": "boolean",
+      "title": "Drift"
+     }
+    },
+    "type": "object",
+    "required": [
+     "version",
+     "sha256",
+     "loaded_at",
+     "drift"
+    ],
+    "title": "PolicyVersionOut"
+   },
+   "ProviderOut": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "configured": {
+      "type": "boolean",
+      "title": "Configured"
+     },
+     "primary": {
+      "type": "boolean",
+      "title": "Primary"
+     },
+     "allowed_classifications": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Allowed Classifications"
+     },
+     "breaker": {
+      "$ref": "#/components/schemas/BreakerOut"
+     },
+     "limits": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/LimiterOut"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "configured",
+     "primary",
+     "allowed_classifications",
+     "breaker",
+     "limits"
+    ],
+    "title": "ProviderOut"
+   },
+   "ProvidersOut": {
+    "properties": {
+     "providers": {
+      "items": {
+       "$ref": "#/components/schemas/ProviderOut"
+      },
+      "type": "array",
+      "title": "Providers"
+     },
+     "routing": {
+      "items": {
+       "$ref": "#/components/schemas/ModelRouteOut"
+      },
+      "type": "array",
+      "title": "Routing"
+     },
+     "fallbacks": {
+      "items": {
+       "$ref": "#/components/schemas/FallbackOut"
+      },
+      "type": "array",
+      "title": "Fallbacks"
+     },
+     "scheduler": {
+      "$ref": "#/components/schemas/SchedulerOut"
+     }
+    },
+    "type": "object",
+    "required": [
+     "providers",
+     "routing",
+     "fallbacks",
+     "scheduler"
+    ],
+    "title": "ProvidersOut"
+   },
+   "QualityFlag": {
+    "properties": {
+     "metric": {
+      "type": "string",
+      "title": "Metric"
+     },
+     "value": {
+      "type": "number",
+      "title": "Value"
+     },
+     "threshold": {
+      "type": "number",
+      "title": "Threshold"
+     },
+     "message": {
+      "type": "string",
+      "title": "Message"
+     }
+    },
+    "type": "object",
+    "required": [
+     "metric",
+     "value",
+     "threshold",
+     "message"
+    ],
+    "title": "QualityFlag"
    },
    "QueryRun": {
     "properties": {
@@ -1850,6 +3526,33 @@
      "assumptions"
     ],
     "title": "Recommendation"
+   },
+   "RedactionOut": {
+    "properties": {
+     "payloads_redacted": {
+      "type": "boolean",
+      "title": "Payloads Redacted",
+      "default": false
+     },
+     "pii_scrubbed": {
+      "type": "integer",
+      "title": "Pii Scrubbed",
+      "default": 0
+     },
+     "reason": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "title": "RedactionOut"
    },
    "RejectedClaim": {
     "properties": {
@@ -2082,6 +3785,154 @@
     ],
     "title": "Risk"
    },
+   "RunBudgetUse": {
+    "properties": {
+     "workflow_id": {
+      "type": "string",
+      "title": "Workflow Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "tokens": {
+      "type": "integer",
+      "title": "Tokens"
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd"
+     },
+     "tool_calls": {
+      "type": "integer",
+      "title": "Tool Calls"
+     },
+     "duration_sec": {
+      "type": "number",
+      "title": "Duration Sec"
+     },
+     "utilization": {
+      "type": "number",
+      "title": "Utilization"
+     },
+     "tightest": {
+      "type": "string",
+      "enum": [
+       "tokens",
+       "cost_usd",
+       "tool_calls",
+       "duration_sec"
+      ],
+      "title": "Tightest"
+     },
+     "near_limit": {
+      "type": "boolean",
+      "title": "Near Limit"
+     }
+    },
+    "type": "object",
+    "required": [
+     "workflow_id",
+     "status",
+     "tokens",
+     "cost_usd",
+     "tool_calls",
+     "duration_sec",
+     "utilization",
+     "tightest",
+     "near_limit"
+    ],
+    "title": "RunBudgetUse"
+   },
+   "SafetyMetrics": {
+    "properties": {
+     "groundedness": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Groundedness"
+     },
+     "contradiction_free": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contradiction Free"
+     },
+     "escalation_rate": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Escalation Rate"
+     },
+     "unauthorized_action_rate": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unauthorized Action Rate"
+     },
+     "runs_halted": {
+      "type": "integer",
+      "title": "Runs Halted"
+     }
+    },
+    "type": "object",
+    "required": [
+     "groundedness",
+     "contradiction_free",
+     "escalation_rate",
+     "unauthorized_action_rate",
+     "runs_halted"
+    ],
+    "title": "SafetyMetrics"
+   },
+   "SchedulerOut": {
+    "properties": {
+     "running": {
+      "type": "integer",
+      "title": "Running"
+     },
+     "queued": {
+      "type": "integer",
+      "title": "Queued"
+     },
+     "max_concurrent": {
+      "type": "integer",
+      "title": "Max Concurrent"
+     },
+     "max_queued": {
+      "type": "integer",
+      "title": "Max Queued"
+     }
+    },
+    "type": "object",
+    "required": [
+     "running",
+     "queued",
+     "max_concurrent",
+     "max_queued"
+    ],
+    "title": "SchedulerOut"
+   },
    "SensitivityPoint": {
     "properties": {
      "benefit_delta": {
@@ -2256,6 +4107,252 @@
     ],
     "title": "TablesOut"
    },
+   "TimeseriesOut": {
+    "properties": {
+     "metric": {
+      "type": "string",
+      "enum": [
+       "runs",
+       "cost_usd",
+       "tokens",
+       "duration_sec",
+       "success_rate",
+       "escalation_rate",
+       "groundedness",
+       "citation_validity",
+       "task_adherence",
+       "contradiction_free",
+       "tool_call_accuracy",
+       "constraint_satisfaction",
+       "completeness",
+       "quality"
+      ],
+      "title": "Metric"
+     },
+     "bucket": {
+      "type": "string",
+      "enum": [
+       "hour",
+       "day"
+      ],
+      "title": "Bucket"
+     },
+     "points": {
+      "items": {
+       "$ref": "#/components/schemas/TimeseriesPoint"
+      },
+      "type": "array",
+      "title": "Points"
+     }
+    },
+    "type": "object",
+    "required": [
+     "metric",
+     "bucket",
+     "points"
+    ],
+    "title": "TimeseriesOut"
+   },
+   "TimeseriesPoint": {
+    "properties": {
+     "t": {
+      "type": "string",
+      "title": "T"
+     },
+     "value": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Value"
+     },
+     "n": {
+      "type": "integer",
+      "title": "N"
+     }
+    },
+    "type": "object",
+    "required": [
+     "t",
+     "value",
+     "n"
+    ],
+    "title": "TimeseriesPoint"
+   },
+   "ToolMetrics": {
+    "properties": {
+     "tool_calls": {
+      "type": "integer",
+      "title": "Tool Calls"
+     },
+     "tool_call_success_rate": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Tool Call Success Rate"
+     },
+     "tool_call_accuracy": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Tool Call Accuracy"
+     },
+     "invalid_schema_rate": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Invalid Schema Rate"
+     },
+     "llm_repair_rate": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Llm Repair Rate"
+     },
+     "llm_fallback_rate": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Llm Fallback Rate"
+     },
+     "schema_escalations": {
+      "type": "integer",
+      "title": "Schema Escalations"
+     }
+    },
+    "type": "object",
+    "required": [
+     "tool_calls",
+     "tool_call_success_rate",
+     "tool_call_accuracy",
+     "invalid_schema_rate",
+     "llm_repair_rate",
+     "llm_fallback_rate",
+     "schema_escalations"
+    ],
+    "title": "ToolMetrics"
+   },
+   "ToolOut": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "description": {
+      "type": "string",
+      "title": "Description"
+     },
+     "input_schema": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Input Schema"
+     },
+     "risk_level": {
+      "type": "string",
+      "title": "Risk Level"
+     },
+     "timeouts": {
+      "$ref": "#/components/schemas/ToolTimeoutsOut"
+     },
+     "max_retries": {
+      "type": "integer",
+      "title": "Max Retries"
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd"
+     },
+     "audit": {
+      "type": "boolean",
+      "title": "Audit"
+     },
+     "requires_approval": {
+      "type": "boolean",
+      "title": "Requires Approval"
+     },
+     "allowed_agents": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Allowed Agents"
+     },
+     "blocked_agents": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Blocked Agents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "description",
+     "input_schema",
+     "risk_level",
+     "timeouts",
+     "max_retries",
+     "cost_usd",
+     "audit",
+     "requires_approval",
+     "allowed_agents",
+     "blocked_agents"
+    ],
+    "title": "ToolOut"
+   },
+   "ToolTimeoutsOut": {
+    "properties": {
+     "connect_ms": {
+      "type": "integer",
+      "title": "Connect Ms"
+     },
+     "read_ms": {
+      "type": "integer",
+      "title": "Read Ms"
+     },
+     "total_ms": {
+      "type": "integer",
+      "title": "Total Ms"
+     }
+    },
+    "type": "object",
+    "required": [
+     "connect_ms",
+     "read_ms",
+     "total_ms"
+    ],
+    "title": "ToolTimeoutsOut"
+   },
    "TraceOut": {
     "properties": {
      "trace_id": {
@@ -2296,6 +4393,13 @@
       },
       "type": "array",
       "title": "Spans"
+     },
+     "redaction": {
+      "$ref": "#/components/schemas/RedactionOut",
+      "default": {
+       "payloads_redacted": false,
+       "pii_scrubbed": 0
+      }
      }
     },
     "type": "object",

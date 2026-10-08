@@ -10,6 +10,8 @@ from jsonschema import Draft202012Validator
 from app.knowledge.risk_taxonomy import risk_lookup
 from app.tools import financial
 
+from .timeouts import ToolTimeouts
+
 
 @dataclass
 class ToolContract:
@@ -18,7 +20,9 @@ class ToolContract:
     input_schema: dict[str, Any]
     fn: Callable[..., Any]
     risk_level: str = "low"
-    timeout_ms: int = 3000
+    timeout_ms: int = 3000                 # the total limit
+    connect_timeout_ms: int | None = None  # defaults to a fraction of the total (see timeouts())
+    read_timeout_ms: int | None = None
     max_retries: int = 1
     cost_usd: float = 0.0
     requires_approval: bool = False
@@ -27,6 +31,12 @@ class ToolContract:
 
     def __post_init__(self) -> None:
         self._validator = Draft202012Validator(self.input_schema)
+
+    def timeouts(self) -> ToolTimeouts:
+        total = self.timeout_ms
+        connect = self.connect_timeout_ms if self.connect_timeout_ms is not None else max(1, total // 3)
+        read = self.read_timeout_ms if self.read_timeout_ms is not None else total
+        return ToolTimeouts(min(connect, total), min(read, total), total)
 
     def validate(self, args: dict[str, Any]) -> list[str]:
         return [e.message for e in self._validator.iter_errors(args)]

@@ -1,0 +1,116 @@
+{
+ "providers": [
+  {
+   "name": "azure_openai",
+   "configured": true,
+   "primary": true,
+   "allowed_classifications": [
+    "confidential",
+    "internal",
+    "public"
+   ],
+   "breaker": {
+    "provider": "azure_openai",
+    "state": "closed",
+    "consecutive_failures": 0,
+    "failure_threshold": 5,
+    "trips": 0,
+    "retry_in_sec": null,
+    "last_error": null,
+    "last_error_at": null
+   },
+   "limits": {
+    "requests_available": 576.5,
+    "requests_capacity": 600.0,
+    "tokens_available": 105096.0,
+    "tokens_capacity": 150000.0,
+    "in_flight": 0,
+    "max_concurrent": 8,
+    "queued_calls": 0,
+    "rejected_calls": 0
+   }
+  },
+  {
+   "name": "openai",
+   "configured": false,
+   "primary": false,
+   "allowed_classifications": [
+    "internal",
+    "public"
+   ],
+   "breaker": {
+    "provider": "openai",
+    "state": "closed",
+    "consecutive_failures": 0,
+    "failure_threshold": 5,
+    "trips": 0,
+    "retry_in_sec": null,
+    "last_error": null,
+    "last_error_at": null
+   },
+   "limits": null
+  },
+  {
+   "name": "gemini",
+   "configured": false,
+   "primary": false,
+   "allowed_classifications": [
+    "public"
+   ],
+   "breaker": {
+    "provider": "gemini",
+    "state": "closed",
+    "consecutive_failures": 0,
+    "failure_threshold": 5,
+    "trips": 0,
+    "retry_in_sec": null,
+    "last_error": null,
+    "last_error_at": null
+   },
+   "limits": null
+  },
+  {
+   "name": "local",
+   "configured": false,
+   "primary": false,
+   "allowed_classifications": [
+    "public"
+   ],
+   "breaker": {
+    "provider": "local",
+    "state": "closed",
+    "consecutive_failures": 0,
+    "failure_threshold": 5,
+    "trips": 0,
+    "retry_in_sec": null,
+    "last_error": null,
+    "last_error_at": null
+   },
+   "limits": null
+  }
+ ],
+ "routing": [
+  {
+   "tier": "small",
+   "deployment": "small",
+   "price_per_1k_usd": 0.0005
+  },
+  {
+   "tier": "medium",
+   "deployment": "medium",
+   "price_per_1k_usd": 0.003
+  },
+  {
+   "tier": "reasoning",
+   "deployment": "reasoning",
+   "price_per_1k_usd": 0.015
+  }
+ ],
+ "fallbacks": [],
+ "scheduler": {
+  "running": 0,
+  "queued": 0,
+  "max_concurrent": 4,
+  "max_queued": 20
+ }
+}

@@ -8,9 +8,12 @@ snapshot on demand and the graph resumes from its checkpoint.
 """
 from __future__ import annotations
 
+import datetime as dt
+import logging
 import threading
 import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from typing import Any
 
@@ -19,11 +22,13 @@ from langgraph.types import Command
 from app.agents.base import RuntimeContext
 from app.config import Settings, get_settings
 from app.control_plane.budget import Budget
+from app.control_plane.degradation import DegradationController, DegradationState
 from app.control_plane.executor import ToolExecutor
 from app.control_plane.guardian import Guardian
+from app.control_plane.limits import LimiterRegistry, QueueFull, RunScheduler
 from app.control_plane.llm import AzureOpenAIProvider, LLMGateway, StubProvider
 from app.control_plane.policy import PolicyEngine
-from app.control_plane.reliability import CircuitBreaker
+from app.control_plane.providers import BreakerRegistry, FallbackLog
 from app.control_plane.router import ModelRouter
 from app.control_plane.tool_registry import default_registry
 from app.knowledge.cached import CachedRetriever
@@ -31,11 +36,17 @@ from app.knowledge.demo_corpus import DEMO_CORPUS
 from app.knowledge.retriever import LocalRetriever, ReplayMismatch, RetrievalRecord
 from app.knowledge.semantic_cache import SemanticCache
 from app.memory.store import MemoryStore
+from app.observability import aggregate
+from app.observability.export import build_tracer_provider
 from app.observability.metrics import engagement_metrics
+from app.observability.mlflow_export import MlflowLogger
+from app.observability.redaction import can_see_payloads, redact_trace
+from app.observability.run_metrics import breakdown, compute_run_metrics
 from app.observability.tracing import SpanRecord, TraceStore
 from app.persistence.checkpointer import make_checkpointer
 from app.persistence.db import Database
 from app.security.auth import Principal
+from app.security.rbac import Rbac
 from app.workflow.graph import RUNTIMES, build_graph
 
 # Recommendation fields a reviewer may change. Numbers are never editable: they trace to tool calls.
@@ -57,19 +68,53 @@ class Invalid(ValueError):
 
 class EngagementService:
     def __init__(self, settings: Settings | None = None, db: Database | None = None,
-                 checkpointer: Any = None):
+                 checkpointer: Any = None, span_exporter: Any = None, mlflow_logger: MlflowLogger | None = None):
         self.settings = settings or get_settings()
         self.policy = PolicyEngine.from_file(self.settings.policy_file)
+        split = lambda v: [r.strip() for r in v.split(",") if r.strip()] if v else None
+        self.rbac = Rbac.from_policy(self.policy.rbac, {
+            "engagement:approve": [self.settings.approver_role] if self.settings.approver_role else None,
+            "payload:view": split(self.settings.payload_roles)})
         self.db = db or Database(self.settings.database_url)
+        if self.policy.sha256:
+            self.db.record_policy(self.policy.version, self.policy.sha256, self.policy.source_text)
         self.graph = build_graph(checkpointer or make_checkpointer(self.settings.database_url))
         self.memory = MemoryStore()
         self.index_retriever = LocalRetriever(DEMO_CORPUS)  # built once; Azure AI Search later
         self.cache = SemanticCache(self.index_retriever.embedder)
         self.registry = default_registry()
-        self.llm_breaker = CircuitBreaker()  # shared across engagements: one provider, one health
-        self._threads: dict[str, threading.Thread] = {}
+        # Provider health is a fact about the provider, so breakers and the fallback log are shared by every run.
+        self.breakers = BreakerRegistry()
+        self.fallbacks = FallbackLog()
+        self.extra_providers: dict[str, Any] = {}  # additional providers, tried in registration order
+        self._degradation_lock = threading.Lock()
+        self.degradation_controller = DegradationController(self.policy.thresholds, **self.policy.degradation)
+        self.degradation = self._restore_degradation()
+        self._futures: dict[str, Any] = {}
+        policy_limits = self.policy.limits
+        eng = policy_limits.get("engagements", {})
+        self.scheduler = RunScheduler(
+            self.settings.max_concurrent_runs or eng.get("max_concurrent", 4),
+            self.settings.max_queued_runs if self.settings.max_queued_runs is not None else eng.get("max_queued", 20))
+        self.limiters = LimiterRegistry(policy_limits.get("providers", {}))
         self._approval_lock = threading.Lock()
+        # Optional telemetry. Each is off unless configured, and a failure to export never fails a run.
+        self.tracer_provider = build_tracer_provider(self.settings, span_exporter)
+        self.tracer = self.tracer_provider.get_tracer("consultai") if self.tracer_provider else None
+        self.mlflow = mlflow_logger or self._build_mlflow()
+        # one worker: exports stay in order and never delay an engagement, even if the destination is slow
+        self._exports = ThreadPoolExecutor(max_workers=1, thread_name_prefix="export")
         self.db.mark_interrupted()  # runs that were mid-flight when a previous process died
+
+    def _build_mlflow(self) -> MlflowLogger | None:
+        if not self.settings.mlflow_tracking_uri:
+            return None
+        try:
+            return MlflowLogger(self.settings.mlflow_tracking_uri, self.settings.mlflow_experiment,
+                                artifact_location=self.settings.mlflow_artifact_location or None)
+        except Exception:
+            logging.getLogger(__name__).exception("MLflow is configured but unavailable; continuing without it")
+            return None
 
     # -- runtime ----------------------------------------------------------------------------
     def _span_listener(self, workflow_id: str):
@@ -84,15 +129,46 @@ class EngagementService:
 
     def _runtime(self, workflow_id: str) -> RuntimeContext:
         s = self.settings
-        trace = TraceStore(workflow_id, listener=self._span_listener(workflow_id))
+        trace = TraceStore(workflow_id, listener=self._span_listener(workflow_id), tracer=self.tracer,
+                           export_payloads=s.otel_export_payloads)
         budget = Budget(s.max_tokens, s.max_cost_usd, s.max_duration_sec, s.max_tool_calls)
         guardian = Guardian(self.policy)
         log: dict[str, list] = {"guardian_decisions": [], "failures": []}
-        llm = LLMGateway(ModelRouter(self.policy), self._provider(), budget, trace, log,
-                         breaker=self.llm_breaker)
+        primary = self._provider()
+        providers = {primary.name: primary, **self.extra_providers}
+        degradation = self.degradation  # fixed for the whole run: it must not change its own behaviour mid-flight
+        llm = LLMGateway(ModelRouter(self.policy, providers=list(providers), tier_boost=degradation.actions.tier_boost),
+                         providers, budget, trace, log,
+                         breaker=self.breakers, limiter=self.limiters, fallbacks=self.fallbacks,
+                         pii_mode=self.policy.pii_mode)
         tools = ToolExecutor(self.registry, guardian, budget, trace, log)
         return RuntimeContext(workflow_id, self.policy, guardian, budget, trace, llm, tools,
-                              CachedRetriever(self.index_retriever, self.cache), self.memory, log)
+                              CachedRetriever(self.index_retriever, self.cache), self.memory, log, degradation)
+
+    def _restore_degradation(self) -> DegradationState:
+        """After a restart, carry on at the level we were at (it is part of how cautious to be)."""
+        last = self.db.degradation_events_list(limit=1)
+        if not last:
+            return DegradationState()
+        e = last[0]
+        return DegradationState(e["to_level"], e["since"], tuple(e["reasons"]), e["metrics"], e["runs_considered"])
+
+    def _update_degradation(self) -> None:
+        """Re-evaluate quality after every finished run; record and apply any change of level."""
+        try:
+            with self._degradation_lock:
+                new = self.degradation_controller.evaluate(self.db.run_metrics_rows(), self.degradation)
+                if new.level != self.degradation.level:
+                    self.db.add_degradation_event(self.degradation.level, new.level, new.to_dict())
+                    logging.getLogger(__name__).warning("quality degradation: %s -> %s (%s)", self.degradation.level,
+                                                        new.level, "; ".join(new.reasons))
+                self.degradation = new
+        except Exception:
+            logging.getLogger(__name__).exception("degradation check failed")
+
+    def register_provider(self, provider: Any) -> None:
+        """Add a fallback provider. It is only ever used for data its policy classification permits."""
+        self.extra_providers[provider.name] = provider
 
     def _provider(self):
         s = self.settings
@@ -141,9 +217,12 @@ class EngagementService:
               data_classification: str = "confidential", wait: bool = True) -> dict[str, Any]:
         """Start an engagement. With wait=False it returns at once (status `running`) and the
         pipeline continues in the background; follow it through the events stream."""
+        if self.scheduler.queued >= self.scheduler.max_queued and self.scheduler.would_queue():
+            raise QueueFull()  # refuse before creating anything: the caller should retry later
         wid = f"wf_{uuid.uuid4().hex[:10]}"
         self.db.add_engagement(wid, user_id=user_id, business_problem=business_problem, industry=industry,
-                               data_classification=data_classification)
+                               data_classification=data_classification, status="queued",
+                               policy_version=self.policy.version)
         self.db.add_audit(actor_id=user_id, action="create_engagement", outcome="allowed", workflow_id=wid)
         RUNTIMES[wid] = self._runtime(wid)
         for text in [*(objectives or []), *(constraints or [])]:  # only durable, safe text is kept
@@ -155,19 +234,30 @@ class EngagementService:
             "business_problem": business_problem, "industry": industry,
             "objectives": objectives or [], "constraints": constraints or [],
         }
-        self.db.add_event(wid, "run_started", {})
+        try:
+            future, position = self.scheduler.submit(self._run_scheduled, wid, payload)
+        except QueueFull:  # lost a race for the last queue place
+            self.db.delete_engagement(wid)
+            RUNTIMES.pop(wid, None)
+            raise
+        self._futures[wid] = future
+        if position > 0:
+            self.db.add_event(wid, "run_queued", {"position": position})
         if wait:
-            self._run(wid, payload)
-        else:
-            t = threading.Thread(target=self._run, args=(wid, payload), daemon=True, name=f"run-{wid}")
-            self._threads[wid] = t
-            t.start()
+            future.result()
         return self.get(wid)
 
     def wait(self, workflow_id: str, timeout: float | None = None) -> None:
-        t = self._threads.get(workflow_id)
-        if t:
-            t.join(timeout)
+        future = self._futures.get(workflow_id)
+        if future is not None:
+            future.result(timeout)
+
+    def _run_scheduled(self, workflow_id: str, payload: Any) -> None:
+        """Runs when a slot is free. The deadline clock starts now, not while the run waited in the queue."""
+        self.db.set_status(workflow_id, "running")
+        RUNTIMES[workflow_id].budget.started = time.monotonic()
+        self.db.add_event(workflow_id, "run_started", {})
+        self._run(workflow_id, payload)
 
     def _run(self, workflow_id: str, payload: Any) -> None:
         try:
@@ -181,6 +271,7 @@ class EngagementService:
         self.db.set_status(workflow_id, "failed", error=f"{type(exc).__name__}: {exc}"[:500])
         self.db.add_event(workflow_id, "run_failed", {"error": f"{type(exc).__name__}: {exc}"[:500]})
         self._snapshot(workflow_id)
+        self._record_metrics(workflow_id, "failed")
 
     def _finish(self, workflow_id: str) -> str:
         snap = self.graph.get_state(self._cfg(workflow_id))
@@ -195,7 +286,54 @@ class EngagementService:
             "status": status, "risk_level": state.get("risk_level"), "recommendation": rec.get("name"),
             "halted_reason": state.get("halted")})
         self._snapshot(workflow_id)
+        self._record_metrics(workflow_id, status)
         return status
+
+    def _record_metrics(self, workflow_id: str, status: str) -> None:
+        """Store this run's metrics. Metrics must never break a run, so a failure here is logged and dropped."""
+        try:
+            ctx = RUNTIMES[workflow_id]
+            state = dict(self.graph.get_state(self._cfg(workflow_id)).values)
+            row = self.db.get_engagement(workflow_id)
+            trace = ctx.trace.summary()
+            metrics = compute_run_metrics(
+                row=row, status=status, state=state, trace=trace,
+                engagement_metrics=engagement_metrics(trace, {**state, **ctx.log}),
+                guardian_decisions=ctx.log["guardian_decisions"], failures=ctx.log["failures"],
+                thresholds=self.policy.thresholds)
+            metrics["degradation_level"] = ctx.degradation.level
+            self.db.save_run_metrics(metrics)
+            self._update_degradation()
+            self._export_to_mlflow(metrics, trace, ctx.log["guardian_decisions"])
+        except Exception:
+            logging.getLogger(__name__).exception("could not record run metrics for %s", workflow_id)
+
+    def flush_exports(self, timeout: float = 30.0) -> None:
+        """Wait for queued telemetry exports to finish (used by tests and on shutdown)."""
+        self._exports.submit(lambda: None).result(timeout)
+        if self.tracer_provider is not None:
+            self.tracer_provider.force_flush()
+
+    def _export_to_mlflow(self, metrics: dict[str, Any], trace: dict[str, Any], guardian: list[dict[str, Any]]) -> None:
+        if self.mlflow is None:
+            return
+        self._exports.submit(self._do_export_to_mlflow, metrics, trace, guardian)
+
+    def _do_export_to_mlflow(self, metrics: dict[str, Any], trace: dict[str, Any], guardian: list[dict[str, Any]]) -> None:
+        try:
+            s = self.settings
+            self.mlflow.log_run(metrics_row=metrics, trace=trace, guardian=guardian, policy_version=self.policy.version,
+                                models={"small": s.model_small, "medium": s.model_medium, "reasoning": s.model_reasoning},
+                                provider=s.llm_provider)
+        except Exception:
+            logging.getLogger(__name__).exception("MLflow export failed for %s", metrics["workflow_id"])
+
+    def _do_log_decision(self, workflow_id: str, decision: str, waited: float | None) -> None:
+        try:
+            if self.mlflow is not None:
+                self.mlflow.log_decision(workflow_id, decision, waited)
+        except Exception:
+            logging.getLogger(__name__).exception("MLflow decision export failed for %s", workflow_id)
 
     # -- approval ---------------------------------------------------------------------------
     def approve(self, workflow_id: str, decision: str, changes: dict | None = None, reason: str = "",
@@ -211,9 +349,10 @@ class EngagementService:
             self.db.add_audit(actor_id=approver.user_id, action="approval", outcome=outcome,
                               workflow_id=workflow_id, detail={"decision": decision, **detail})
 
-        if not approver.has_role(self.settings.approver_role):
-            audit("denied", roles=list(approver.roles), required=self.settings.approver_role)
-            raise Forbidden(f"approving requires the '{self.settings.approver_role}' role")
+        if not self.rbac.allows(approver, "engagement:approve"):
+            needed = self.rbac.roles_for("engagement:approve")
+            audit("denied", roles=list(approver.roles), required=needed)
+            raise Forbidden(f"approving requires the '{' or '.join(needed)}' role")
         problem = self._validate_decision(decision, changes, reason)
         if problem:
             audit("invalid", error=problem)
@@ -235,6 +374,13 @@ class EngagementService:
         else:
             self._finish(workflow_id)
         resulting = self.db.get_engagement(workflow_id)["status"]
+        asked = self.db.last_event(workflow_id, "approval_requested")
+        waited = ((dt.datetime.now(dt.UTC) - dt.datetime.fromisoformat(asked["ts"])).total_seconds()
+                  if asked else None)
+        self.db.update_run_metrics(workflow_id, {"approval_decision": decision,
+                                                 "decision_seconds": round(waited, 2) if waited is not None else None})
+        if self.mlflow is not None:  # on the export worker, queued behind this run's own export, so it finds the run
+            self._exports.submit(self._do_log_decision, workflow_id, decision, waited)
         self.db.add_approval(workflow_id, approver_id=approver.user_id, approver_name=approver.name,
                              roles=list(approver.roles), decision=decision, reason=reason, changes=changes,
                              resulting_status=resulting)
@@ -278,6 +424,7 @@ class EngagementService:
         return {"workflow_id": workflow_id, "status": status,
                 "pending_node": list(snap.next) if status == "awaiting_approval" else [],
                 "halted_reason": row["halted_reason"] or state.get("halted"), "error": row["error"],
+                "policy_version": row["policy_version"],
                 "state": state, "guardian_decisions": ctx.log["guardian_decisions"],
                 "metrics": engagement_metrics(ctx.trace.summary(), {**state, **ctx.log}),
                 "budget": {"tokens": ctx.budget.tokens, "cost_usd": round(ctx.budget.cost_usd, 6),
@@ -338,6 +485,49 @@ class EngagementService:
         if self.db.get_engagement(workflow_id) is None:
             raise KeyError(workflow_id)
         return self._ensure_runtime(workflow_id).trace.summary()
+
+    # -- metrics ----------------------------------------------------------------------------
+    def metrics_summary(self, since: str | None = None, until: str | None = None,
+                        status: str | None = None) -> dict[str, Any]:
+        rows = self.db.run_metrics_rows(since, until, status)
+        return {**aggregate.summarize(rows, self.policy.thresholds), "policy_version": self.policy.version,
+                "thresholds": {k: float(v) for k, v in self.policy.thresholds.items()}, "since": since, "until": until}
+
+    def metrics_timeseries(self, metric: str, bucket: str = "day", since: str | None = None,
+                           until: str | None = None, status: str | None = None) -> dict[str, Any]:
+        rows = self.db.run_metrics_rows(since, until, status)
+        return {"metric": metric, "bucket": bucket, "points": aggregate.timeseries(rows, metric, bucket)}
+
+    def cost_breakdown(self, workflow_id: str) -> dict[str, Any]:
+        """Tokens and cost by agent and model, and how much of each budget this run used."""
+        if self.db.get_engagement(workflow_id) is None:
+            raise KeyError(workflow_id)
+        ctx = self._ensure_runtime(workflow_id)
+        trace = ctx.trace.summary()
+        bd = breakdown(trace["spans"])
+        b, s = ctx.budget, self.settings
+        mine = next((m for m in self.db.run_metrics_rows() if m["workflow_id"] == workflow_id), None)
+        ok = bool(mine and mine["successful"])
+        return {"workflow_id": workflow_id, "total_cost_usd": round(trace["cost_usd"], 6),
+                "input_tokens": trace["input_tokens"], "output_tokens": trace["output_tokens"],
+                "successful": ok, "cost_per_successful_task": round(trace["cost_usd"], 6) if ok else None, **bd,
+                "budget": {"tokens": {"used": b.tokens, "limit": s.max_tokens},
+                           "cost_usd": {"used": round(b.cost_usd, 6), "limit": s.max_cost_usd},
+                           "tool_calls": {"used": b.tool_calls, "limit": s.max_tool_calls},
+                           "duration_sec": {"used": round(time.monotonic() - b.started, 1), "limit": s.max_duration_sec}}}
+
+    def trace_for(self, workflow_id: str, principal: Principal) -> dict[str, Any]:
+        """The trace as `principal` may see it: payloads gated by classification and role, PII always scrubbed."""
+        row = self.db.get_engagement(workflow_id)
+        if row is None:
+            raise KeyError(workflow_id)
+        show = can_see_payloads(principal, owner_id=row["user_id"], classification=row["data_classification"],
+                                privileged_roles=self.rbac.roles_for("payload:view"))
+        trace, redaction = redact_trace(
+            self.trace(workflow_id), show_payloads=show,
+            reason=f"{row['data_classification']} engagement: payloads need the owner, Partner or Admin role")
+        return {**trace, "redaction": {"payloads_redacted": redaction.payloads_redacted,
+                                       "pii_scrubbed": redaction.pii_scrubbed, "reason": redaction.reason}}
 
     def approvals(self, workflow_id: str) -> list[dict[str, Any]]:
         self.get(workflow_id)

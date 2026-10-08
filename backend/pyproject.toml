@@ -35,6 +35,12 @@ azure = [
   "databricks-sql-connector>=3.3",
 ]
 mlops = ["mlflow>=2.16"]
+observability = [
+  "opentelemetry-exporter-otlp-proto-http>=1.25",
+  "azure-monitor-opentelemetry-exporter>=1.0.0b25",
+  "mlflow-skinny>=2.16",
+  "alembic>=1.13",  # MLflow database backends (the file store is deprecated)
+]
 dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.5", "mypy>=1.10"]
 
 [tool.setuptools.packages.find]

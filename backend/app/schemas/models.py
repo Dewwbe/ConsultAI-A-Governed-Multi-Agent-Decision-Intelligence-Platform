@@ -116,6 +116,7 @@ class GuardianDecision(TypedDict):
     source: NotRequired[str]            # deterministic | llm_reviewer | combined
     modifications: NotRequired[dict[str, Any]]
     feedback: NotRequired[str]
+    policy_version: NotRequired[str]
 
 
 class ApprovalFeedback(TypedDict):

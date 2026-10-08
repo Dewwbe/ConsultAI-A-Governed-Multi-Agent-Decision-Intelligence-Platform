@@ -1,6 +1,7 @@
 """LangGraph state machine. Human approval is a first-class node using interrupt()."""
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Any
 
 from langchain_core.runnables import RunnableConfig
@@ -18,10 +19,12 @@ from app.agents.risk import RiskAgent
 from app.agents.solution import SolutionAgent
 from app.control_plane.budget import BudgetExceeded
 from app.control_plane.evaluator import EvaluationReport, evaluate
+from app.control_plane.executor import ToolArgsInvalid, ToolBlocked
 from app.control_plane.guardian import GuardianDecision
 from app.control_plane.guardian_llm import llm_review, merge
 from app.control_plane.judge import judge_evaluate
 from app.control_plane.llm import LLMUnavailable, SchemaEscalation
+from app.control_plane.timeouts import ToolTimeoutError
 from app.schemas.state import ApprovalStatus, EngagementState
 
 # workflow_id -> RuntimeContext (non-serialisable objects stay out of graph state)
@@ -42,6 +45,7 @@ def _agent_node(agent_cls: type[BaseAgent]):
         if state.get("halted"):  # an earlier agent escalated: do no further work
             return {}
         try:
+            ctx.budget.check()  # the workflow deadline applies between agents too, not only inside tool calls
             return agent_cls(ctx).run(state)
         except BudgetExceeded as exc:
             # Stop, explain, route to human review (never silently continue past a budget)
@@ -50,6 +54,10 @@ def _agent_node(agent_cls: type[BaseAgent]):
         except (SchemaEscalation, LLMUnavailable, InsufficientData) as exc:
             # malformed output after repair+fallback, or provider down: escalate to a human
             return _halt(f"{agent_cls.name}: {exc}")
+        except (ToolTimeoutError, ToolBlocked, ToolArgsInvalid) as exc:
+            # a tool that keeps timing out, or that the policy refused, is a reason to stop and ask a human, not to crash
+            ctx.log["failures"].append({"type": "tool_escalation", "agent": agent_cls.name, "error": str(exc)})
+            return _halt(f"{agent_cls.name}: tool failed ({type(exc).__name__}): {exc}")
     node.__name__ = agent_cls.name
     return node
 
@@ -77,11 +85,17 @@ def guardian_node(state: EngagementState, config: RunnableConfig) -> dict[str, A
     with ctx.trace.span("guardian", "guardian"):
         defects = ctx.guardian.fixable_defects(state, report) if retries_left > 0 else []
         if defects:
-            decision = GuardianDecision("RETRY", "medium", 0.5, defects, feedback="; ".join(defects)[:1000])
+            decision = GuardianDecision("RETRY", "medium", 0.5, defects, feedback="; ".join(defects)[:1000],
+                                        policy_version=ctx.policy.version)
         else:
             base = ctx.guardian.review_recommendation(state, report)
             review = llm_review(ctx.llm, dict(state), report, base)
             decision = merge(base, review, retries_left) if review else base
+    if ctx.degradation.actions.require_review and decision.action in {"ALLOW", "MODIFY"}:
+        # autonomy is reduced while quality is degraded: nothing completes without a human
+        decision = replace(decision, action="ESCALATE", risk_level="high", source="combined",
+                           risk_score=max(decision.risk_score, 0.8),
+                           reasons=[*decision.reasons, f"quality degradation ({ctx.degradation.level}): every run requires review"])
     ctx.log["guardian_decisions"].append(decision.to_dict())
     if decision.action == "RETRY":
         return {"retry_count": retries + 1, "guardian_feedback": decision.feedback,

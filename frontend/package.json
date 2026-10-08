@@ -13,9 +13,13 @@
     "test:watch": "vitest",
     "api:export": "python ../backend/scripts/export_openapi.py openapi.json",
     "api:generate": "openapi-typescript openapi.json -o src/api/schema.d.ts",
-    "api:update": "npm run api:export && npm run api:generate"
+    "api:update": "npm run api:export && npm run api:generate",
+    "e2e": "playwright test",
+    "demo": "python ../backend/scripts/demo.py",
+    "screenshots": "cross-env SCREENSHOTS=1 playwright test e2e/screenshots.spec.ts --project=desktop"
   },
   "dependencies": {
+    "@azure/msal-browser": "^5.25.0",
     "@radix-ui/react-slot": "^1.4.0",
     "@tanstack/react-query": "^5.104.1",
     "class-variance-authority": "^0.7.1",
@@ -26,10 +30,12 @@
     "react-dom": "^18.3.1",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.4",
+    "recharts": "^3.10.1",
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
@@ -39,6 +45,8 @@
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^6.1.2",
+    "axe-core": "^4.14.0",
+    "cross-env": "^10.1.0",
     "eslint": "^10.12.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.13.0",
@@ -49,6 +57,7 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.71.1",
     "vite": "^8.3.3",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.3",
+    "vitest-axe": "^0.1.0"
   }
 }

@@ -2,26 +2,40 @@ from __future__ import annotations
 
 import json
 import time
+from typing import Literal
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 
+from app.control_plane.limits import QueueFull
 from app.schemas.api import (
     ApprovalRecord,
     ApprovalRequest,
+    BudgetsOut,
+    CostBreakdownOut,
+    DegradationOut,
     EngagementDetail,
     EngagementList,
     EngagementRequest,
     EvidenceOut,
     Health,
     Me,
+    MetricName,
+    MetricsSummary,
+    PolicyContentOut,
+    PolicyOut,
+    PolicyVersionOut,
+    ProvidersOut,
     ReplayOut,
     Status,
     TablesOut,
+    TimeseriesOut,
+    ToolOut,
     TraceOut,
 )
 from app.schemas.models import GuardianDecision
 from app.security.auth import AuthError, Principal
+from app.workflow import governance
 from app.workflow.service import Conflict, Forbidden, Invalid
 
 router = APIRouter()
@@ -43,17 +57,33 @@ def principal(request: Request) -> Principal:
         raise HTTPException(401, str(exc), headers={"WWW-Authenticate": "Bearer"}) from exc
 
 
+def require(permission: str):
+    """A dependency that signs the caller in and then checks one RBAC permission (default deny)."""
+    def check(request: Request, p: Principal = Depends(principal)) -> Principal:
+        rbac = _svc(request).rbac
+        if not rbac.allows(p, permission):
+            raise HTTPException(403, f"'{permission}' needs {rbac.describe(permission)}")
+        return p
+    return check
+
+
 @router.get("/me", response_model=Me, responses=_AUTH, operation_id="getMe")
 def me(request: Request, p: Principal = Depends(principal)):
     return {"user_id": p.user_id, "name": p.name, "roles": list(p.roles),
-            "can_approve": p.has_role(_svc(request).settings.approver_role)}
+            "can_approve": _svc(request).rbac.allows(p, "engagement:approve"),
+            "permissions": _svc(request).rbac.permissions_of(p)}
 
 
-@router.post("/engagements", response_model=EngagementDetail, responses=_AUTH, operation_id="createEngagement")
+@router.post("/engagements", response_model=EngagementDetail,
+             responses={**_AUTH, 429: {"description": "too many engagements in progress; see Retry-After"}},
+             operation_id="createEngagement")
 def create_engagement(body: EngagementRequest, request: Request, wait: bool = True,
                       p: Principal = Depends(principal)):
     """wait=false returns immediately with status `running`; follow progress via /events."""
-    return _svc(request).start(**body.model_dump(), user_id=p.user_id, wait=wait)
+    try:
+        return _svc(request).start(**body.model_dump(), user_id=p.user_id, wait=wait)
+    except QueueFull as exc:
+        raise HTTPException(429, str(exc), headers={"Retry-After": str(exc.retry_after_sec)}) from exc
 
 
 @router.get("/engagements", response_model=EngagementList, responses=_AUTH, operation_id="listEngagements")
@@ -177,9 +207,80 @@ def replay_retrieval(workflow_id: str, retrieval_id: str, request: Request, p: P
             responses={**_NOT_FOUND, **_AUTH}, operation_id="getTrace")
 def trace(workflow_id: str, request: Request, p: Principal = Depends(principal)):
     try:
-        return _svc(request).trace(workflow_id)
+        return _svc(request).trace_for(workflow_id, p)
     except KeyError as exc:
         raise HTTPException(404, "engagement not found") from exc
+
+
+@router.get("/metrics/summary", response_model=MetricsSummary, responses=_AUTH, operation_id="getMetricsSummary")
+def metrics_summary(request: Request, since: str | None = None, until: str | None = None,
+                    status: Status | None = None, p: Principal = Depends(principal)):
+    """Intent, tool, safety, business and economics metrics over the runs in the window, plus quality flags."""
+    return _svc(request).metrics_summary(since=since, until=until, status=status)
+
+
+@router.get("/metrics/timeseries", response_model=TimeseriesOut, responses=_AUTH, operation_id="getMetricsTimeseries")
+def metrics_timeseries(request: Request, metric: MetricName, bucket: Literal["hour", "day"] = "day",
+                       since: str | None = None, until: str | None = None, status: Status | None = None,
+                       p: Principal = Depends(principal)):
+    return _svc(request).metrics_timeseries(metric, bucket, since=since, until=until, status=status)
+
+
+@router.get("/engagements/{workflow_id}/cost", response_model=CostBreakdownOut,
+            responses={**_NOT_FOUND, **_AUTH}, operation_id="getCostBreakdown")
+def cost_breakdown(workflow_id: str, request: Request, p: Principal = Depends(principal)):
+    try:
+        return _svc(request).cost_breakdown(workflow_id)
+    except KeyError as exc:
+        raise HTTPException(404, "engagement not found") from exc
+
+
+_governance = require("governance:view")
+_GOV = {**_AUTH, 403: {"description": "needs the governance:view permission"}}
+
+
+@router.get("/governance/policy", response_model=PolicyOut, responses=_GOV, operation_id="getPolicy")
+def get_policy(request: Request, p: Principal = Depends(_governance)):
+    """The policy in force: tool permissions per agent, thresholds, provider rules, PII, limits and RBAC."""
+    return governance.policy_view(_svc(request))
+
+
+@router.get("/governance/policy/versions", response_model=list[PolicyVersionOut], responses=_GOV,
+            operation_id="listPolicyVersions")
+def list_policy_versions(request: Request, p: Principal = Depends(_governance)):
+    return _svc(request).db.policy_history()
+
+
+@router.get("/governance/policy/versions/{key}", response_model=PolicyContentOut,
+            responses={**_GOV, 404: {"description": "no such policy version"}}, operation_id="getPolicyVersion")
+def get_policy_version(key: str, request: Request, p: Principal = Depends(_governance)):
+    """The exact text of a past policy (by version or content hash), for comparing what changed."""
+    found = _svc(request).db.policy_content(key)
+    if found is None:
+        raise HTTPException(404, "no such policy version")
+    return {**found, "drift": False}
+
+
+@router.get("/governance/tools", response_model=list[ToolOut], responses=_GOV, operation_id="listTools")
+def list_tools(request: Request, p: Principal = Depends(_governance)):
+    return governance.tools_view(_svc(request))
+
+
+@router.get("/governance/providers", response_model=ProvidersOut, responses=_GOV, operation_id="getProviders")
+def get_providers(request: Request, p: Principal = Depends(_governance)):
+    """Provider health: circuit-breaker state, rate-limit use, which data each may see, and recent fallbacks."""
+    return governance.providers_view(_svc(request))
+
+
+@router.get("/governance/budgets", response_model=BudgetsOut, responses=_GOV, operation_id="getBudgets")
+def get_budgets(request: Request, p: Principal = Depends(_governance)):
+    return governance.budgets_view(_svc(request))
+
+
+@router.get("/governance/degradation", response_model=DegradationOut, responses=_GOV, operation_id="getDegradation")
+def get_degradation(request: Request, p: Principal = Depends(_governance)):
+    """How cautious the system currently is, and the history of why it changed."""
+    return governance.degradation_view(_svc(request))
 
 
 @router.get("/health", response_model=Health, operation_id="getHealth")

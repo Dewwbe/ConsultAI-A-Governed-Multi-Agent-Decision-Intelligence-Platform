@@ -1,4 +1,4 @@
-version: "2026.10.3"
+version: "2026.10.7"
 
 # Layer 1 — deterministic guardrails. Default is deny.
 agents:
@@ -36,6 +36,7 @@ thresholds:
   min_groundedness: 0.75
   min_constraint_satisfaction: 0.9
   min_task_adherence: 0.7
+  min_tool_call_accuracy: 0.9
   min_contradiction_free: 0.75
   max_guardian_retries: 1
 
@@ -47,6 +48,36 @@ data_classification:
     allowed_providers: [azure_openai, openai]
   public:
     allowed_providers: [azure_openai, openai, gemini, local]
+
+# Who may do what. Default deny: a permission not listed here is refused for everyone. "*" = any signed-in user.
+rbac:
+  engagement:create: ["*"]
+  engagement:read: ["*"]
+  engagement:approve: [Partner]
+  payload:view: [Partner, Admin]      # see tool arguments/results and retrieved text on confidential engagements
+  metrics:view: ["*"]
+  governance:view: [Admin, Auditor]   # policy, tool registry, provider health, budgets, degradation events
+
+# What may be sent to a model provider. Secrets (keys, tokens, passwords) are NEVER sent, whatever the mode.
+# redact: personal identifiers (emails, phone numbers, card and bank numbers) are masked too. allow: they pass.
+pii:
+  confidential: redact
+  internal: redact
+  public: allow
+
+# When recent quality slips below the minimums above, the system becomes more cautious by itself
+# (stronger model, more retrieval, every run reviewed by a human). It looks at the last `window` runs.
+degradation:
+  window: 10
+  min_runs: 3
+  recovery_margin: 0.03
+  severe_gap: 0.15
+
+# Capacity limits. Provider limits are global (one provider, one quota), so they are shared by every engagement.
+limits:
+  providers:
+    azure_openai: {requests_per_minute: 600, tokens_per_minute: 150000, max_concurrent: 8, queue_timeout_sec: 20}
+  engagements: {max_concurrent: 4, max_queued: 20}
 
 timeouts_sec:
   search: 10

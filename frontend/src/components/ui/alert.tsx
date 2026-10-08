@@ -21,7 +21,7 @@ export function Alert({
   return <div role="alert" className={cn(alertVariants({ variant }), className)} {...props} />;
 }
 export function AlertTitle({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 className={cn("font-semibold leading-tight", className)} {...props} />;
+  return <h2 className={cn("font-semibold leading-tight", className)} {...props} />;
 }
 export function AlertDescription({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) {
   return <p className={cn("mt-1 text-muted-foreground", className)} {...props} />;

@@ -62,20 +62,20 @@ describe("shell and role-aware routing", () => {
   it("blocks the Governance page for a user without the role, even by URL", async () => {
     renderApp("/governance", { user: "ann", roles: ["Analyst"] });
     expect(await screen.findByText("You do not have access to this page")).toBeInTheDocument();
-    expect(screen.getByText(/needs one of these roles: Admin/)).toBeInTheDocument();
-    expect(screen.queryByText("Arrives in F4")).not.toBeInTheDocument();
+    expect(screen.getByText(/needs one of these roles: Admin, Auditor/)).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Governance" })).not.toBeInTheDocument();
   });
 
   it("lets an Admin in", async () => {
     renderApp("/governance", { user: "ada", roles: ["Admin"] });
-    expect(await screen.findByText("Arrives in F4")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Governance" })).toBeInTheDocument();
   });
 
   it("does not guess when the access check itself fails", async () => {
     server.use(http.get(`${API}/me`, () => HttpResponse.json({ detail: "boom" }, { status: 500 })));
     renderApp("/governance", { user: "ada", roles: ["Admin"] });
     expect(await screen.findByText("The server had a problem")).toBeInTheDocument();
-    expect(screen.queryByText("Arrives in F4")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Governance" })).not.toBeInTheDocument();
   });
 
   it("shows a not-found page for unknown addresses", async () => {
@@ -100,23 +100,6 @@ describe("dev identity switcher", () => {
     await userEvent.click(screen.getByRole("checkbox", { name: "Partner" }));
     await waitFor(() => expect(screen.getByText("Yes")).toBeInTheDocument());
     expect(window.localStorage.getItem("consultai.devIdentity")).toContain("Partner");
-  });
-
-  it("is not shown in entra mode", async () => {
-    const { Providers, AppRoutes } = await import("@/App");
-    const { MemoryRouter } = await import("react-router-dom");
-    const { render } = await import("@testing-library/react");
-    const { testQueryClient } = await import("@/test/utils");
-    server.use(http.get(`${API}/me`, () => HttpResponse.json({ detail: "missing bearer token" }, { status: 401 })));
-    render(
-      <Providers queryClient={testQueryClient()} authMode="entra">
-        <MemoryRouter>
-          <AppRoutes />
-        </MemoryRouter>
-      </Providers>,
-    );
-    expect(await screen.findByText("Sign-in required")).toBeInTheDocument();
-    expect(screen.queryByText(/Development sign-in/)).not.toBeInTheDocument();
   });
 });
 

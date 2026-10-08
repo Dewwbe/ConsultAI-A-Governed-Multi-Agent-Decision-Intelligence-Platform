@@ -9,7 +9,8 @@
   "subject": "data_agent.run_sql_readonly",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -21,7 +22,8 @@
   "subject": "data_agent.run_sql_readonly",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -33,7 +35,8 @@
   "subject": "data_agent.run_sql_readonly",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -45,7 +48,8 @@
   "subject": "financial_agent.calculate_margin",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -57,7 +61,8 @@
   "subject": "financial_agent.calculate_growth",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -69,7 +74,8 @@
   "subject": "financial_agent.derive_annual_benefit",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -81,7 +87,8 @@
   "subject": "financial_agent.calculate_roi",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -93,7 +100,8 @@
   "subject": "financial_agent.calculate_payback",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -105,7 +113,8 @@
   "subject": "financial_agent.calculate_npv",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -117,7 +126,8 @@
   "subject": "financial_agent.scenario_analysis",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -129,7 +139,8 @@
   "subject": "financial_agent.sensitivity_analysis",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -141,7 +152,8 @@
   "subject": "financial_agent.derive_annual_benefit",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -153,7 +165,8 @@
   "subject": "financial_agent.calculate_roi",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -165,7 +178,8 @@
   "subject": "financial_agent.calculate_payback",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -177,7 +191,8 @@
   "subject": "financial_agent.calculate_npv",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -189,7 +204,8 @@
   "subject": "financial_agent.scenario_analysis",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -201,7 +217,8 @@
   "subject": "financial_agent.sensitivity_analysis",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -213,7 +230,8 @@
   "subject": "financial_agent.derive_annual_benefit",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -225,7 +243,8 @@
   "subject": "financial_agent.calculate_roi",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -237,7 +256,8 @@
   "subject": "financial_agent.calculate_payback",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -249,7 +269,8 @@
   "subject": "financial_agent.calculate_npv",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -261,7 +282,8 @@
   "subject": "financial_agent.scenario_analysis",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -273,7 +295,8 @@
   "subject": "financial_agent.sensitivity_analysis",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ALLOW",
@@ -285,7 +308,8 @@
   "subject": "risk_agent.risk_lookup",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  },
  {
   "action": "ESCALATE",
@@ -299,6 +323,7 @@
   "subject": "workflow",
   "source": "deterministic",
   "modifications": {},
-  "feedback": ""
+  "feedback": "",
+  "policy_version": "2026.10.7"
  }
 ]

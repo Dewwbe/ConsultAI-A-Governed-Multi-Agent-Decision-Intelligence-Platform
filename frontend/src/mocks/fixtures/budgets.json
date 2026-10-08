@@ -1,0 +1,45 @@
+{
+ "defaults": {
+  "max_tokens": 100000,
+  "max_cost_usd": 2.0,
+  "max_duration_sec": 300,
+  "max_tool_calls": 100
+ },
+ "running": [],
+ "recent": [
+  {
+   "workflow_id": "wf_0cee1a7a92",
+   "status": "awaiting_approval",
+   "tokens": 8575,
+   "cost_usd": 0.092382,
+   "tool_calls": 24,
+   "duration_sec": 0.0,
+   "utilization": 0.24,
+   "tightest": "tool_calls",
+   "near_limit": false
+  },
+  {
+   "workflow_id": "wf_7471ce689d",
+   "status": "rejected",
+   "tokens": 11420,
+   "cost_usd": 0.13526,
+   "tool_calls": 24,
+   "duration_sec": 0.0,
+   "utilization": 0.24,
+   "tightest": "tool_calls",
+   "near_limit": false
+  },
+  {
+   "workflow_id": "wf_f9d2cfb8a7",
+   "status": "completed",
+   "tokens": 8575,
+   "cost_usd": 0.092382,
+   "tool_calls": 24,
+   "duration_sec": 0.0,
+   "utilization": 0.24,
+   "tightest": "tool_calls",
+   "near_limit": false
+  }
+ ],
+ "near_limit_count": 0
+}

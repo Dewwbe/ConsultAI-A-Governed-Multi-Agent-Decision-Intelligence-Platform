@@ -67,3 +67,24 @@ jobs:
       - run: npm test -- src/test/integration.test.ts
         working-directory: frontend
         env: { E2E_API_URL: "http://localhost:8030" }
+
+  # The full path a user takes (submit, watch, pause, decide), in a real browser against the real API.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", cache: npm, cache-dependency-path: frontend/package-lock.json }
+      - run: pip install -e "backend/.[dev]" httpx
+      - run: npm ci --no-audit --no-fund
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: npm run e2e
+        working-directory: frontend
+        env: { CI: "true" }
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with: { name: playwright-report, path: "frontend/playwright-report\nfrontend/test-results" }

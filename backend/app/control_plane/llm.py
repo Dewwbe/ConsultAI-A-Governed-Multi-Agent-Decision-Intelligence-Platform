@@ -6,7 +6,9 @@ escalate), token/cost accounting, and tracing.
 """
 from __future__ import annotations
 
+import datetime as dt
 import json
+from collections import Counter
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Protocol
@@ -17,8 +19,11 @@ from jsonschema import Draft202012Validator
 from app.observability.tracing import TraceStore
 from app.prompts import PromptTemplate, get_prompt
 from app.schemas.json_schema import is_strict_ready
+from app.security.pii import scrub_text
 
 from .budget import Budget
+from .limits import LimiterRegistry, ProviderLimiter, RateLimitTimeout
+from .providers import BreakerRegistry, FallbackEvent, FallbackLog
 from .reliability import (
     CircuitBreaker,
     CircuitOpen,
@@ -26,7 +31,7 @@ from .reliability import (
     TransientError,
     call_with_retry,
 )
-from .router import PRICE_PER_1K, ModelRouter, Route
+from .router import PRICE_PER_1K, ModelRouter, NoProviderAvailable, Route
 
 _NEXT_TIER = {"small": "medium", "medium": "reasoning", "reasoning": "reasoning"}
 
@@ -181,31 +186,76 @@ class AzureOpenAIProvider:
 
 
 class LLMGateway:
-    def __init__(self, router: ModelRouter, provider: LLMProvider, budget: Budget, trace: TraceStore,
-                 log: dict[str, list] | None = None, breaker: CircuitBreaker | None = None,
-                 sleep: Callable[[float], None] | None = None):
-        self.router, self.provider, self.budget, self.trace = router, provider, budget, trace
+    """The single door to model providers. It owns, per call: PII scrubbing, routing by task/risk/budget and
+    data classification, the provider's rate limit and circuit breaker, failover to another *permitted*
+    provider, the malformed-output path (repair, stronger model, escalate), accounting and tracing."""
+
+    def __init__(self, router: ModelRouter, provider: LLMProvider | dict[str, LLMProvider], budget: Budget,
+                 trace: TraceStore, log: dict[str, list] | None = None,
+                 breaker: CircuitBreaker | BreakerRegistry | None = None,
+                 sleep: Callable[[float], None] | None = None,
+                 limiter: ProviderLimiter | LimiterRegistry | None = None, *,
+                 fallbacks: FallbackLog | None = None, pii_mode: Callable[[str], str] | None = None):
+        self.router, self.budget, self.trace = router, budget, trace
+        self.providers: dict[str, LLMProvider] = provider if isinstance(provider, dict) else {provider.name: provider}
+        self.provider = next(iter(self.providers.values()))
         self.log = log if log is not None else {"failures": []}
-        self.breaker = breaker
+        self._breaker = breaker
+        self._limiter = limiter
         self._sleep = sleep
+        self.fallbacks = fallbacks if fallbacks is not None else FallbackLog()
+        self._pii_mode = pii_mode or (lambda classification: "redact")
+
+    # -- per-provider infrastructure ---------------------------------------------------------------
+    def _breaker_for(self, name: str) -> CircuitBreaker | None:
+        return self._breaker.get(name) if isinstance(self._breaker, BreakerRegistry) else self._breaker
+
+    def _limiter_for(self, name: str) -> ProviderLimiter | None:
+        return self._limiter.for_provider(name) if isinstance(self._limiter, LimiterRegistry) else self._limiter
+
+    def _note_error(self, provider: str, message: str) -> None:
+        if isinstance(self._breaker, BreakerRegistry):
+            self._breaker.note_error(provider, message)
+
+    def _sanitize(self, text: str, classification: str, counts: Counter[str]) -> str:
+        """Secrets are never sent. Personal identifiers are masked unless policy allows them for this classification."""
+        only = None if self._pii_mode(classification) == "redact" else frozenset({"secret"})
+        return scrub_text(text, counts, only)
 
     # -- one provider call: retry/backoff, validation, accounting ---------------------------
     def _attempt(self, *, agent: str, task: str, stage: str, prompt_id: str, route: Route,
-                 system: str, prompt: str, schema: dict[str, Any], context: dict[str, Any]
-                 ) -> tuple[LLMResult | None, list[str], Any]:
+                 system: str, prompt: str, schema: dict[str, Any], context: dict[str, Any],
+                 classification: str) -> tuple[LLMResult | None, list[str], Any]:
         with self.trace.span(f"llm:{task}", "llm", **{
                 "gen_ai.agent.name": agent, "gen_ai.request.model": route.model_env_key,
                 "gen_ai.system": route.provider, "consultai.tier": route.tier,
                 "consultai.stage": stage, "consultai.prompt": prompt_id}) as span:
+            self.budget.check()  # no new model call once the workflow deadline or budget is spent
+            counts: Counter[str] = Counter()
+            system, prompt = self._sanitize(system, classification, counts), self._sanitize(prompt, classification, counts)
+            if counts:
+                span.attributes["consultai.pii_redacted"] = dict(counts)
+            provider = self.providers[route.provider]
+            limiter = self._limiter_for(route.provider)
             kwargs = {} if self._sleep is None else {"sleep": self._sleep}
+            estimate = (len(system) + len(prompt)) // 4 + 1000  # input estimate plus room for the answer
+
+            def one_call() -> ProviderResponse:
+                if limiter is None:
+                    return provider.complete_json(task=task, system=system, prompt=prompt, schema=schema,
+                                                  context=context, model=route.model_env_key)
+                with limiter.slot(estimate):
+                    return provider.complete_json(task=task, system=system, prompt=prompt, schema=schema,
+                                                  context=context, model=route.model_env_key)
+
             try:
-                resp: ProviderResponse = call_with_retry(
-                    lambda: self.provider.complete_json(
-                        task=task, system=system, prompt=prompt, schema=schema,
-                        context=context, model=route.model_env_key),
-                    breaker=self.breaker, **kwargs)
-            except (TransientError, PermanentError, CircuitOpen, TimeoutError, ConnectionError) as exc:
-                self.log["failures"].append({"type": "llm_unavailable", "task": task, "error": str(exc)})
+                resp: ProviderResponse = call_with_retry(one_call, breaker=self._breaker_for(route.provider), **kwargs)
+            except (TransientError, PermanentError, CircuitOpen, TimeoutError, ConnectionError,
+                    RateLimitTimeout) as exc:
+                if not isinstance(exc, CircuitOpen):  # keep the failure that tripped the breaker, not "circuit open"
+                    self._note_error(route.provider, str(exc))
+                self.log["failures"].append({"type": "llm_unavailable", "task": task, "provider": route.provider,
+                                             "error": str(exc)})
                 raise LLMUnavailable(f"{task}: {exc}") from exc
             cost = PRICE_PER_1K[route.tier] * (resp.input_tokens + resp.output_tokens) / 1000
             span.attributes.update({"gen_ai.usage.input_tokens": resp.input_tokens,
@@ -225,6 +275,37 @@ class LLMGateway:
             return (LLMResult(resp.content, resp.input_tokens, resp.output_tokens, cost,
                               route.model_env_key, route.provider, stage), [], resp.raw)
 
+    def _attempt_with_failover(self, *, route_for: Callable[[set[str]], Route], agent: str, task: str,
+                               classification: str, **kw: Any) -> tuple[LLMResult | None, list[str], Any]:
+        """Try the preferred provider; if it is unavailable, try the next one the policy permits for this
+        data. Never widens the set of permitted providers: when none is left the caller escalates."""
+        excluded: set[str] = set()
+        last_failed: str | None = None
+        last_reason = ""
+        while True:
+            try:
+                route = route_for(excluded)
+            except NoProviderAvailable as exc:
+                if last_failed:
+                    self._record_fallback(agent, task, last_failed, None, last_reason, classification)
+                self.log["failures"].append({"type": "no_provider", "task": task, "classification": classification,
+                                             "error": str(exc)})
+                why = f" (last failure on {last_failed}: {last_reason})" if last_failed else ""
+                raise LLMUnavailable(f"{task}: {exc}{why}") from exc
+            if last_failed:
+                self._record_fallback(agent, task, last_failed, route.provider, last_reason, classification)
+            try:
+                return self._attempt(agent=agent, task=task, route=route, classification=classification, **kw)
+            except LLMUnavailable as exc:
+                excluded.add(route.provider)
+                last_failed, last_reason = route.provider, str(exc)[:300]
+
+    def _record_fallback(self, agent: str, task: str, failed: str, to: str | None, reason: str,
+                         classification: str) -> None:
+        event = FallbackEvent(dt.datetime.now(dt.UTC).isoformat(), task, agent, failed, to, reason, classification)
+        self.fallbacks.add(event)
+        self.log.setdefault("fallbacks", []).append(event.to_dict())
+
     def structured(self, *, agent: str, task: str, prompt: PromptTemplate | str,
                    schema: dict[str, Any], context: dict[str, Any],
                    variables: dict[str, Any] | None = None, risk_level: str = "low",
@@ -237,32 +318,35 @@ class LLMGateway:
             system, user = prompt.render(**(variables or {}))
             prompt_id = prompt.id
 
-        def route(task_name: str, tier: str | None = None) -> Route:
-            return self.router.route(
-                task_name, risk_level=risk_level, data_classification=data_classification,
-                remaining_budget_usd=self.budget.max_cost_usd - self.budget.cost_usd,
-                tier_override=tier)
+        def route_factory(task_name: str, tier: str | None = None) -> Callable[[set[str]], Route]:
+            def build(excluded: set[str]) -> Route:
+                return self.router.route(
+                    task_name, risk_level=risk_level, data_classification=data_classification,
+                    remaining_budget_usd=self.budget.max_cost_usd - self.budget.cost_usd,
+                    tier_override=tier, unavailable=excluded)
+            return build
 
-        main = route(task)
-        common = {"agent": agent, "task": task, "schema": schema, "context": context}
-        result, errors, raw = self._attempt(**common, stage="initial", prompt_id=prompt_id,
-                                            route=main, system=system, prompt=user)
+        common = {"agent": agent, "task": task, "schema": schema, "context": context,
+                  "classification": data_classification}
+        main = route_factory(task)(set())  # raises NoProviderAvailable if the policy permits none at all
+        result, errors, raw = self._attempt_with_failover(
+            route_for=route_factory(task), stage="initial", prompt_id=prompt_id, system=system, prompt=user, **common)
         if result:
             return result
 
         # 1) repair: ask a small model to fix the malformed output against the schema
         rp = get_prompt("schema_repair")
         rsys, ruser = rp.render(errors="\n".join(errors), output=raw[:6000])
-        result, errors, raw = self._attempt(
-            **{**common, "task": "schema_repair"}, stage="repair", prompt_id=rp.id,
-            route=route("schema_repair", "small"), system=rsys, prompt=ruser)
+        result, errors, raw = self._attempt_with_failover(
+            route_for=route_factory("schema_repair", "small"), stage="repair", prompt_id=rp.id,
+            system=rsys, prompt=ruser, **{**common, "task": "schema_repair"})
         if result:
             return result
 
         # 2) fallback: rerun the original prompt on the next-stronger tier
-        result, errors, raw = self._attempt(**common, stage="fallback", prompt_id=prompt_id,
-                                            route=route(task, _NEXT_TIER[main.tier]),
-                                            system=system, prompt=user)
+        result, errors, raw = self._attempt_with_failover(
+            route_for=route_factory(task, _NEXT_TIER[main.tier]), stage="fallback", prompt_id=prompt_id,
+            system=system, prompt=user, **common)
         if result:
             return result
 

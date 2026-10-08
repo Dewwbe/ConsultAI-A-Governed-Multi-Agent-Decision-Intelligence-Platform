@@ -9,14 +9,6 @@ function Planned({ title, stage, description }: { title: string; stage: string; 
   );
 }
 
-export const ControlCenter = () => (
-  <Planned
-    title="Control Center"
-    stage="F3"
-    description="Traces, tool calls, retrievals, Guardian decisions, cost and quality."
-  />
-);
-
 export const Governance = () => (
   <Planned
     title="Governance"

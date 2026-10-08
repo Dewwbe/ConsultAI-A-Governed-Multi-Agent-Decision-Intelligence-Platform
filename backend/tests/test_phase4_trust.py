@@ -206,8 +206,9 @@ def test_dev_auth_is_refused_outside_dev_environment():
 # ---- HTTP: identity, roles, history, guardian log ---------------------------------------------------
 def test_http_roles_and_history():
     c = TestClient(app)
-    assert c.get("/me", headers=H_PARTNER).json() == {"user_id": "pat", "name": "pat", "roles": ["Partner"],
-                                                       "can_approve": True}
+    me = c.get("/me", headers=H_PARTNER).json()
+    assert (me["user_id"], me["name"], me["roles"], me["can_approve"]) == ("pat", "pat", ["Partner"], True)
+    assert "engagement:approve" in me["permissions"] and "governance:view" not in me["permissions"]
     assert c.get("/me", headers=H_ANALYST).json()["can_approve"] is False
     wid = c.post("/engagements", json=REQ, headers=H_ANALYST).json()["workflow_id"]
     denied = c.post(f"/engagements/{wid}/approval", json={"decision": "approve"}, headers=H_ANALYST)

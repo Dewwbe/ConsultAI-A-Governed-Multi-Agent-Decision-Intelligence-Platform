@@ -17,7 +17,7 @@ describe("engagement list", () => {
   it("shows each engagement with its status, recommendation and a link to its page", async () => {
     renderApp("/engagements");
     const links = await screen.findAllByRole("link", { name: /Should we expand into the UAE market\?/ });
-    expect(links).toHaveLength(2);
+    expect(links).toHaveLength(fixtures.list.items.length);
     for (const link of links) expect(link).toHaveAttribute("href", expect.stringMatching(/^\/engagements\/wf_/));
     expect(screen.getByText("Completed", { selector: "span" })).toBeInTheDocument();
     expect(screen.getByText("Awaiting approval", { selector: "span" })).toBeInTheDocument();

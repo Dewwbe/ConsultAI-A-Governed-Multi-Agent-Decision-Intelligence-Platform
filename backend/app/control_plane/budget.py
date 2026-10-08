@@ -26,6 +26,10 @@ class Budget:
         self.tool_calls += tool_calls
         self.check()
 
+    def remaining_sec(self) -> float:
+        """Seconds left before the workflow deadline (never negative)."""
+        return max(0.0, self.max_duration_sec - (time.monotonic() - self.started))
+
     def check(self) -> None:
         if self.tokens > self.max_tokens:
             raise BudgetExceeded(f"token budget exceeded ({self.tokens}/{self.max_tokens})")
@@ -33,5 +37,5 @@ class Budget:
             raise BudgetExceeded(f"cost budget exceeded (${self.cost_usd:.2f}/${self.max_cost_usd:.2f})")
         if self.tool_calls > self.max_tool_calls:
             raise BudgetExceeded(f"tool-call budget exceeded ({self.tool_calls}/{self.max_tool_calls})")
-        if time.monotonic() - self.started > self.max_duration_sec:
+        if time.monotonic() - self.started >= self.max_duration_sec:  # reaching the deadline counts as exceeding it
             raise BudgetExceeded("duration budget exceeded")

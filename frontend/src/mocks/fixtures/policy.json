@@ -1,0 +1,205 @@
+{
+ "version": "2026.10.7",
+ "sha256": "56eb000195016fd8a98777c140bb98ea1d23622e3d1689e76b963ab958671a6a",
+ "agents": [
+  {
+   "name": "discovery_agent",
+   "allowed_tools": [
+    "schema_validator",
+    "engagement_template_store",
+    "knowledge_search",
+    "dataset_catalog",
+    "industry_taxonomy"
+   ],
+   "blocked_tools": [
+    "execute_financial_transaction",
+    "send_client_email",
+    "modify_source_data"
+   ],
+   "requires_approval": [],
+   "allowed_tables": []
+  },
+  {
+   "name": "research_agent",
+   "allowed_tools": [
+    "search_public_web",
+    "search_knowledge_base"
+   ],
+   "blocked_tools": [
+    "execute_financial_transaction",
+    "send_client_email"
+   ],
+   "requires_approval": [],
+   "allowed_tables": []
+  },
+  {
+   "name": "data_agent",
+   "allowed_tools": [
+    "schema_lookup",
+    "run_sql_readonly"
+   ],
+   "blocked_tools": [
+    "modify_source_data",
+    "send_client_email"
+   ],
+   "requires_approval": [],
+   "allowed_tables": [
+    "finance.revenue",
+    "finance.costs",
+    "sales.customers",
+    "ops.kpis"
+   ]
+  },
+  {
+   "name": "financial_agent",
+   "allowed_tools": [
+    "query_financial_data",
+    "calculate_roi",
+    "calculate_npv",
+    "calculate_payback",
+    "scenario_analysis",
+    "sensitivity_analysis",
+    "calculate_margin",
+    "calculate_growth",
+    "derive_annual_benefit"
+   ],
+   "blocked_tools": [],
+   "requires_approval": [
+    "approve_budget",
+    "commit_financial_action"
+   ],
+   "allowed_tables": []
+  },
+  {
+   "name": "risk_agent",
+   "allowed_tools": [
+    "risk_lookup",
+    "search_knowledge_base"
+   ],
+   "blocked_tools": [],
+   "requires_approval": [],
+   "allowed_tables": []
+  },
+  {
+   "name": "solution_agent",
+   "allowed_tools": [],
+   "blocked_tools": [],
+   "requires_approval": [],
+   "allowed_tables": []
+  },
+  {
+   "name": "report_agent",
+   "allowed_tools": [
+    "render_report"
+   ],
+   "blocked_tools": [],
+   "requires_approval": [
+    "send_client_email"
+   ],
+   "allowed_tables": []
+  }
+ ],
+ "thresholds": {
+  "financial_commitment_usd": 1000000.0,
+  "approval_risk_score": 0.7,
+  "min_groundedness": 0.75,
+  "min_constraint_satisfaction": 0.9,
+  "min_task_adherence": 0.7,
+  "min_tool_call_accuracy": 0.9,
+  "min_contradiction_free": 0.75,
+  "max_guardian_retries": 1.0
+ },
+ "risk_tiers": {
+  "low": [
+   "document_retrieval",
+   "data_cleaning",
+   "basic_sql",
+   "aggregation",
+   "summarization",
+   "citation_generation"
+  ],
+  "medium": [
+   "market_interpretation",
+   "financial_scenario_generation",
+   "risk_classification",
+   "strategy_alternatives"
+  ],
+  "high": [
+   "financial_commitment",
+   "legal_regulatory_conclusion",
+   "client_facing_recommendation",
+   "production_system_modification",
+   "sensitive_data_access",
+   "major_strategic_decision",
+   "external_communication"
+  ]
+ },
+ "data_classification": {
+  "confidential": [
+   "azure_openai"
+  ],
+  "internal": [
+   "azure_openai",
+   "openai"
+  ],
+  "public": [
+   "azure_openai",
+   "openai",
+   "gemini",
+   "local"
+  ]
+ },
+ "pii": {
+  "confidential": "redact",
+  "internal": "redact",
+  "public": "allow"
+ },
+ "rbac": {
+  "engagement:create": [
+   "*"
+  ],
+  "engagement:read": [
+   "*"
+  ],
+  "engagement:approve": [
+   "Partner"
+  ],
+  "payload:view": [
+   "Partner",
+   "Admin"
+  ],
+  "metrics:view": [
+   "*"
+  ],
+  "governance:view": [
+   "Admin",
+   "Auditor"
+  ]
+ },
+ "limits": {
+  "providers": {
+   "azure_openai": {
+    "requests_per_minute": 600,
+    "tokens_per_minute": 150000,
+    "max_concurrent": 8,
+    "queue_timeout_sec": 20
+   }
+  },
+  "engagements": {
+   "max_concurrent": 4,
+   "max_queued": 20
+  }
+ },
+ "degradation": {
+  "window": 10,
+  "min_runs": 3,
+  "recovery_margin": 0.03,
+  "severe_gap": 0.15
+ },
+ "timeouts_sec": {
+  "search": 10,
+  "database": 15,
+  "llm": 30,
+  "workflow": 300
+ }
+}

@@ -22,6 +22,16 @@ export type Recommendation = S["Recommendation"];
 export type GuardianDecision = S["GuardianDecision"];
 export type ReplayOut = S["ReplayOut"];
 
+export type PolicyOut = S["PolicyOut"];
+export type PolicyVersion = S["PolicyVersionOut"];
+export type PolicyContent = S["PolicyContentOut"];
+export type ToolInfo = S["ToolOut"];
+export type ProvidersOut = S["ProvidersOut"];
+export type ProviderInfo = S["ProviderOut"];
+export type BudgetsOut = S["BudgetsOut"];
+export type RunBudgetUse = S["RunBudgetUse"];
+export type DegradationOut = S["DegradationOut"];
+
 /** One server-sent event of an engagement run. */
 export interface EngagementEvent {
   id: number;
@@ -42,3 +52,8 @@ export interface EngagementEvent {
 /** Events after which the server closes the stream: the run paused or ended. */
 export const TERMINAL_EVENTS = ["approval_requested", "run_completed", "run_escalated", "run_failed"] as const;
 export const isTerminalEvent = (type: string): boolean => (TERMINAL_EVENTS as readonly string[]).includes(type);
+
+export type MetricsSummary = S["MetricsSummary"];
+export type TimeseriesOut = S["TimeseriesOut"];
+export type CostBreakdown = S["CostBreakdownOut"];
+export type SpanOut = S["SpanOut"];

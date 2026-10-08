@@ -27,6 +27,7 @@ engagements = sa.Table(
     sa.Column("status", sa.String(30), nullable=False),
     sa.Column("halted_reason", sa.Text),
     sa.Column("error", sa.Text),
+    sa.Column("policy_version", sa.String(40)),
 )
 approvals = sa.Table(
     "approvals", meta,
@@ -74,6 +75,34 @@ decision_dataset = sa.Table(
 )
 
 
+run_metrics = sa.Table(
+    "run_metrics", meta,
+    sa.Column("workflow_id", sa.String(64), primary_key=True),
+    sa.Column("created_at", sa.String(40), nullable=False, index=True),  # the engagement start: the time axis
+    sa.Column("status", sa.String(30), nullable=False, index=True),
+    sa.Column("data", sa.Text, nullable=False),
+)
+
+
+degradation_events = sa.Table(
+    "degradation_events", meta,
+    sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
+    sa.Column("ts", sa.String(40), nullable=False),
+    sa.Column("from_level", sa.String(20), nullable=False),
+    sa.Column("to_level", sa.String(20), nullable=False),
+    sa.Column("data", sa.Text, nullable=False),
+)
+
+
+policy_versions = sa.Table(
+    "policy_versions", meta,
+    sa.Column("sha256", sa.String(64), primary_key=True),
+    sa.Column("version", sa.String(40), nullable=False, index=True),
+    sa.Column("loaded_at", sa.String(40), nullable=False),
+    sa.Column("content", sa.Text, nullable=False),
+)
+
+
 def now() -> str:
     return dt.datetime.now(dt.UTC).isoformat()
 
@@ -95,15 +124,50 @@ class Database:
         self.engine = sa.create_engine(url, **kwargs)
         self._lock = threading.RLock()  # SQLite is single-writer; harmless on Postgres
         meta.create_all(self.engine)
+        self._ensure_columns()
+
+    def _ensure_columns(self) -> None:
+        """create_all does not alter existing tables: add columns introduced after a database was created."""
+        have = {c["name"] for c in sa.inspect(self.engine).get_columns("engagements")}
+        if "policy_version" not in have:
+            with self.engine.begin() as c:
+                c.execute(sa.text("ALTER TABLE engagements ADD COLUMN policy_version VARCHAR(40)"))
+
+    # -- policy versions ---------------------------------------------------------------------------
+    def record_policy(self, version: str, sha256: str, content: str) -> bool:
+        """Remember a policy file the first time it is seen. Returns True if it was new."""
+        with self._lock, self.engine.begin() as c:
+            if c.execute(policy_versions.select().where(policy_versions.c.sha256 == sha256)).first():
+                return False
+            c.execute(policy_versions.insert().values(sha256=sha256, version=version, loaded_at=now(), content=content))
+            return True
+
+    def policy_history(self) -> list[dict[str, Any]]:
+        """Newest first. `drift` marks a file whose text changed without its version being bumped."""
+        with self._lock, self.engine.connect() as c:
+            rows = list(c.execute(policy_versions.select().order_by(policy_versions.c.loaded_at.desc())))
+        per_version: dict[str, int] = {}
+        for r in rows:
+            per_version[r.version] = per_version.get(r.version, 0) + 1
+        return [{"version": r.version, "sha256": r.sha256, "loaded_at": r.loaded_at,
+                 "drift": per_version[r.version] > 1} for r in rows]
+
+    def policy_content(self, sha256_or_version: str) -> dict[str, Any] | None:
+        with self._lock, self.engine.connect() as c:
+            row = (c.execute(policy_versions.select().where(policy_versions.c.sha256 == sha256_or_version)).first()
+                   or c.execute(policy_versions.select().where(policy_versions.c.version == sha256_or_version)
+                                .order_by(policy_versions.c.loaded_at.desc())).first())
+        return {"version": row.version, "sha256": row.sha256, "loaded_at": row.loaded_at, "content": row.content} if row else None
 
     # -- engagements --------------------------------------------------------------------------
     def add_engagement(self, workflow_id: str, *, user_id: str, business_problem: str, industry: str,
-                       data_classification: str, status: str = "running") -> None:
+                       data_classification: str, status: str = "running", policy_version: str | None = None) -> None:
         with self._lock, self.engine.begin() as c:
             c.execute(engagements.insert().values(
                 workflow_id=workflow_id, created_at=now(), user_id=user_id,
                 business_problem=business_problem, industry=industry,
-                data_classification=data_classification, status=status))
+                data_classification=data_classification, status=status,
+                policy_version=policy_version))
 
     def set_status(self, workflow_id: str, status: str, *, halted_reason: str | None = None,
                    error: str | None = None) -> None:
@@ -125,10 +189,16 @@ class Database:
         with self._lock, self.engine.connect() as c:
             return [dict(r._mapping) for r in c.execute(q)], c.execute(count).scalar_one()
 
+    def delete_engagement(self, workflow_id: str) -> None:
+        with self._lock, self.engine.begin() as c:
+            for table in (events, snapshots):
+                c.execute(table.delete().where(table.c.workflow_id == workflow_id))
+            c.execute(engagements.delete().where(engagements.c.workflow_id == workflow_id))
+
     def mark_interrupted(self) -> int:
         """Runs that were `running` when the process died cannot continue: fail them visibly."""
         with self._lock, self.engine.begin() as c:
-            res = c.execute(engagements.update().where(engagements.c.status == "running").values(
+            res = c.execute(engagements.update().where(engagements.c.status.in_(["running", "queued"])).values(
                 status="failed", error="interrupted by a service restart"))
             return res.rowcount
 
@@ -187,6 +257,51 @@ class Database:
         with self._lock, self.engine.connect() as c:
             return [{"ts": r.ts, "workflow_id": r.workflow_id, "actor_id": r.actor_id, "action": r.action,
                      "outcome": r.outcome, "detail": json.loads(r.detail)} for r in c.execute(q)]
+
+    # -- run metrics -------------------------------------------------------------------------------
+    def save_run_metrics(self, row: dict[str, Any]) -> None:
+        with self._lock, self.engine.begin() as c:
+            c.execute(run_metrics.delete().where(run_metrics.c.workflow_id == row["workflow_id"]))
+            c.execute(run_metrics.insert().values(workflow_id=row["workflow_id"], created_at=row["created_at"],
+                                                  status=row["status"], data=_dumps(row)))
+
+    def update_run_metrics(self, workflow_id: str, patch: dict[str, Any]) -> None:
+        with self._lock, self.engine.begin() as c:
+            cur = c.execute(run_metrics.select().where(run_metrics.c.workflow_id == workflow_id)).first()
+            if cur is None:
+                return
+            data = {**json.loads(cur.data), **patch}
+            c.execute(run_metrics.update().where(run_metrics.c.workflow_id == workflow_id)
+                      .values(status=data["status"], data=_dumps(data)))
+
+    def run_metrics_rows(self, since: str | None = None, until: str | None = None,
+                         status: str | None = None) -> list[dict[str, Any]]:
+        q = run_metrics.select().order_by(run_metrics.c.created_at)
+        if since:
+            q = q.where(run_metrics.c.created_at >= since)
+        if until:
+            q = q.where(run_metrics.c.created_at <= until)
+        if status:
+            q = q.where(run_metrics.c.status == status)
+        with self._lock, self.engine.connect() as c:
+            return [json.loads(r.data) for r in c.execute(q)]
+
+    def last_event(self, workflow_id: str, type_: str) -> dict[str, Any] | None:
+        with self._lock, self.engine.connect() as c:
+            r = c.execute(events.select().where((events.c.workflow_id == workflow_id) & (events.c.type == type_))
+                          .order_by(events.c.id.desc()).limit(1)).first()
+        return {"id": r.id, "ts": r.ts, "type": r.type, "data": json.loads(r.data)} if r else None
+
+    # -- degradation events ------------------------------------------------------------------------
+    def add_degradation_event(self, from_level: str, to_level: str, state: dict[str, Any]) -> None:
+        with self._lock, self.engine.begin() as c:
+            c.execute(degradation_events.insert().values(ts=now(), from_level=from_level, to_level=to_level,
+                                                         data=_dumps(state)))
+
+    def degradation_events_list(self, limit: int = 50) -> list[dict[str, Any]]:
+        with self._lock, self.engine.connect() as c:
+            rows = c.execute(degradation_events.select().order_by(degradation_events.c.id.desc()).limit(limit))
+            return [{"ts": r.ts, "from_level": r.from_level, "to_level": r.to_level, **json.loads(r.data)} for r in rows]
 
     # -- evaluation dataset -----------------------------------------------------------------------
     def add_decision_record(self, workflow_id: str, record: dict[str, Any]) -> None:

@@ -59,12 +59,14 @@ def test_openapi_contract_is_typed_and_stable():
     ops = {op["operationId"] for item in spec["paths"].values() for op in item.values()}
     assert ops == {"createEngagement", "listEngagements", "getEngagement", "submitApproval",
                    "getTrace", "getHealth", "getEvidence", "getTables", "replayRetrieval",
-                   "getMe", "listApprovals", "getGuardianLog", "streamEvents"}
+                   "getMe", "listApprovals", "getGuardianLog", "streamEvents", "getMetricsSummary",
+                   "getMetricsTimeseries", "getCostBreakdown", "getPolicy", "listPolicyVersions",
+                   "getPolicyVersion", "listTools", "getProviders", "getBudgets", "getDegradation"}
     schemas = spec["components"]["schemas"]
     for name in ["EngagementDetail", "EngagementList", "EngagementSummary", "TraceOut", "EngagementState"]:
         assert name in schemas, name
     assert schemas["EngagementDetail"]["properties"]["status"]["enum"] == [
-        "running", "awaiting_approval", "completed", "rejected", "escalated", "failed"]
+        "queued", "running", "awaiting_approval", "completed", "rejected", "escalated", "failed"]
     for item in spec["paths"].values():  # every operation declares a typed JSON 200 response
         for op in item.values():
             if op["operationId"] == "streamEvents":  # text/event-stream, documented in prose

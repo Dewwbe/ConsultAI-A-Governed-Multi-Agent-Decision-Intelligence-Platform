@@ -5,7 +5,7 @@ decision *stricter*, never looser.
 """
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from typing import Any
 
 from .evaluator import EvaluationReport
@@ -22,6 +22,7 @@ class GuardianDecision:
     source: str = "deterministic"  # deterministic | llm_reviewer | combined
     modifications: dict[str, Any] = field(default_factory=dict)  # MODIFY: {"caveats": [...]}
     feedback: str = ""            # RETRY: what the Solution Agent must fix
+    policy_version: str = ""      # the policy file version that governed this decision
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -33,6 +34,10 @@ class Guardian:
 
     def review_tool_call(self, agent: str, tool: str, args: dict[str, Any],
                          resource: str | None = None) -> GuardianDecision:
+        return replace(self._review_tool_call(agent, tool, args, resource), policy_version=self.policy.version)
+
+    def _review_tool_call(self, agent: str, tool: str, args: dict[str, Any],
+                          resource: str | None = None) -> GuardianDecision:
         res = self.policy.check_tool(agent, tool, resource)
         if res.decision is Decision.DENY:
             return GuardianDecision("BLOCK", "high", 1.0, [res.reason], subject=f"{agent}.{tool}")
@@ -62,6 +67,9 @@ class Guardian:
         return int(self.policy.thresholds.get("max_guardian_retries", 1))
 
     def review_recommendation(self, state: dict[str, Any], report: EvaluationReport) -> GuardianDecision:
+        return replace(self._review_recommendation(state, report), policy_version=self.policy.version)
+
+    def _review_recommendation(self, state: dict[str, Any], report: EvaluationReport) -> GuardianDecision:
         t = self.policy.thresholds
         reasons: list[str] = []
         score = 0.0

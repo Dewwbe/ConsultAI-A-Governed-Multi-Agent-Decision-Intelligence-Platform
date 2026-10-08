@@ -1,4 +1,4 @@
-import { Activity, Gauge, Inbox, Moon, ShieldCheck, Sun, SunMoon, UserRound } from "lucide-react";
+import { Activity, Gauge, Inbox, LogOut, Moon, ShieldCheck, Sun, SunMoon, UserRound } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useHealth, useMe } from "@/api/hooks";
 import { useAuth, DEV_ROLES } from "@/auth/AuthProvider";
@@ -19,7 +19,7 @@ export const NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Dashboard", icon: Gauge },
   { to: "/engagements", label: "Engagements", icon: Inbox },
   { to: "/control-center", label: "Control Center", icon: Activity },
-  { to: "/governance", label: "Governance", icon: ShieldCheck, roles: ["Admin"] },
+  { to: "/governance", label: "Governance", icon: ShieldCheck, roles: ["Admin", "Auditor"] },
 ];
 
 export function visibleNav(items: NavItem[], roles: string[] | undefined): NavItem[] {
@@ -58,6 +58,20 @@ function ThemeToggle() {
 }
 
 /** Dev-only identity picker. Replaced by Microsoft sign-in in F2; hidden when AUTH_MODE is entra. */
+function EntraAccount() {
+  const { mode, account, signOut } = useAuth();
+  if (mode !== "entra" || !account) return null;
+  return (
+    <div className="flex items-center gap-2 text-sm">
+      <UserRound className="size-4" aria-hidden="true" />
+      <span title={account.username}>{account.name}</span>
+      <Button variant="ghost" size="sm" onClick={() => void signOut()}>
+        <LogOut /> Sign out
+      </Button>
+    </div>
+  );
+}
+
 function DevIdentityPicker() {
   const { mode, identity, setIdentity } = useAuth();
   if (mode !== "dev" || !identity) return null;
@@ -71,6 +85,7 @@ function DevIdentityPicker() {
       <summary className="flex h-9 cursor-pointer list-none items-center gap-2 rounded-md border bg-card px-3 text-sm hover:bg-muted">
         <UserRound className="size-4" aria-hidden="true" />
         <span>{identity.user}</span>
+        <Badge variant="warning">dev sign-in</Badge>
       </summary>
       <div className="absolute right-0 z-10 mt-2 w-64 space-y-3 rounded-lg border bg-card p-4 shadow-lg">
         <p className="text-xs text-muted-foreground">Development sign-in. The API only honours this in dev mode.</p>
@@ -137,6 +152,7 @@ export function AppShell() {
         <header className="flex flex-wrap items-center justify-end gap-3 border-b bg-card px-4 py-3">
           <ApiStatus />
           <DevIdentityPicker />
+          <EntraAccount />
           <ThemeToggle />
         </header>
         <main id="main" tabIndex={-1} className="mx-auto w-full max-w-6xl flex-1 p-4 md:p-6">

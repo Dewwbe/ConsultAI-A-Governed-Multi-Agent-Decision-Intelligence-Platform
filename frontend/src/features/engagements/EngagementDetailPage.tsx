@@ -1,12 +1,14 @@
-import { OctagonAlert, UserCheck, Wifi, WifiOff } from "lucide-react";
+import { CircleCheck, OctagonAlert, UserCheck, Wifi, WifiOff } from "lucide-react";
 import { useMemo } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useEngagement, useTrace } from "@/api/hooks";
 import { ErrorState, LoadingState } from "@/components/states/states";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Tabs } from "@/components/ui/tabs";
+import { ApprovalHistory } from "@/features/approval/ApprovalHistory";
 import type { Engagement } from "@/api/types";
 import { PipelineView } from "./PipelineView";
 import { StatusBadge } from "./StatusBadge";
@@ -46,6 +48,13 @@ function ConnectionNote({ connection }: { connection: Connection }) {
 function StatusNotice({ engagement }: { engagement: Engagement }) {
   const lastDecision = [...engagement.guardian_decisions].reverse().find((g) => g.subject === "workflow");
   switch (engagement.status) {
+    case "queued":
+      return (
+        <Alert>
+          <AlertTitle>Queued</AlertTitle>
+          <AlertDescription>The platform is at its run limit. This engagement starts automatically when a slot frees up.</AlertDescription>
+        </Alert>
+      );
     case "awaiting_approval":
       return (
         <Alert variant="warning">
@@ -54,9 +63,11 @@ function StatusNotice({ engagement }: { engagement: Engagement }) {
             <div>
               <AlertTitle>Waiting for a partner&apos;s decision</AlertTitle>
               <AlertDescription>
-                {lastDecision?.reasons.length ? `Why: ${lastDecision.reasons.join("; ")}.` : "The Guardian requires human approval."} The review screen
-                with Approve, Modify and Reject arrives in the next stage; everything produced so far is below.
+                {lastDecision?.reasons.length ? `Why: ${lastDecision.reasons.join("; ")}.` : "The Guardian requires human approval."}
               </AlertDescription>
+              <Button asChild size="sm" className="mt-3">
+                <Link to={`/engagements/${engagement.workflow_id}/review`}>Review and decide</Link>
+              </Button>
             </div>
           </div>
         </Alert>
@@ -92,8 +103,16 @@ function StatusNotice({ engagement }: { engagement: Engagement }) {
   }
 }
 
+const DECIDED_TEXT = {
+  approve: "Approved. The report is being written.",
+  modify: "Approved with your changes. The report is being written.",
+  reject: "Rejected. The engagement ended without a report.",
+} as const;
+
 export function EngagementDetailPage() {
   const { id = "" } = useParams();
+  const location = useLocation();
+  const decided = (location.state as { decided?: keyof typeof DECIDED_TEXT } | null)?.decided;
   const live = useEngagementLive(id);
   const polling = live.connection === "polling";
   const query = useEngagement(id, { poll: polling });
@@ -129,6 +148,7 @@ export function EngagementDetailPage() {
     { id: "risks", label: "Risks", badge: state.risks?.length, content: <RisksPanel engagement={engagement} /> },
     { id: "options", label: "Options", badge: state.options?.length, content: <OptionsPanel engagement={engagement} /> },
     { id: "report", label: "Report", content: <ReportPanel engagement={engagement} /> },
+    { id: "approvals", label: "Approvals", content: <ApprovalHistory workflowId={id} /> },
   ];
 
   return (
@@ -147,6 +167,18 @@ export function EngagementDetailPage() {
         </div>
         <p className="mt-1 font-mono text-xs text-muted-foreground">{engagement.workflow_id}</p>
       </div>
+
+      {decided && (
+        <Alert>
+          <div className="flex gap-3">
+            <CircleCheck aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-success" />
+            <div>
+              <AlertTitle>Decision recorded</AlertTitle>
+              <AlertDescription>{DECIDED_TEXT[decided]}</AlertDescription>
+            </div>
+          </div>
+        </Alert>
+      )}
 
       <StatusNotice engagement={engagement} />
 

@@ -11,3 +11,7 @@ mlruns/
 *.db
 *.db-journal
 phase1_report.json
+e2e.db*
+demo.db*
+test-results/
+playwright-report/

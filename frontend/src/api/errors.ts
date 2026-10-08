@@ -25,6 +25,12 @@ export class ValidationError extends ApiError {
     super(status, detail, body);
   }
 }
+/** 429: the run queue is full. `retryAfterSec` comes from the Retry-After header when the server sent one. */
+export class RateLimitError extends ApiError {
+  constructor(status: number, detail: string, body: unknown, readonly retryAfterSec?: number) {
+    super(status, detail, body);
+  }
+}
 export class ServerError extends ApiError {}
 /** The request never got an answer: offline, DNS, CORS failure or the API is down. */
 export class NetworkError extends Error {
@@ -52,7 +58,7 @@ function detailOf(body: unknown, fallback: string): { detail: string; fields: st
   return { detail: fallback, fields: [] };
 }
 
-export function apiErrorFrom(status: number, body: unknown): ApiError {
+export function apiErrorFrom(status: number, body: unknown, retryAfterSec?: number): ApiError {
   const { detail, fields } = detailOf(body, `Request failed (${status})`);
   switch (status) {
     case 401:
@@ -65,6 +71,8 @@ export function apiErrorFrom(status: number, body: unknown): ApiError {
       return new ConflictError(status, detail, body);
     case 422:
       return new ValidationError(status, detail, body, fields);
+    case 429:
+      return new RateLimitError(status, detail, body, retryAfterSec);
     default:
       return status >= 500 ? new ServerError(status, detail, body) : new ApiError(status, detail, body);
   }
@@ -86,7 +94,8 @@ export async function unwrap<T>(call: Promise<FetchResult<T>>): Promise<T> {
     throw new NetworkError(e instanceof Error ? e.message : undefined);
   }
   if (result.error !== undefined || !result.response.ok) {
-    throw apiErrorFrom(result.response.status, result.error);
+    const retry = Number(result.response.headers.get("retry-after"));
+    throw apiErrorFrom(result.response.status, result.error, Number.isFinite(retry) && retry > 0 ? retry : undefined);
   }
   return result.data as T;
 }
@@ -113,6 +122,11 @@ export function describeError(error: unknown): ErrorSummary {
     return {
       title: "Not awaiting approval",
       message: error.detail || "This engagement is not waiting for a decision. It may already have been decided.",
+    };
+  if (error instanceof RateLimitError)
+    return {
+      title: "The platform is busy",
+      message: `Too many engagements are queued. ${error.retryAfterSec ? `Try again in about ${error.retryAfterSec} seconds.` : "Try again shortly."}`,
     };
   if (error instanceof ValidationError)
     return { title: "Check your input", message: error.detail };

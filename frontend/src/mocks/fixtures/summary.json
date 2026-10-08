@@ -1,0 +1,152 @@
+{
+ "runs": 3,
+ "by_status": {
+  "completed": 1,
+  "rejected": 1,
+  "awaiting_approval": 1
+ },
+ "intent": {
+  "task_adherence": 0.8,
+  "constraint_satisfaction": 0.6667,
+  "completeness": 1.0
+ },
+ "tool": {
+  "tool_calls": 72,
+  "tool_call_success_rate": 1.0,
+  "tool_call_accuracy": 1.0,
+  "invalid_schema_rate": 0.0,
+  "llm_repair_rate": 0.0,
+  "llm_fallback_rate": 0.0,
+  "schema_escalations": 0
+ },
+ "safety": {
+  "groundedness": 1.0,
+  "contradiction_free": 0.8333,
+  "escalation_rate": 1.0,
+  "unauthorized_action_rate": 0.0,
+  "runs_halted": 0
+ },
+ "business": {
+  "decided": 2,
+  "approval_rate": 0.5,
+  "modification_rate": 0.0,
+  "rejection_rate": 0.5,
+  "awaiting_approval": 1,
+  "median_decision_seconds": 0.02
+ },
+ "economics": {
+  "total_cost_usd": 0.320024,
+  "avg_cost_usd": 0.1067,
+  "successful_runs": 1,
+  "success_rate": 0.3333,
+  "cost_per_successful_task": 0.320024,
+  "avg_tokens": 9523.3333,
+  "p50_duration_sec": 0.031,
+  "p95_duration_sec": 0.031,
+  "cost_by_agent": [
+   {
+    "agent": "data_agent",
+    "calls": 3,
+    "input_tokens": 1836,
+    "output_tokens": 114,
+    "cost_usd": 0.000975
+   },
+   {
+    "agent": "discovery_agent",
+    "calls": 3,
+    "input_tokens": 1130,
+    "output_tokens": 380,
+    "cost_usd": 0.000755
+   },
+   {
+    "agent": "evaluator",
+    "calls": 4,
+    "input_tokens": 6376,
+    "output_tokens": 100,
+    "cost_usd": 0.09714
+   },
+   {
+    "agent": "financial_agent",
+    "calls": 3,
+    "input_tokens": 1964,
+    "output_tokens": 387,
+    "cost_usd": 0.035265
+   },
+   {
+    "agent": "guardian",
+    "calls": 3,
+    "input_tokens": 3256,
+    "output_tokens": 63,
+    "cost_usd": 0.049785
+   },
+   {
+    "agent": "research_agent",
+    "calls": 3,
+    "input_tokens": 2547,
+    "output_tokens": 2316,
+    "cost_usd": 0.014589
+   },
+   {
+    "agent": "risk_agent",
+    "calls": 3,
+    "input_tokens": 3915,
+    "output_tokens": 357,
+    "cost_usd": 0.06408
+   },
+   {
+    "agent": "solution_agent",
+    "calls": 4,
+    "input_tokens": 3705,
+    "output_tokens": 124,
+    "cost_usd": 0.057435
+   }
+  ],
+  "cost_by_model": [
+   {
+    "model": "MODEL_MEDIUM",
+    "tier": "medium",
+    "calls": 3,
+    "input_tokens": 2547,
+    "output_tokens": 2316,
+    "cost_usd": 0.014589
+   },
+   {
+    "model": "MODEL_REASONING",
+    "tier": "reasoning",
+    "calls": 17,
+    "input_tokens": 19216,
+    "output_tokens": 1031,
+    "cost_usd": 0.303705
+   },
+   {
+    "model": "MODEL_SMALL",
+    "tier": "small",
+    "calls": 6,
+    "input_tokens": 2966,
+    "output_tokens": 494,
+    "cost_usd": 0.00173
+   }
+  ]
+ },
+ "flags": [
+  {
+   "metric": "constraint_satisfaction",
+   "value": 0.6667,
+   "threshold": 0.9,
+   "message": "Average constraint satisfaction 0.67 is below the policy minimum 0.90"
+  }
+ ],
+ "policy_version": "2026.10.7",
+ "thresholds": {
+  "financial_commitment_usd": 1000000.0,
+  "approval_risk_score": 0.7,
+  "min_groundedness": 0.75,
+  "min_constraint_satisfaction": 0.9,
+  "min_task_adherence": 0.7,
+  "min_tool_call_accuracy": 0.9,
+  "min_contradiction_free": 0.75,
+  "max_guardian_retries": 1.0
+ },
+ "since": null,
+ "until": null
+}

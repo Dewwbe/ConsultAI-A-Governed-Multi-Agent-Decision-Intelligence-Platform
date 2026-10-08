@@ -1,0 +1,110 @@
+{
+ "workflow_id": "wf_0cee1a7a92",
+ "total_cost_usd": 0.092382,
+ "input_tokens": 7312,
+ "output_tokens": 1263,
+ "successful": false,
+ "cost_per_successful_task": null,
+ "by_agent": [
+  {
+   "agent": "data_agent",
+   "calls": 1,
+   "input_tokens": 612,
+   "output_tokens": 38,
+   "cost_usd": 0.000325
+  },
+  {
+   "agent": "discovery_agent",
+   "calls": 1,
+   "input_tokens": 379,
+   "output_tokens": 129,
+   "cost_usd": 0.000254
+  },
+  {
+   "agent": "evaluator",
+   "calls": 1,
+   "input_tokens": 1574,
+   "output_tokens": 25,
+   "cost_usd": 0.023985
+  },
+  {
+   "agent": "financial_agent",
+   "calls": 1,
+   "input_tokens": 657,
+   "output_tokens": 129,
+   "cost_usd": 0.01179
+  },
+  {
+   "agent": "guardian",
+   "calls": 1,
+   "input_tokens": 1046,
+   "output_tokens": 21,
+   "cost_usd": 0.016005
+  },
+  {
+   "agent": "research_agent",
+   "calls": 1,
+   "input_tokens": 849,
+   "output_tokens": 772,
+   "cost_usd": 0.004863
+  },
+  {
+   "agent": "risk_agent",
+   "calls": 1,
+   "input_tokens": 1305,
+   "output_tokens": 119,
+   "cost_usd": 0.02136
+  },
+  {
+   "agent": "solution_agent",
+   "calls": 1,
+   "input_tokens": 890,
+   "output_tokens": 30,
+   "cost_usd": 0.0138
+  }
+ ],
+ "by_model": [
+  {
+   "model": "MODEL_MEDIUM",
+   "tier": "medium",
+   "calls": 1,
+   "input_tokens": 849,
+   "output_tokens": 772,
+   "cost_usd": 0.004863
+  },
+  {
+   "model": "MODEL_REASONING",
+   "tier": "reasoning",
+   "calls": 5,
+   "input_tokens": 5472,
+   "output_tokens": 324,
+   "cost_usd": 0.08694
+  },
+  {
+   "model": "MODEL_SMALL",
+   "tier": "small",
+   "calls": 2,
+   "input_tokens": 991,
+   "output_tokens": 167,
+   "cost_usd": 0.000579
+  }
+ ],
+ "budget": {
+  "tokens": {
+   "used": 8575.0,
+   "limit": 100000.0
+  },
+  "cost_usd": {
+   "used": 0.092382,
+   "limit": 2.0
+  },
+  "tool_calls": {
+   "used": 24.0,
+   "limit": 100.0
+  },
+  "duration_sec": {
+   "used": 0.1,
+   "limit": 300.0
+  }
+ }
+}

@@ -16,6 +16,10 @@ TASK_TIER = {
 PRICE_PER_1K = {"small": 0.0005, "medium": 0.003, "reasoning": 0.015}
 
 
+class NoProviderAvailable(RuntimeError):
+    """No provider is both permitted for this data classification and currently available."""
+
+
 @dataclass(frozen=True)
 class Route:
     tier: str
@@ -25,8 +29,9 @@ class Route:
 
 
 class ModelRouter:
-    def __init__(self, policy: PolicyEngine, providers: list[str] | None = None):
+    def __init__(self, policy: PolicyEngine, providers: list[str] | None = None, tier_boost: int = 0):
         self.policy = policy
+        self.tier_boost = tier_boost  # set while quality is degraded: use a stronger model
         self.providers = providers or ["azure_openai", "openai", "gemini", "local"]
 
     def route(self, task: str, *, risk_level: str = "low", data_classification: str = "confidential",
@@ -39,6 +44,9 @@ class ModelRouter:
         if tier_override:  # explicit escalation (e.g. fallback model): never budget-downgraded
             tier = tier_override
         else:
+            if self.tier_boost and task != "schema_repair":  # the cheap repair step stays cheap
+                strong_first = ["small", "medium", "reasoning"]
+                tier = strong_first[min(len(strong_first) - 1, strong_first.index(tier) + self.tier_boost)]
             # Downgrade when the budget cannot cover the chosen tier
             while tier != "small" and PRICE_PER_1K[tier] * est_tokens / 1000 > remaining_budget_usd:
                 tier = order[order.index(tier) + 1]
@@ -50,4 +58,8 @@ class ModelRouter:
                 continue
             return Route(tier, provider, f"MODEL_{tier.upper()}",
                          PRICE_PER_1K[tier] * est_tokens / 1000)
-        raise RuntimeError(f"no provider permitted for classification '{data_classification}'")
+        permitted = [p for p in self.providers if self.policy.provider_allowed(data_classification, p)]
+        if not permitted:
+            raise NoProviderAvailable(f"no provider is permitted for '{data_classification}' data")
+        raise NoProviderAvailable(
+            f"every provider permitted for '{data_classification}' data is unavailable ({', '.join(permitted)})")

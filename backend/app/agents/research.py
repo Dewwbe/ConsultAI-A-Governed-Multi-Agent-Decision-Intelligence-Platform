@@ -4,6 +4,7 @@ from typing import Any
 
 from app.knowledge.chunking import quote_in_chunk
 from app.knowledge.retriever import Evidence, evidence_dicts
+from app.observability.payload import cap_payload
 from app.prompts import get_prompt
 from app.schemas.json_schema import NUM, STR, arr, obj
 
@@ -28,9 +29,14 @@ class ResearchAgent(BaseAgent):
                    "groups": ["all"]}
         for q in queries:
             with self.ctx.trace.span("retrieval", "retrieval", **{"consultai.query": q}) as span:
-                ev, rec = self.ctx.retriever.search(q, filters=filters, k=2)
+                ev, rec = self.ctx.retriever.search(q, filters=filters, k=2 * self.ctx.degradation.actions.retrieval_k_multiplier)
                 self.ctx.memory.log_retrieval(self.ctx.workflow_id, rec)
                 span.attributes["consultai.document_ids"] = rec.document_ids
+                span.attributes["consultai.retrieval"] = cap_payload({
+                    "retrieval_id": rec.retrieval_id, "index": rec.index, "embedding_model": rec.embedding_model,
+                    "reranker": rec.reranker, "filters": rec.filters, "k": rec.k, "index_version": rec.index_version,
+                    "documents": [{"doc_id": e.doc_id, "chunk_id": e.chunk_id, "source": e.source,
+                                   "score": e.relevance, "text": e.evidence} for e in ev]})
             for e in ev:  # de-duplicate by source+text
                 if e.chunk_id not in seen:
                     seen.add(e.chunk_id)

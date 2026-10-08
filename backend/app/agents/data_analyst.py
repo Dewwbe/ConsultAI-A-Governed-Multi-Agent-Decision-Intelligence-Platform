@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Protocol
 
 from app.data.sqlite_source import SqliteDataSource
+from app.observability.payload import cap_payload
 from app.prompts import get_prompt
 from app.schemas.json_schema import STR, obj
 from app.tools.sql_validator import SQLValidationError, validate_readonly_sql
@@ -71,11 +72,14 @@ class DataAnalystAgent(BaseAgent):
                 return None
         self.ctx.budget.record(tool_calls=1)
         with self.ctx.trace.span("tool:run_sql_readonly", "tool", **{
-                "gen_ai.tool.name": "run_sql_readonly", "consultai.sql": sql, "consultai.purpose": purpose}):
+                "gen_ai.agent.name": self.name, "gen_ai.tool.name": "run_sql_readonly",
+                "consultai.sql": sql, "consultai.purpose": purpose, "consultai.outcome": "ok",
+                "consultai.tool_arguments": {"sql": sql, "tables": tables}}) as span:
             try:
                 rows = self.source.query(sql)
             except Exception as exc:  # noqa: BLE001  bad column, timeout...: report, never crash the workflow
                 self.ctx.log["failures"].append({"type": "sql_execution", "purpose": purpose,
                                                  "error": str(exc)[:300]})
                 return None
+            span.attributes["consultai.tool_result"] = cap_payload({"row_count": len(rows), "rows": rows[:20]})
         return {"query": sql, "rows": rows, "purpose": purpose}, tables

@@ -59,7 +59,7 @@ export function useEngagementLive(id: string, options: { retryDelaysMs?: number[
         try {
           const { baseUrl, getHeaders } = configRef.current;
           await readSse(`${baseUrl}/engagements/${encodeURIComponent(id)}/events?after=${lastId}`, {
-            headers: getHeaders(),
+            headers: await getHeaders(),
             signal,
             onMessage: (m) => {
               if (m.id !== null) lastId = Math.max(lastId, m.id);

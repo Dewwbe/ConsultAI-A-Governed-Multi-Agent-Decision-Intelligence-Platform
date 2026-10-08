@@ -1,0 +1,339 @@
+[
+ {
+  "name": "calculate_growth",
+  "description": "Period-on-period growth rate",
+  "input_schema": {
+   "type": "object",
+   "required": [
+    "previous",
+    "current"
+   ],
+   "properties": {
+    "previous": {
+     "type": "number"
+    },
+    "current": {
+     "type": "number"
+    }
+   },
+   "additionalProperties": false
+  },
+  "risk_level": "low",
+  "timeouts": {
+   "connect_ms": 1000,
+   "read_ms": 3000,
+   "total_ms": 3000
+  },
+  "max_retries": 1,
+  "cost_usd": 0.0,
+  "audit": true,
+  "requires_approval": false,
+  "allowed_agents": [
+   "financial_agent"
+  ],
+  "blocked_agents": []
+ },
+ {
+  "name": "calculate_margin",
+  "description": "Operating margin = (revenue - cost) / revenue",
+  "input_schema": {
+   "type": "object",
+   "required": [
+    "revenue",
+    "cost"
+   ],
+   "properties": {
+    "revenue": {
+     "type": "number"
+    },
+    "cost": {
+     "type": "number"
+    }
+   },
+   "additionalProperties": false
+  },
+  "risk_level": "low",
+  "timeouts": {
+   "connect_ms": 1000,
+   "read_ms": 3000,
+   "total_ms": 3000
+  },
+  "max_retries": 1,
+  "cost_usd": 0.0,
+  "audit": true,
+  "requires_approval": false,
+  "allowed_agents": [
+   "financial_agent"
+  ],
+  "blocked_agents": []
+ },
+ {
+  "name": "calculate_npv",
+  "description": "Net present value of cashflows",
+  "input_schema": {
+   "type": "object",
+   "required": [
+    "rate",
+    "cashflows"
+   ],
+   "properties": {
+    "rate": {
+     "type": "number"
+    },
+    "cashflows": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 2
+    }
+   },
+   "additionalProperties": false
+  },
+  "risk_level": "medium",
+  "timeouts": {
+   "connect_ms": 1000,
+   "read_ms": 3000,
+   "total_ms": 3000
+  },
+  "max_retries": 1,
+  "cost_usd": 0.0,
+  "audit": true,
+  "requires_approval": false,
+  "allowed_agents": [
+   "financial_agent"
+  ],
+  "blocked_agents": []
+ },
+ {
+  "name": "calculate_payback",
+  "description": "Simple payback period",
+  "input_schema": {
+   "type": "object",
+   "required": [
+    "investment",
+    "annual_benefit"
+   ],
+   "properties": {
+    "investment": {
+     "type": "number"
+    },
+    "annual_benefit": {
+     "type": "number"
+    }
+   },
+   "additionalProperties": false
+  },
+  "risk_level": "medium",
+  "timeouts": {
+   "connect_ms": 1000,
+   "read_ms": 3000,
+   "total_ms": 3000
+  },
+  "max_retries": 1,
+  "cost_usd": 0.0,
+  "audit": true,
+  "requires_approval": false,
+  "allowed_agents": [
+   "financial_agent"
+  ],
+  "blocked_agents": []
+ },
+ {
+  "name": "calculate_roi",
+  "description": "Return on investment over N years",
+  "input_schema": {
+   "type": "object",
+   "required": [
+    "investment",
+    "annual_benefit",
+    "years"
+   ],
+   "properties": {
+    "investment": {
+     "type": "number",
+     "exclusiveMinimum": 0
+    },
+    "annual_benefit": {
+     "type": "number"
+    },
+    "years": {
+     "type": "integer",
+     "minimum": 1
+    }
+   },
+   "additionalProperties": false
+  },
+  "risk_level": "medium",
+  "timeouts": {
+   "connect_ms": 1000,
+   "read_ms": 3000,
+   "total_ms": 3000
+  },
+  "max_retries": 1,
+  "cost_usd": 0.0,
+  "audit": true,
+  "requires_approval": false,
+  "allowed_agents": [
+   "financial_agent"
+  ],
+  "blocked_agents": []
+ },
+ {
+  "name": "derive_annual_benefit",
+  "description": "Annual benefit = baseline revenue x uplift x margin",
+  "input_schema": {
+   "type": "object",
+   "required": [
+    "baseline_revenue",
+    "uplift_pct",
+    "margin"
+   ],
+   "properties": {
+    "baseline_revenue": {
+     "type": "number",
+     "exclusiveMinimum": 0
+    },
+    "uplift_pct": {
+     "type": "number",
+     "exclusiveMinimum": 0,
+     "maximum": 0.5
+    },
+    "margin": {
+     "type": "number",
+     "exclusiveMinimum": 0,
+     "maximum": 1
+    }
+   },
+   "additionalProperties": false
+  },
+  "risk_level": "medium",
+  "timeouts": {
+   "connect_ms": 1000,
+   "read_ms": 3000,
+   "total_ms": 3000
+  },
+  "max_retries": 1,
+  "cost_usd": 0.0,
+  "audit": true,
+  "requires_approval": false,
+  "allowed_agents": [
+   "financial_agent"
+  ],
+  "blocked_agents": []
+ },
+ {
+  "name": "risk_lookup",
+  "description": "Risk taxonomy guidance and historical analogues",
+  "input_schema": {
+   "type": "object",
+   "properties": {
+    "query": {
+     "type": "string"
+    },
+    "category": {
+     "type": "string"
+    }
+   },
+   "additionalProperties": false
+  },
+  "risk_level": "low",
+  "timeouts": {
+   "connect_ms": 1000,
+   "read_ms": 3000,
+   "total_ms": 3000
+  },
+  "max_retries": 1,
+  "cost_usd": 0.0,
+  "audit": true,
+  "requires_approval": false,
+  "allowed_agents": [
+   "risk_agent"
+  ],
+  "blocked_agents": []
+ },
+ {
+  "name": "scenario_analysis",
+  "description": "ROI under conservative/base/optimistic scenarios",
+  "input_schema": {
+   "type": "object",
+   "required": [
+    "investment",
+    "annual_benefit",
+    "years"
+   ],
+   "properties": {
+    "investment": {
+     "type": "number"
+    },
+    "annual_benefit": {
+     "type": "number"
+    },
+    "years": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "scenarios": {
+     "type": "object"
+    }
+   },
+   "additionalProperties": false
+  },
+  "risk_level": "medium",
+  "timeouts": {
+   "connect_ms": 1000,
+   "read_ms": 3000,
+   "total_ms": 3000
+  },
+  "max_retries": 1,
+  "cost_usd": 0.0,
+  "audit": true,
+  "requires_approval": false,
+  "allowed_agents": [
+   "financial_agent"
+  ],
+  "blocked_agents": []
+ },
+ {
+  "name": "sensitivity_analysis",
+  "description": "ROI sensitivity to benefit changes",
+  "input_schema": {
+   "type": "object",
+   "required": [
+    "investment",
+    "annual_benefit",
+    "years"
+   ],
+   "properties": {
+    "investment": {
+     "type": "number"
+    },
+    "annual_benefit": {
+     "type": "number"
+    },
+    "years": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "deltas": {
+     "type": "array"
+    }
+   },
+   "additionalProperties": false
+  },
+  "risk_level": "medium",
+  "timeouts": {
+   "connect_ms": 1000,
+   "read_ms": 3000,
+   "total_ms": 3000
+  },
+  "max_retries": 1,
+  "cost_usd": 0.0,
+  "audit": true,
+  "requires_approval": false,
+  "allowed_agents": [
+   "financial_agent"
+  ],
+  "blocked_agents": []
+ }
+]
