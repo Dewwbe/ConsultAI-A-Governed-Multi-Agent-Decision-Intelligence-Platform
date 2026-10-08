@@ -1,4 +1,4 @@
-version: "2026.10.1"
+version: "2026.10.2"
 
 # Layer 1 — deterministic guardrails. Default is deny.
 agents:
@@ -13,7 +13,7 @@ agents:
     blocked_tools: [modify_source_data, send_client_email]
     allowed_tables: [finance.revenue, finance.costs, sales.customers, ops.kpis]
   financial_agent:
-    allowed_tools: [query_financial_data, calculate_roi, calculate_npv, calculate_payback, scenario_analysis, sensitivity_analysis]
+    allowed_tools: [query_financial_data, calculate_roi, calculate_npv, calculate_payback, scenario_analysis, sensitivity_analysis, calculate_margin, calculate_growth, derive_annual_benefit]
     requires_approval: [approve_budget, commit_financial_action]
   risk_agent:
     allowed_tools: [risk_lookup, search_knowledge_base]

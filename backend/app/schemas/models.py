@@ -34,6 +34,7 @@ class Evidence(TypedDict):
 class AnalysisResult(TypedDict):
     query: str
     rows: list[dict[str, Any]]
+    purpose: NotRequired[str]  # question | baseline_revenue | baseline_cost
 
 
 class SensitivityPoint(TypedDict):
@@ -44,6 +45,9 @@ class SensitivityPoint(TypedDict):
 class FinancialAssumptions(TypedDict):
     discount_rate: float
     benefit_flat: bool
+    baseline_year: NotRequired[str]
+    baseline_revenue: NotRequired[float]
+    baseline_margin: NotRequired[float]
 
 
 class FinancialModel(TypedDict):
@@ -52,6 +56,9 @@ class FinancialModel(TypedDict):
     investment: float
     annual_benefit: float
     years: int
+    launch_months: NotRequired[float]
+    uplift_pct: NotRequired[float]          # model's revenue-uplift estimate; benefit is derived from it
+    benefit_assumption: NotRequired[str]    # the model's justification for the uplift
     roi: float
     total_benefit: float
     net_gain: float
@@ -74,6 +81,8 @@ class Risk(TypedDict):
     risk_score: float
     evidence: list[str]
     requires_human_review: bool
+    calibration: NotRequired[str]        # set when the rating was clamped to taxonomy guidance
+    precedents: NotRequired[list[str]]   # ids of similar historical risks
 
 
 class Option(TypedDict):
@@ -86,6 +95,10 @@ class Option(TypedDict):
     risk_score: float
     risk: str
     within_budget: bool
+    launch_months: NotRequired[float]
+    within_timeline: NotRequired[bool]
+    within_constraints: NotRequired[bool]
+    constraint_violations: NotRequired[list[str]]
 
 
 class Recommendation(Option):

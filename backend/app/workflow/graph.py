@@ -8,7 +8,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
-from app.agents.base import BaseAgent, RuntimeContext
+from app.agents.base import BaseAgent, InsufficientData, RuntimeContext
 from app.agents.data_analyst import DataAnalystAgent
 from app.agents.discovery import DiscoveryAgent
 from app.agents.financial import FinancialAgent
@@ -44,7 +44,7 @@ def _agent_node(agent_cls: type[BaseAgent]):
             # Stop, explain, route to human review (never silently continue past a budget)
             ctx.log["failures"].append({"type": "budget_exceeded", "error": str(exc)})
             return _halt(f"{agent_cls.name}: {exc}")
-        except (SchemaEscalation, LLMUnavailable) as exc:
+        except (SchemaEscalation, LLMUnavailable, InsufficientData) as exc:
             # malformed output after repair+fallback, or provider down: escalate to a human
             return _halt(f"{agent_cls.name}: {exc}")
     node.__name__ = agent_cls.name

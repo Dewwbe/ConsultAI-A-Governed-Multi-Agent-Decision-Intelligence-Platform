@@ -51,3 +51,16 @@ def sensitivity_analysis(investment: float, annual_benefit: float, years: int,
     return [{"benefit_delta": d,
              "roi": calculate_roi(investment, annual_benefit * (1 + d), years)["roi"]}
             for d in deltas]
+
+
+def derive_annual_benefit(baseline_revenue: float, uplift_pct: float, margin: float) -> dict:
+    """Annual benefit = baseline revenue x revenue uplift x operating margin. The model chooses the
+    uplift; the baseline and margin come from warehouse data, so the dollar figure is auditable."""
+    if baseline_revenue <= 0:
+        raise ValueError("baseline_revenue must be positive")
+    if not 0 < uplift_pct <= 0.5:
+        raise ValueError("uplift_pct must be in (0, 0.5]")
+    if not 0 < margin <= 1:
+        raise ValueError("margin must be in (0, 1]: the baseline is not profitable")
+    return {"annual_benefit": baseline_revenue * uplift_pct * margin, "baseline_revenue": baseline_revenue,
+            "uplift_pct": uplift_pct, "margin": margin}

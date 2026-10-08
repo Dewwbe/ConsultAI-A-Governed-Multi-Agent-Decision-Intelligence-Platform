@@ -1,0 +1,13 @@
+{
+  "provider": "azure_openai",
+  "runs": 5,
+  "escalated_runs": 0,
+  "escalation_reasons": {},
+  "structured_calls": 30,
+  "invalid_schema_rate": 0.0,
+  "invalid_by_task": {},
+  "attempts_by_stage": {
+    "initial": 30
+  },
+  "avg_cost_usd": 0.4858
+}

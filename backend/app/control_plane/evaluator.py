@@ -5,9 +5,10 @@ the interface (EvaluationReport) stays stable.
 """
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, field
 from typing import Any
+
+from app.tools.constraints import parse_constraints, violations
 
 
 @dataclass
@@ -25,14 +26,6 @@ class EvaluationReport:
         return max(0.0, base - sum(self.penalties.values()))
 
 
-def _parse_budget(constraints: list[str]) -> float | None:
-    for c in constraints:
-        m = re.search(r"(\d+(?:\.\d+)?)\s*M", c)
-        if m and re.search(r"budget", c, re.IGNORECASE):
-            return float(m.group(1)) * 1_000_000
-    return None
-
-
 def evaluate(state: dict[str, Any]) -> EvaluationReport:
     issues: list[str] = []
     research = state.get("research_results", [])
@@ -43,14 +36,16 @@ def evaluate(state: dict[str, Any]) -> EvaluationReport:
     avg_conf = (sum(r.get("confidence", 0) for r in research) / len(research)) if research else 0.0
 
     options = state.get("options", [])
-    budget = _parse_budget(state.get("constraints", []))
-    if options and budget is not None:
-        ok = [o for o in options if o.get("cost_usd", 0) <= budget]
+    parsed = parse_constraints(state.get("constraints", []))
+    if parsed.unparsed:
+        issues.append("constraints not machine-checked: " + "; ".join(parsed.unparsed))
+    if options and (parsed.max_investment is not None or parsed.max_months is not None):
+        ok = [o for o in options if not violations(o, parsed)]
         constraint = len(ok) / len(options)
-        rec = state.get("recommendation", {})
-        if rec.get("cost_usd", 0) > budget:
+        bad = violations(state.get("recommendation", {}), parsed)
+        if bad:
             constraint = 0.0
-            issues.append("recommendation violates budget constraint")
+            issues.append("recommendation violates constraints: " + "; ".join(bad))
     else:
         constraint = 1.0 if options else 0.0
 

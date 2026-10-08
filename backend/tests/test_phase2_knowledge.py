@@ -136,7 +136,8 @@ def test_evidence_tables_and_replay_endpoints():
     rep = c.post(f"/engagements/{wid}/retrievals/{rid}/replay").json()
     assert rep["reproduced"] is True and rep["evidence"]
     tb = c.get(f"/engagements/{wid}/tables").json()
-    assert tb["datasets"] == ["finance.revenue"] and tb["queries"][0]["row_count"] == 4
+    assert tb["datasets"] == ["finance.revenue", "finance.costs"]
+    assert [q["row_count"] for q in tb["queries"]] == [4, 2, 2]  # question + two baseline queries
     assert "revenue" in tb["table_context"]["finance.revenue"]["columns"]
     assert c.get("/engagements/nope/evidence").status_code == 404
     assert c.get("/engagements/nope/tables").status_code == 404

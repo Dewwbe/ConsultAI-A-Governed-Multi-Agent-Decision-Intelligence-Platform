@@ -12,6 +12,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from collections import Counter
 from pathlib import Path
 
@@ -37,8 +38,11 @@ def main() -> int:
     initial, stages, escalated, cost = Counter(), Counter(), 0, 0.0
     first_try_invalid: Counter = Counter()
     reasons: Counter = Counter()
-    for _ in range(args.runs):
+    t0 = time.time()
+    for i in range(1, args.runs + 1):
         out = svc.start(**UAE)
+        print(f"run {i}/{args.runs}: {out['status']:18} cost ${out['budget']['cost_usd']:.4f} "
+              f"elapsed {time.time() - t0:.0f}s", file=sys.stderr, flush=True)
         cost += out["budget"]["cost_usd"]
         if out["status"] == "escalated":
             escalated += 1

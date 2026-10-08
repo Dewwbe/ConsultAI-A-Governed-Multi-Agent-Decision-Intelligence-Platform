@@ -7,6 +7,7 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
+from app.knowledge.risk_taxonomy import risk_lookup
 from app.tools import financial
 
 
@@ -86,4 +87,27 @@ def default_registry() -> ToolRegistry:
                         "years": {"type": "integer", "minimum": 1}, "deltas": {"type": "array"}},
          "additionalProperties": False},
         financial.sensitivity_analysis, risk_level="medium"))
+    r.register(ToolContract(
+        "calculate_margin", "Operating margin = (revenue - cost) / revenue",
+        {"type": "object", "required": ["revenue", "cost"],
+         "properties": {"revenue": _num(), "cost": _num()}, "additionalProperties": False},
+        financial.calculate_margin))
+    r.register(ToolContract(
+        "calculate_growth", "Period-on-period growth rate",
+        {"type": "object", "required": ["previous", "current"],
+         "properties": {"previous": _num(), "current": _num()}, "additionalProperties": False},
+        financial.calculate_growth))
+    r.register(ToolContract(
+        "derive_annual_benefit", "Annual benefit = baseline revenue x uplift x margin",
+        {"type": "object", "required": ["baseline_revenue", "uplift_pct", "margin"],
+         "properties": {"baseline_revenue": _num(exclusiveMinimum=0),
+                        "uplift_pct": _num(exclusiveMinimum=0, maximum=0.5),
+                        "margin": _num(exclusiveMinimum=0, maximum=1)},
+         "additionalProperties": False},
+        financial.derive_annual_benefit, risk_level="medium"))
+    r.register(ToolContract(
+        "risk_lookup", "Risk taxonomy guidance and historical analogues",
+        {"type": "object", "properties": {"query": {"type": "string"}, "category": {"type": "string"}},
+         "additionalProperties": False},
+        risk_lookup))
     return r

@@ -18,6 +18,10 @@ from app.schemas.state import EngagementState
 from app.schemas.views import view_for
 
 
+class InsufficientData(RuntimeError):
+    """An agent cannot produce trustworthy output because required inputs are missing."""
+
+
 @dataclass
 class RuntimeContext:
     workflow_id: str
