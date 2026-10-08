@@ -17,7 +17,10 @@ from app.agents.research import ResearchAgent
 from app.agents.risk import RiskAgent
 from app.agents.solution import SolutionAgent
 from app.control_plane.budget import BudgetExceeded
-from app.control_plane.evaluator import evaluate
+from app.control_plane.evaluator import EvaluationReport, evaluate
+from app.control_plane.guardian import GuardianDecision
+from app.control_plane.guardian_llm import llm_review, merge
+from app.control_plane.judge import judge_evaluate
 from app.control_plane.llm import LLMUnavailable, SchemaEscalation
 from app.schemas.state import ApprovalStatus, EngagementState
 
@@ -54,24 +57,51 @@ def _agent_node(agent_cls: type[BaseAgent]):
 def evaluate_node(state: EngagementState, config: RunnableConfig) -> dict[str, Any]:
     ctx = _ctx(config)
     with ctx.trace.span("evaluator", "evaluator"):
-        report = evaluate({**state, "guardian_decisions": ctx.log["guardian_decisions"],
-                           "tool_calls": ctx.budget.tool_calls})
+        base = evaluate({**state, "guardian_decisions": ctx.log["guardian_decisions"],
+                         "tool_calls": ctx.budget.tool_calls})
+        report = judge_evaluate(ctx.llm, dict(state), base, [s.__dict__ for s in ctx.trace.spans],
+                                ctx.log["failures"])
     return {"evaluation_scores": {**report.scores, "quality": report.quality},
             "failures": ctx.log["failures"] + [{"type": "eval_issue", "issue": i} for i in report.issues]}
 
 
 def guardian_node(state: EngagementState, config: RunnableConfig) -> dict[str, Any]:
+    """Layer 1 (deterministic) then layer 2 (LLM reviewer, stricter-only). A fixable defect sends
+    the recommendation back to the Solution Agent once before any human sees it."""
     ctx = _ctx(config)
-    from app.control_plane.evaluator import EvaluationReport
     scores = state["evaluation_scores"]
-    report = EvaluationReport(scores={k: v for k, v in scores.items() if k != "quality"})
+    issues = [f["issue"] for f in state.get("failures", []) if f.get("type") == "eval_issue"]
+    report = EvaluationReport(scores={k: v for k, v in scores.items() if k != "quality"}, issues=issues)
+    retries = state.get("retry_count", 0)
+    retries_left = ctx.guardian.max_retries() - retries
     with ctx.trace.span("guardian", "guardian"):
-        decision = ctx.guardian.review_recommendation(state, report)
+        defects = ctx.guardian.fixable_defects(state, report) if retries_left > 0 else []
+        if defects:
+            decision = GuardianDecision("RETRY", "medium", 0.5, defects, feedback="; ".join(defects)[:1000])
+        else:
+            base = ctx.guardian.review_recommendation(state, report)
+            review = llm_review(ctx.llm, dict(state), report, base)
+            decision = merge(base, review, retries_left) if review else base
     ctx.log["guardian_decisions"].append(decision.to_dict())
+    if decision.action == "RETRY":
+        return {"retry_count": retries + 1, "guardian_feedback": decision.feedback,
+                "guardian_route": "retry", "guardian_decisions": ctx.log["guardian_decisions"]}
+    update: dict[str, Any] = {"risk_level": decision.risk_level, "guardian_feedback": "",
+                              "guardian_decisions": ctx.log["guardian_decisions"]}
+    if decision.action == "BLOCK":
+        update.update(halted="guardian blocked the recommendation: " + "; ".join(decision.reasons)[:400],
+                      approval_required=True, approval_status=ApprovalStatus.PENDING.value,
+                      guardian_route="halt")
+        return update
+    if decision.action == "MODIFY" and decision.modifications.get("caveats"):
+        rec = state["recommendation"]
+        update["recommendation"] = {**rec, "assumptions": [
+            *rec.get("assumptions", []), *(f"Reviewer caveat: {c}" for c in decision.modifications["caveats"])]}
     needs = decision.action == "ESCALATE" or state.get("approval_required", False)
-    return {"risk_level": decision.risk_level, "approval_required": needs,
-            "approval_status": ApprovalStatus.PENDING.value if needs else ApprovalStatus.NOT_REQUIRED.value,
-            "guardian_decisions": ctx.log["guardian_decisions"]}
+    update.update(approval_required=needs, guardian_route="approval" if needs else "report",
+                  approval_status=(ApprovalStatus.PENDING.value if needs
+                                   else ApprovalStatus.NOT_REQUIRED.value))
+    return update
 
 
 def approval_node(state: EngagementState, config: RunnableConfig) -> dict[str, Any]:
@@ -106,14 +136,16 @@ def _after_solution(state: EngagementState) -> str:
 
 
 def _after_guardian(state: EngagementState) -> str:
-    return "approval" if state.get("approval_required") else "report"
+    if state.get("halted"):
+        return END
+    return state.get("guardian_route") or ("approval" if state.get("approval_required") else "report")
 
 
 def _after_approval(state: EngagementState) -> str:
     return END if state["approval_status"] == ApprovalStatus.REJECTED.value else "report"
 
 
-def build_graph():
+def build_graph(checkpointer: Any = None):
     g = StateGraph(EngagementState)
     g.add_node("discovery", _agent_node(DiscoveryAgent))
     g.add_node("research", _agent_node(ResearchAgent))
@@ -134,7 +166,8 @@ def build_graph():
     g.add_edge("risk", "solution")
     g.add_conditional_edges("solution", _after_solution, {END: END, "evaluate": "evaluate"})
     g.add_edge("evaluate", "guardian")
-    g.add_conditional_edges("guardian", _after_guardian, {"approval": "approval", "report": "report"})
+    g.add_conditional_edges("guardian", _after_guardian, {"approval": "approval", "report": "report",
+                                                          "retry": "solution", END: END})
     g.add_conditional_edges("approval", _after_approval, {"report": "report", END: END})
     g.add_edge("report", END)
-    return g.compile(checkpointer=MemorySaver())
+    return g.compile(checkpointer=checkpointer or MemorySaver())

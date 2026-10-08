@@ -79,7 +79,8 @@ class SolutionAgent(BaseAgent):
                        "constraints": spec.get("constraints", []), "recommended": best,
                        "options": [{k: o[k] for k in ("id", "name", "cost_usd", "roi", "risk",
                                                       "constraint_violations")} for o in options],
-                       "risks": sorted(view.get("risks", []), key=lambda r: -r["risk_score"])[:3]},
+                       "risks": sorted(view.get("risks", []), key=lambda r: -r["risk_score"])[:3],
+                       "feedback": view.get("guardian_feedback", "")},
             context={"stub_output": {
                 "rationale": (f"Option {best['id']} ({best['name']}) offers the best risk-adjusted "
                               f"return within the stated constraints."),

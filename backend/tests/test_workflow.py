@@ -2,8 +2,11 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.security.auth import Principal
 from app.workflow.service import EngagementService
 
+PARTNER = Principal("u_partner", "Pat Partner", ("Partner",))
+PARTNER_H = {"X-Dev-User": "pat", "X-Dev-Roles": "Partner"}
 REQ = {"business_problem": "Should we expand into the UAE market?", "industry": "Retail",
        "objectives": ["Increase revenue"],
        "constraints": ["Budget under $10M", "Launch within 18 months"]}
@@ -26,7 +29,7 @@ def test_full_run_pauses_for_human_approval(svc):
 
 def test_approve_completes_with_report(svc):
     wid = svc.start(**REQ)["workflow_id"]
-    out = svc.approve(wid, "approve", reason="looks right")
+    out = svc.approve(wid, "approve", reason="looks right", approver=PARTNER)
     assert out["status"] == "completed"
     assert "Engagement Report" in out["state"]["report"]["markdown"]
     assert out["state"]["approval_status"] == "approved"
@@ -34,7 +37,8 @@ def test_approve_completes_with_report(svc):
 
 def test_modify_applies_changes(svc):
     wid = svc.start(**REQ)["workflow_id"]
-    out = svc.approve(wid, "modify", changes={"rationale": "conservative assumptions"})
+    out = svc.approve(wid, "modify", changes={"rationale": "conservative assumptions"},
+                      reason="be conservative", approver=PARTNER)
     assert out["state"]["recommendation"]["rationale"] == "conservative assumptions"
     assert out["state"]["approval_status"] == "modified"
     assert len(svc.memory.recall("human_feedback")) == 1
@@ -42,7 +46,7 @@ def test_modify_applies_changes(svc):
 
 def test_reject_ends_without_report(svc):
     wid = svc.start(**REQ)["workflow_id"]
-    out = svc.approve(wid, "reject", reason="assumptions too optimistic")
+    out = svc.approve(wid, "reject", reason="assumptions too optimistic", approver=PARTNER)
     assert out["status"] == "rejected"
     assert "report" not in out["state"]
 
@@ -79,7 +83,7 @@ def test_api_roundtrip():
     wid = r.json()["workflow_id"]
     assert client.get(f"/engagements/{wid}").json()["status"] == "awaiting_approval"
     assert client.get(f"/control-center/{wid}/trace").json()["span_count"] > 5
-    assert client.post(f"/engagements/{wid}/approval", json={"decision": "approve"}).json()["status"] == "completed"
+    assert client.post(f"/engagements/{wid}/approval", json={"decision": "approve"}, headers=PARTNER_H).json()["status"] == "completed"
     # approving twice is a conflict
-    assert client.post(f"/engagements/{wid}/approval", json={"decision": "approve"}).status_code == 409
+    assert client.post(f"/engagements/{wid}/approval", json={"decision": "approve"}, headers=PARTNER_H).status_code == 409
     assert client.get("/engagements/nope").status_code == 404

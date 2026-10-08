@@ -5,7 +5,7 @@ decision *stricter*, never looser.
 """
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any
 
 from .evaluator import EvaluationReport
@@ -19,6 +19,9 @@ class GuardianDecision:
     risk_score: float
     reasons: list[str]
     subject: str = "workflow"
+    source: str = "deterministic"  # deterministic | llm_reviewer | combined
+    modifications: dict[str, Any] = field(default_factory=dict)  # MODIFY: {"caveats": [...]}
+    feedback: str = ""            # RETRY: what the Solution Agent must fix
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -41,6 +44,22 @@ class Guardian:
             if fin.decision is Decision.ESCALATE:
                 return GuardianDecision("ESCALATE", "high", 0.9, [fin.reason], subject=f"{agent}.{tool}")
         return GuardianDecision("ALLOW", "low", 0.1, [res.reason], subject=f"{agent}.{tool}")
+
+    def fixable_defects(self, state: dict[str, Any], report: EvaluationReport) -> list[str]:
+        """Defects the Solution Agent can repair by re-running (a rationale that contradicts the
+        figures, an answer that drifts from the question). Upstream problems such as weak
+        evidence are not retryable here and go to a human instead."""
+        t = self.policy.thresholds
+        defects = []
+        if report.scores.get("contradiction_free", 1.0) < t.get("min_contradiction_free", 0.75):
+            defects += [i for i in report.issues if i.startswith("contradiction")] or ["contradictions found"]
+        if report.scores.get("judge_coverage", 1.0) >= 1.0 and report.scores.get(
+                "task_adherence", 1.0) < t.get("min_task_adherence", 0.7):
+            defects.append("recommendation does not adequately answer the decision question within constraints")
+        return defects
+
+    def max_retries(self) -> int:
+        return int(self.policy.thresholds.get("max_guardian_retries", 1))
 
     def review_recommendation(self, state: dict[str, Any], report: EvaluationReport) -> GuardianDecision:
         t = self.policy.thresholds
@@ -66,6 +85,13 @@ class Guardian:
             score = max(score, 0.85)
         if report.scores["constraint_satisfaction"] < t.get("min_constraint_satisfaction", 0.9):
             reasons.append("constraint satisfaction below minimum")
+            score = max(score, 0.85)
+
+        if report.scores.get("judge_coverage", 1.0) < 1.0:
+            reasons.append("LLM judge unavailable: evaluation relies on deterministic checks only")
+            score = max(score, 0.85)
+        if report.scores.get("contradiction_free", 1.0) < t.get("min_contradiction_free", 0.75):
+            reasons.append("unresolved contradictions in the recommendation")
             score = max(score, 0.85)
 
         score = min(score, 1.0)

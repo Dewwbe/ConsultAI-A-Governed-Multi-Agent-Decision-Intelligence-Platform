@@ -66,6 +66,8 @@ class EngagementState(TypedDict, total=False):
     approval_status: str
     approval_feedback: m.ApprovalFeedback
     guardian_decisions: list[m.GuardianDecision]
+    guardian_feedback: str   # reviewer feedback for the Solution Agent when a retry is requested
+    guardian_route: str      # retry | approval | report | halt (set by the guardian node)
     # Reliability
     retry_count: int
     failures: list[dict[str, Any]]

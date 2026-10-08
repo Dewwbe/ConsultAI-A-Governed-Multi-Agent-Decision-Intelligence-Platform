@@ -4,8 +4,22 @@ services:
       context: .
       dockerfile: infra/docker/Dockerfile.backend
     env_file: .env
+    environment:
+      DATABASE_URL: postgresql://consultai:consultai@postgres:5432/consultai
     ports: ["8000:8000"]
-    depends_on: [postgres]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    environment:
+      API_ORIGIN: http://localhost:8000
+    ports: ["8080:80"]
+    depends_on: [api]
 
   postgres:
     image: postgres:16
@@ -15,6 +29,10 @@ services:
       POSTGRES_DB: consultai
     ports: ["5432:5432"]
     volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U consultai"]
+      interval: 3s
+      retries: 20
 
   # Phase 5: uncomment to run MLflow and an OTLP collector locally
   # mlflow:

@@ -1,0 +1,2357 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "ConsultAI",
+  "version": "0.3.0"
+ },
+ "paths": {
+  "/me": {
+   "get": {
+    "summary": "Me",
+    "operationId": "getMe",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Me"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     }
+    }
+   }
+  },
+  "/engagements": {
+   "post": {
+    "summary": "Create Engagement",
+    "description": "wait=false returns immediately with status `running`; follow progress via /events.",
+    "operationId": "createEngagement",
+    "parameters": [
+     {
+      "name": "wait",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": true,
+       "title": "Wait"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EngagementRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EngagementDetail"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "summary": "List Engagements",
+    "operationId": "listEngagements",
+    "parameters": [
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "enum": [
+          "running",
+          "awaiting_approval",
+          "completed",
+          "rejected",
+          "escalated",
+          "failed"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 200,
+       "minimum": 1,
+       "default": 50,
+       "title": "Limit"
+      }
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "default": 0,
+       "title": "Offset"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EngagementList"
+        }
+       }
+      }
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/engagements/{workflow_id}": {
+   "get": {
+    "summary": "Get Engagement",
+    "operationId": "getEngagement",
+    "parameters": [
+     {
+      "name": "workflow_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Workflow Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EngagementDetail"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "engagement not found"
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/engagements/{workflow_id}/approval": {
+   "post": {
+    "summary": "Approve",
+    "operationId": "submitApproval",
+    "parameters": [
+     {
+      "name": "workflow_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Workflow Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ApprovalRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EngagementDetail"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "engagement not found"
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "403": {
+      "description": "caller lacks the approver role"
+     },
+     "409": {
+      "description": "engagement is not awaiting approval"
+     },
+     "422": {
+      "description": "invalid decision, reason or changes"
+     }
+    }
+   }
+  },
+  "/engagements/{workflow_id}/approvals": {
+   "get": {
+    "summary": "Approvals",
+    "operationId": "listApprovals",
+    "parameters": [
+     {
+      "name": "workflow_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Workflow Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ApprovalRecord"
+         },
+         "title": "Response Listapprovals"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "engagement not found"
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/engagements/{workflow_id}/guardian": {
+   "get": {
+    "summary": "Guardian Log",
+    "operationId": "getGuardianLog",
+    "parameters": [
+     {
+      "name": "workflow_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Workflow Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/GuardianDecision"
+         },
+         "title": "Response Getguardianlog"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "engagement not found"
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/engagements/{workflow_id}/events": {
+   "get": {
+    "summary": "Stream Events",
+    "description": "Live progress as Server-Sent Events: run_started, step_started/step_finished (agent,\nevaluator, guardian), then one of approval_requested | run_completed | run_escalated |\nrun_failed, after which the stream closes. Resume with `?after=<id>` or Last-Event-ID, e.g.\nto pick up approval_decided and the final events after submitting an approval.",
+    "operationId": "streamEvents",
+    "parameters": [
+     {
+      "name": "workflow_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Workflow Id"
+      }
+     },
+     {
+      "name": "after",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "default": 0,
+       "title": "After"
+      }
+     },
+     {
+      "name": "Last-Event-ID",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Last-Event-Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Server-Sent Events",
+      "content": {
+       "application/json": {
+        "schema": {}
+       },
+       "text/event-stream": {}
+      }
+     },
+     "404": {
+      "description": "engagement not found"
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/engagements/{workflow_id}/evidence": {
+   "get": {
+    "summary": "Evidence",
+    "operationId": "getEvidence",
+    "parameters": [
+     {
+      "name": "workflow_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Workflow Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EvidenceOut"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "engagement not found"
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/engagements/{workflow_id}/tables": {
+   "get": {
+    "summary": "Tables",
+    "operationId": "getTables",
+    "parameters": [
+     {
+      "name": "workflow_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Workflow Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TablesOut"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "engagement not found"
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/engagements/{workflow_id}/retrievals/{retrieval_id}/replay": {
+   "post": {
+    "summary": "Replay Retrieval",
+    "operationId": "replayRetrieval",
+    "parameters": [
+     {
+      "name": "workflow_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Workflow Id"
+      }
+     },
+     {
+      "name": "retrieval_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Retrieval Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ReplayOut"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "engagement or retrieval not found"
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/control-center/{workflow_id}/trace": {
+   "get": {
+    "summary": "Trace",
+    "operationId": "getTrace",
+    "parameters": [
+     {
+      "name": "workflow_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Workflow Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TraceOut"
+        }
+       }
+      }
+     },
+     "404": {
+      "description": "engagement not found"
+     },
+     "401": {
+      "description": "missing or invalid credentials"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/health": {
+   "get": {
+    "summary": "Health",
+    "operationId": "getHealth",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Health"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "AnalysisResult": {
+    "properties": {
+     "query": {
+      "type": "string",
+      "title": "Query"
+     },
+     "rows": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "type": "array",
+      "title": "Rows"
+     },
+     "purpose": {
+      "type": "string",
+      "title": "Purpose"
+     }
+    },
+    "type": "object",
+    "required": [
+     "query",
+     "rows"
+    ],
+    "title": "AnalysisResult"
+   },
+   "ApprovalFeedback": {
+    "properties": {
+     "decision": {
+      "type": "string",
+      "title": "Decision"
+     },
+     "changes": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Changes"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "decision",
+     "changes",
+     "reason"
+    ],
+    "title": "ApprovalFeedback"
+   },
+   "ApprovalRecord": {
+    "properties": {
+     "decided_at": {
+      "type": "string",
+      "title": "Decided At"
+     },
+     "approver_id": {
+      "type": "string",
+      "title": "Approver Id"
+     },
+     "approver_name": {
+      "type": "string",
+      "title": "Approver Name"
+     },
+     "approver_roles": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Approver Roles"
+     },
+     "decision": {
+      "type": "string",
+      "enum": [
+       "approve",
+       "modify",
+       "reject"
+      ],
+      "title": "Decision"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     },
+     "changes": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Changes"
+     },
+     "resulting_status": {
+      "type": "string",
+      "title": "Resulting Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "decided_at",
+     "approver_id",
+     "approver_name",
+     "approver_roles",
+     "decision",
+     "reason",
+     "changes",
+     "resulting_status"
+    ],
+    "title": "ApprovalRecord"
+   },
+   "ApprovalRequest": {
+    "properties": {
+     "decision": {
+      "type": "string",
+      "enum": [
+       "approve",
+       "modify",
+       "reject"
+      ],
+      "title": "Decision"
+     },
+     "changes": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Changes",
+      "description": "modify only: rationale, assumptions"
+     },
+     "reason": {
+      "type": "string",
+      "maxLength": 4000,
+      "title": "Reason",
+      "description": "required for modify and reject",
+      "default": ""
+     }
+    },
+    "type": "object",
+    "required": [
+     "decision"
+    ],
+    "title": "ApprovalRequest"
+   },
+   "BudgetUsage": {
+    "properties": {
+     "tokens": {
+      "type": "integer",
+      "title": "Tokens"
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd"
+     },
+     "tool_calls": {
+      "type": "integer",
+      "title": "Tool Calls"
+     }
+    },
+    "type": "object",
+    "required": [
+     "tokens",
+     "cost_usd",
+     "tool_calls"
+    ],
+    "title": "BudgetUsage"
+   },
+   "EngagementDetail": {
+    "properties": {
+     "workflow_id": {
+      "type": "string",
+      "title": "Workflow Id"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "running",
+       "awaiting_approval",
+       "completed",
+       "rejected",
+       "escalated",
+       "failed"
+      ],
+      "title": "Status"
+     },
+     "pending_node": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Pending Node"
+     },
+     "halted_reason": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Halted Reason"
+     },
+     "error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Error"
+     },
+     "state": {
+      "$ref": "#/components/schemas/EngagementState"
+     },
+     "guardian_decisions": {
+      "items": {
+       "$ref": "#/components/schemas/GuardianDecision"
+      },
+      "type": "array",
+      "title": "Guardian Decisions"
+     },
+     "metrics": {
+      "additionalProperties": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "type": "object",
+      "title": "Metrics"
+     },
+     "budget": {
+      "$ref": "#/components/schemas/BudgetUsage"
+     }
+    },
+    "type": "object",
+    "required": [
+     "workflow_id",
+     "status",
+     "pending_node",
+     "state",
+     "guardian_decisions",
+     "metrics",
+     "budget"
+    ],
+    "title": "EngagementDetail"
+   },
+   "EngagementList": {
+    "properties": {
+     "items": {
+      "items": {
+       "$ref": "#/components/schemas/EngagementSummary"
+      },
+      "type": "array",
+      "title": "Items"
+     },
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "limit": {
+      "type": "integer",
+      "title": "Limit"
+     },
+     "offset": {
+      "type": "integer",
+      "title": "Offset"
+     }
+    },
+    "type": "object",
+    "required": [
+     "items",
+     "total",
+     "limit",
+     "offset"
+    ],
+    "title": "EngagementList"
+   },
+   "EngagementRequest": {
+    "properties": {
+     "business_problem": {
+      "type": "string",
+      "maxLength": 4000,
+      "minLength": 5,
+      "title": "Business Problem"
+     },
+     "industry": {
+      "type": "string",
+      "maxLength": 200,
+      "title": "Industry",
+      "default": ""
+     },
+     "objectives": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "maxItems": 20,
+      "title": "Objectives"
+     },
+     "constraints": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "maxItems": 20,
+      "title": "Constraints"
+     },
+     "data_classification": {
+      "type": "string",
+      "enum": [
+       "confidential",
+       "internal",
+       "public"
+      ],
+      "title": "Data Classification",
+      "default": "confidential"
+     }
+    },
+    "type": "object",
+    "required": [
+     "business_problem"
+    ],
+    "title": "EngagementRequest"
+   },
+   "EngagementSpec": {
+    "properties": {
+     "business_objective": {
+      "type": "string",
+      "title": "Business Objective"
+     },
+     "decision_question": {
+      "type": "string",
+      "title": "Decision Question"
+     },
+     "success_metrics": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Success Metrics"
+     },
+     "constraints": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Constraints"
+     },
+     "required_analysis": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Required Analysis"
+     },
+     "required_data": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Required Data"
+     },
+     "required_agents": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Required Agents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "business_objective",
+     "decision_question",
+     "success_metrics",
+     "constraints",
+     "required_analysis",
+     "required_data",
+     "required_agents"
+    ],
+    "title": "EngagementSpec"
+   },
+   "EngagementState": {
+    "properties": {
+     "conversation_id": {
+      "type": "string",
+      "title": "Conversation Id"
+     },
+     "workflow_id": {
+      "type": "string",
+      "title": "Workflow Id"
+     },
+     "engagement_id": {
+      "type": "string",
+      "title": "Engagement Id"
+     },
+     "user_id": {
+      "type": "string",
+      "title": "User Id"
+     },
+     "preferences": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Preferences"
+     },
+     "data_classification": {
+      "type": "string",
+      "title": "Data Classification"
+     },
+     "business_problem": {
+      "type": "string",
+      "title": "Business Problem"
+     },
+     "industry": {
+      "type": "string",
+      "title": "Industry"
+     },
+     "objectives": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Objectives"
+     },
+     "constraints": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Constraints"
+     },
+     "engagement_spec": {
+      "$ref": "#/components/schemas/EngagementSpec"
+     },
+     "questions": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Questions"
+     },
+     "required_data": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Required Data"
+     },
+     "research_results": {
+      "items": {
+       "$ref": "#/components/schemas/Evidence"
+      },
+      "type": "array",
+      "title": "Research Results"
+     },
+     "citations": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Citations"
+     },
+     "datasets": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Datasets"
+     },
+     "table_context": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/TableColumns"
+      },
+      "type": "object",
+      "title": "Table Context"
+     },
+     "analysis_results": {
+      "items": {
+       "$ref": "#/components/schemas/AnalysisResult"
+      },
+      "type": "array",
+      "title": "Analysis Results"
+     },
+     "financial_models": {
+      "items": {
+       "$ref": "#/components/schemas/FinancialModel"
+      },
+      "type": "array",
+      "title": "Financial Models"
+     },
+     "risks": {
+      "items": {
+       "$ref": "#/components/schemas/Risk"
+      },
+      "type": "array",
+      "title": "Risks"
+     },
+     "options": {
+      "items": {
+       "$ref": "#/components/schemas/Option"
+      },
+      "type": "array",
+      "title": "Options"
+     },
+     "recommendation": {
+      "$ref": "#/components/schemas/Recommendation"
+     },
+     "evaluation_scores": {
+      "additionalProperties": {
+       "type": "number"
+      },
+      "type": "object",
+      "title": "Evaluation Scores"
+     },
+     "risk_level": {
+      "type": "string",
+      "title": "Risk Level"
+     },
+     "approval_required": {
+      "type": "boolean",
+      "title": "Approval Required"
+     },
+     "approval_status": {
+      "type": "string",
+      "title": "Approval Status"
+     },
+     "approval_feedback": {
+      "$ref": "#/components/schemas/ApprovalFeedback"
+     },
+     "guardian_decisions": {
+      "items": {
+       "$ref": "#/components/schemas/GuardianDecision"
+      },
+      "type": "array",
+      "title": "Guardian Decisions"
+     },
+     "guardian_feedback": {
+      "type": "string",
+      "title": "Guardian Feedback"
+     },
+     "guardian_route": {
+      "type": "string",
+      "title": "Guardian Route"
+     },
+     "retry_count": {
+      "type": "integer",
+      "title": "Retry Count"
+     },
+     "failures": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "type": "array",
+      "title": "Failures"
+     },
+     "token_usage": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "type": "object",
+      "title": "Token Usage"
+     },
+     "cost": {
+      "type": "number",
+      "title": "Cost"
+     },
+     "tool_calls": {
+      "type": "integer",
+      "title": "Tool Calls"
+     },
+     "halted": {
+      "type": "string",
+      "title": "Halted"
+     },
+     "current_step": {
+      "type": "string",
+      "title": "Current Step"
+     },
+     "deadline": {
+      "type": "string",
+      "title": "Deadline"
+     },
+     "report": {
+      "$ref": "#/components/schemas/Report"
+     }
+    },
+    "type": "object",
+    "title": "EngagementState"
+   },
+   "EngagementSummary": {
+    "properties": {
+     "workflow_id": {
+      "type": "string",
+      "title": "Workflow Id"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "running",
+       "awaiting_approval",
+       "completed",
+       "rejected",
+       "escalated",
+       "failed"
+      ],
+      "title": "Status"
+     },
+     "business_problem": {
+      "type": "string",
+      "title": "Business Problem"
+     },
+     "industry": {
+      "type": "string",
+      "title": "Industry"
+     },
+     "created_at": {
+      "type": "string",
+      "title": "Created At"
+     },
+     "risk_level": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Risk Level"
+     },
+     "recommendation": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Recommendation"
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd"
+     }
+    },
+    "type": "object",
+    "required": [
+     "workflow_id",
+     "status",
+     "business_problem",
+     "industry",
+     "created_at",
+     "cost_usd"
+    ],
+    "title": "EngagementSummary"
+   },
+   "Evidence": {
+    "properties": {
+     "claim": {
+      "type": "string",
+      "title": "Claim"
+     },
+     "source": {
+      "type": "string",
+      "title": "Source"
+     },
+     "publication_date": {
+      "type": "string",
+      "title": "Publication Date"
+     },
+     "retrieved_at": {
+      "type": "string",
+      "title": "Retrieved At"
+     },
+     "evidence": {
+      "type": "string",
+      "title": "Evidence"
+     },
+     "confidence": {
+      "type": "number",
+      "title": "Confidence"
+     },
+     "relevance": {
+      "type": "number",
+      "title": "Relevance"
+     },
+     "doc_id": {
+      "type": "string",
+      "title": "Doc Id"
+     },
+     "chunk_id": {
+      "type": "string",
+      "title": "Chunk Id"
+     },
+     "quote": {
+      "type": "string",
+      "title": "Quote"
+     },
+     "verified": {
+      "type": "boolean",
+      "title": "Verified"
+     }
+    },
+    "type": "object",
+    "required": [
+     "claim",
+     "source",
+     "publication_date",
+     "retrieved_at",
+     "evidence",
+     "confidence",
+     "relevance"
+    ],
+    "title": "Evidence"
+   },
+   "EvidenceOut": {
+    "properties": {
+     "workflow_id": {
+      "type": "string",
+      "title": "Workflow Id"
+     },
+     "claims": {
+      "items": {
+       "$ref": "#/components/schemas/Evidence"
+      },
+      "type": "array",
+      "title": "Claims"
+     },
+     "sources": {
+      "items": {
+       "$ref": "#/components/schemas/SourceSummary"
+      },
+      "type": "array",
+      "title": "Sources"
+     },
+     "retrievals": {
+      "items": {
+       "$ref": "#/components/schemas/RetrievalRecordOut"
+      },
+      "type": "array",
+      "title": "Retrievals"
+     },
+     "rejected_claims": {
+      "items": {
+       "$ref": "#/components/schemas/RejectedClaim"
+      },
+      "type": "array",
+      "title": "Rejected Claims"
+     }
+    },
+    "type": "object",
+    "required": [
+     "workflow_id",
+     "claims",
+     "sources",
+     "retrievals",
+     "rejected_claims"
+    ],
+    "title": "EvidenceOut"
+   },
+   "FinancialAssumptions": {
+    "properties": {
+     "discount_rate": {
+      "type": "number",
+      "title": "Discount Rate"
+     },
+     "benefit_flat": {
+      "type": "boolean",
+      "title": "Benefit Flat"
+     },
+     "baseline_year": {
+      "type": "string",
+      "title": "Baseline Year"
+     },
+     "baseline_revenue": {
+      "type": "number",
+      "title": "Baseline Revenue"
+     },
+     "baseline_margin": {
+      "type": "number",
+      "title": "Baseline Margin"
+     }
+    },
+    "type": "object",
+    "required": [
+     "discount_rate",
+     "benefit_flat"
+    ],
+    "title": "FinancialAssumptions"
+   },
+   "FinancialModel": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "label": {
+      "type": "string",
+      "title": "Label"
+     },
+     "investment": {
+      "type": "number",
+      "title": "Investment"
+     },
+     "annual_benefit": {
+      "type": "number",
+      "title": "Annual Benefit"
+     },
+     "years": {
+      "type": "integer",
+      "title": "Years"
+     },
+     "launch_months": {
+      "type": "number",
+      "title": "Launch Months"
+     },
+     "uplift_pct": {
+      "type": "number",
+      "title": "Uplift Pct"
+     },
+     "benefit_assumption": {
+      "type": "string",
+      "title": "Benefit Assumption"
+     },
+     "roi": {
+      "type": "number",
+      "title": "Roi"
+     },
+     "total_benefit": {
+      "type": "number",
+      "title": "Total Benefit"
+     },
+     "net_gain": {
+      "type": "number",
+      "title": "Net Gain"
+     },
+     "payback_years": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Payback Years"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     },
+     "npv": {
+      "type": "number",
+      "title": "Npv"
+     },
+     "rate": {
+      "type": "number",
+      "title": "Rate"
+     },
+     "periods": {
+      "type": "integer",
+      "title": "Periods"
+     },
+     "scenarios": {
+      "additionalProperties": {
+       "type": "number"
+      },
+      "type": "object",
+      "title": "Scenarios"
+     },
+     "sensitivity": {
+      "items": {
+       "$ref": "#/components/schemas/SensitivityPoint"
+      },
+      "type": "array",
+      "title": "Sensitivity"
+     },
+     "assumptions": {
+      "$ref": "#/components/schemas/FinancialAssumptions"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "label",
+     "investment",
+     "annual_benefit",
+     "years",
+     "roi",
+     "total_benefit",
+     "net_gain",
+     "payback_years",
+     "npv",
+     "rate",
+     "periods",
+     "scenarios",
+     "sensitivity",
+     "assumptions"
+    ],
+    "title": "FinancialModel"
+   },
+   "GuardianDecision": {
+    "properties": {
+     "action": {
+      "type": "string",
+      "title": "Action"
+     },
+     "risk_level": {
+      "type": "string",
+      "title": "Risk Level"
+     },
+     "risk_score": {
+      "type": "number",
+      "title": "Risk Score"
+     },
+     "reasons": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Reasons"
+     },
+     "subject": {
+      "type": "string",
+      "title": "Subject"
+     },
+     "source": {
+      "type": "string",
+      "title": "Source"
+     },
+     "modifications": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Modifications"
+     },
+     "feedback": {
+      "type": "string",
+      "title": "Feedback"
+     }
+    },
+    "type": "object",
+    "required": [
+     "action",
+     "risk_level",
+     "risk_score",
+     "reasons",
+     "subject"
+    ],
+    "title": "GuardianDecision"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "Health": {
+    "properties": {
+     "status": {
+      "type": "string",
+      "const": "ok",
+      "title": "Status"
+     },
+     "llm_provider": {
+      "type": "string",
+      "title": "Llm Provider"
+     }
+    },
+    "type": "object",
+    "required": [
+     "status",
+     "llm_provider"
+    ],
+    "title": "Health"
+   },
+   "Me": {
+    "properties": {
+     "user_id": {
+      "type": "string",
+      "title": "User Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "roles": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Roles"
+     },
+     "can_approve": {
+      "type": "boolean",
+      "title": "Can Approve"
+     }
+    },
+    "type": "object",
+    "required": [
+     "user_id",
+     "name",
+     "roles",
+     "can_approve"
+    ],
+    "title": "Me"
+   },
+   "Option": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd"
+     },
+     "roi": {
+      "type": "number",
+      "title": "Roi"
+     },
+     "npv": {
+      "type": "number",
+      "title": "Npv"
+     },
+     "payback_years": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Payback Years"
+     },
+     "risk_score": {
+      "type": "number",
+      "title": "Risk Score"
+     },
+     "risk": {
+      "type": "string",
+      "title": "Risk"
+     },
+     "within_budget": {
+      "type": "boolean",
+      "title": "Within Budget"
+     },
+     "launch_months": {
+      "type": "number",
+      "title": "Launch Months"
+     },
+     "within_timeline": {
+      "type": "boolean",
+      "title": "Within Timeline"
+     },
+     "within_constraints": {
+      "type": "boolean",
+      "title": "Within Constraints"
+     },
+     "constraint_violations": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Constraint Violations"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "cost_usd",
+     "roi",
+     "npv",
+     "payback_years",
+     "risk_score",
+     "risk",
+     "within_budget"
+    ],
+    "title": "Option"
+   },
+   "QueryRun": {
+    "properties": {
+     "query": {
+      "type": "string",
+      "title": "Query"
+     },
+     "row_count": {
+      "type": "integer",
+      "title": "Row Count"
+     }
+    },
+    "type": "object",
+    "required": [
+     "query",
+     "row_count"
+    ],
+    "title": "QueryRun"
+   },
+   "Recommendation": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd"
+     },
+     "roi": {
+      "type": "number",
+      "title": "Roi"
+     },
+     "npv": {
+      "type": "number",
+      "title": "Npv"
+     },
+     "payback_years": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Payback Years"
+     },
+     "risk_score": {
+      "type": "number",
+      "title": "Risk Score"
+     },
+     "risk": {
+      "type": "string",
+      "title": "Risk"
+     },
+     "within_budget": {
+      "type": "boolean",
+      "title": "Within Budget"
+     },
+     "launch_months": {
+      "type": "number",
+      "title": "Launch Months"
+     },
+     "within_timeline": {
+      "type": "boolean",
+      "title": "Within Timeline"
+     },
+     "within_constraints": {
+      "type": "boolean",
+      "title": "Within Constraints"
+     },
+     "constraint_violations": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Constraint Violations"
+     },
+     "rationale": {
+      "type": "string",
+      "title": "Rationale"
+     },
+     "alternatives_considered": {
+      "type": "integer",
+      "title": "Alternatives Considered"
+     },
+     "assumptions": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Assumptions"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "cost_usd",
+     "roi",
+     "npv",
+     "payback_years",
+     "risk_score",
+     "risk",
+     "within_budget",
+     "rationale",
+     "alternatives_considered",
+     "assumptions"
+    ],
+    "title": "Recommendation"
+   },
+   "RejectedClaim": {
+    "properties": {
+     "reason": {
+      "type": "string",
+      "enum": [
+       "unsupported_claim",
+       "unverified_citation"
+      ],
+      "title": "Reason"
+     },
+     "doc_ref": {
+      "type": "string",
+      "title": "Doc Ref"
+     },
+     "chunk_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Chunk Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "reason",
+     "doc_ref"
+    ],
+    "title": "RejectedClaim"
+   },
+   "ReplayOut": {
+    "properties": {
+     "retrieval_id": {
+      "type": "string",
+      "title": "Retrieval Id"
+     },
+     "reproduced": {
+      "type": "boolean",
+      "title": "Reproduced"
+     },
+     "error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Error"
+     },
+     "evidence": {
+      "items": {
+       "$ref": "#/components/schemas/Evidence"
+      },
+      "type": "array",
+      "title": "Evidence"
+     }
+    },
+    "type": "object",
+    "required": [
+     "retrieval_id",
+     "reproduced",
+     "evidence"
+    ],
+    "title": "ReplayOut"
+   },
+   "Report": {
+    "properties": {
+     "markdown": {
+      "type": "string",
+      "title": "Markdown"
+     }
+    },
+    "type": "object",
+    "required": [
+     "markdown"
+    ],
+    "title": "Report"
+   },
+   "RetrievalRecordOut": {
+    "properties": {
+     "retrieval_id": {
+      "type": "string",
+      "title": "Retrieval Id"
+     },
+     "query": {
+      "type": "string",
+      "title": "Query"
+     },
+     "index": {
+      "type": "string",
+      "title": "Index"
+     },
+     "document_ids": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Document Ids"
+     },
+     "chunk_ids": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Chunk Ids"
+     },
+     "scores": {
+      "items": {
+       "type": "number"
+      },
+      "type": "array",
+      "title": "Scores"
+     },
+     "content_hashes": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Content Hashes"
+     },
+     "retrieved_at": {
+      "type": "string",
+      "title": "Retrieved At"
+     },
+     "filters": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Filters"
+     },
+     "embedding_model": {
+      "type": "string",
+      "title": "Embedding Model"
+     },
+     "reranker": {
+      "type": "string",
+      "title": "Reranker"
+     },
+     "index_version": {
+      "type": "string",
+      "title": "Index Version"
+     },
+     "k": {
+      "type": "integer",
+      "title": "K"
+     }
+    },
+    "type": "object",
+    "required": [
+     "retrieval_id",
+     "query",
+     "index",
+     "document_ids",
+     "chunk_ids",
+     "scores",
+     "content_hashes",
+     "retrieved_at",
+     "filters",
+     "embedding_model",
+     "reranker",
+     "index_version",
+     "k"
+    ],
+    "title": "RetrievalRecordOut"
+   },
+   "Risk": {
+    "properties": {
+     "risk": {
+      "type": "string",
+      "title": "Risk"
+     },
+     "category": {
+      "type": "string",
+      "title": "Category"
+     },
+     "probability": {
+      "type": "number",
+      "title": "Probability"
+     },
+     "impact": {
+      "type": "number",
+      "title": "Impact"
+     },
+     "mitigation": {
+      "type": "string",
+      "title": "Mitigation"
+     },
+     "risk_score": {
+      "type": "number",
+      "title": "Risk Score"
+     },
+     "evidence": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Evidence"
+     },
+     "requires_human_review": {
+      "type": "boolean",
+      "title": "Requires Human Review"
+     },
+     "calibration": {
+      "type": "string",
+      "title": "Calibration"
+     },
+     "precedents": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Precedents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "risk",
+     "category",
+     "probability",
+     "impact",
+     "mitigation",
+     "risk_score",
+     "evidence",
+     "requires_human_review"
+    ],
+    "title": "Risk"
+   },
+   "SensitivityPoint": {
+    "properties": {
+     "benefit_delta": {
+      "type": "number",
+      "title": "Benefit Delta"
+     },
+     "roi": {
+      "type": "number",
+      "title": "Roi"
+     }
+    },
+    "type": "object",
+    "required": [
+     "benefit_delta",
+     "roi"
+    ],
+    "title": "SensitivityPoint"
+   },
+   "SourceSummary": {
+    "properties": {
+     "source": {
+      "type": "string",
+      "title": "Source"
+     },
+     "doc_ids": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Doc Ids"
+     },
+     "claims": {
+      "type": "integer",
+      "title": "Claims"
+     }
+    },
+    "type": "object",
+    "required": [
+     "source",
+     "doc_ids",
+     "claims"
+    ],
+    "title": "SourceSummary"
+   },
+   "SpanOut": {
+    "properties": {
+     "span_id": {
+      "type": "string",
+      "title": "Span Id"
+     },
+     "parent_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Parent Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "kind": {
+      "type": "string",
+      "title": "Kind"
+     },
+     "attributes": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Attributes"
+     },
+     "start": {
+      "type": "number",
+      "title": "Start"
+     },
+     "latency_ms": {
+      "type": "number",
+      "title": "Latency Ms"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Error"
+     }
+    },
+    "type": "object",
+    "required": [
+     "span_id",
+     "parent_id",
+     "name",
+     "kind",
+     "attributes",
+     "start",
+     "latency_ms",
+     "status",
+     "error"
+    ],
+    "title": "SpanOut"
+   },
+   "TableColumns": {
+    "properties": {
+     "description": {
+      "type": "string",
+      "title": "Description"
+     },
+     "columns": {
+      "additionalProperties": {
+       "type": "string"
+      },
+      "type": "object",
+      "title": "Columns"
+     },
+     "owner": {
+      "type": "string",
+      "title": "Owner"
+     },
+     "sensitivity": {
+      "type": "string",
+      "title": "Sensitivity"
+     }
+    },
+    "type": "object",
+    "title": "TableColumns"
+   },
+   "TablesOut": {
+    "properties": {
+     "workflow_id": {
+      "type": "string",
+      "title": "Workflow Id"
+     },
+     "datasets": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Datasets"
+     },
+     "table_context": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/TableColumns"
+      },
+      "type": "object",
+      "title": "Table Context"
+     },
+     "queries": {
+      "items": {
+       "$ref": "#/components/schemas/QueryRun"
+      },
+      "type": "array",
+      "title": "Queries"
+     }
+    },
+    "type": "object",
+    "required": [
+     "workflow_id",
+     "datasets",
+     "table_context",
+     "queries"
+    ],
+    "title": "TablesOut"
+   },
+   "TraceOut": {
+    "properties": {
+     "trace_id": {
+      "type": "string",
+      "title": "Trace Id"
+     },
+     "workflow_id": {
+      "type": "string",
+      "title": "Workflow Id"
+     },
+     "span_count": {
+      "type": "integer",
+      "title": "Span Count"
+     },
+     "input_tokens": {
+      "type": "integer",
+      "title": "Input Tokens"
+     },
+     "output_tokens": {
+      "type": "integer",
+      "title": "Output Tokens"
+     },
+     "cost_usd": {
+      "type": "number",
+      "title": "Cost Usd"
+     },
+     "tool_calls": {
+      "type": "integer",
+      "title": "Tool Calls"
+     },
+     "tool_errors": {
+      "type": "integer",
+      "title": "Tool Errors"
+     },
+     "spans": {
+      "items": {
+       "$ref": "#/components/schemas/SpanOut"
+      },
+      "type": "array",
+      "title": "Spans"
+     }
+    },
+    "type": "object",
+    "required": [
+     "trace_id",
+     "workflow_id",
+     "span_count",
+     "input_tokens",
+     "output_tokens",
+     "cost_usd",
+     "tool_calls",
+     "tool_errors",
+     "spans"
+    ],
+    "title": "TraceOut"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   }
+  }
+ }
+}

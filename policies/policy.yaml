@@ -1,4 +1,4 @@
-version: "2026.10.2"
+version: "2026.10.3"
 
 # Layer 1 — deterministic guardrails. Default is deny.
 agents:
@@ -35,6 +35,9 @@ thresholds:
   approval_risk_score: 0.7
   min_groundedness: 0.75
   min_constraint_satisfaction: 0.9
+  min_task_adherence: 0.7
+  min_contradiction_free: 0.75
+  max_guardian_retries: 1
 
 # Provider data-handling rules
 data_classification:

@@ -113,6 +113,9 @@ class GuardianDecision(TypedDict):
     risk_score: float
     reasons: list[str]
     subject: str
+    source: NotRequired[str]            # deterministic | llm_reviewer | combined
+    modifications: NotRequired[dict[str, Any]]
+    feedback: NotRequired[str]
 
 
 class ApprovalFeedback(TypedDict):

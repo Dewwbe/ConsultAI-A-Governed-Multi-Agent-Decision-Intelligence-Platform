@@ -9,6 +9,14 @@ class Settings(BaseSettings):
 
     llm_provider: str = "stub"  # stub | azure_openai
     environment: str = "dev"
+    database_url: str = "sqlite:///./consultai.db"  # postgresql://user:pw@host:5432/db in production
+
+    # Authentication. `dev` trusts X-Dev-User/X-Dev-Roles headers and is refused outside ENVIRONMENT=dev.
+    auth_mode: str = "dev"  # dev | entra
+    entra_tenant_id: str = ""
+    entra_client_id: str = ""  # expected token audience (the API's application ID)
+    entra_audience: str = ""   # optional override, e.g. api://<client-id>
+    approver_role: str = "Partner"
 
     policy_file: str = str(Path(__file__).resolve().parents[2] / "policies" / "policy.yaml")
 

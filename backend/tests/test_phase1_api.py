@@ -31,7 +31,8 @@ def test_list_engagements_filters_and_paginates():
     client = TestClient(app)
     a = client.post("/engagements", json=REQ).json()["workflow_id"]
     b = client.post("/engagements", json=REQ).json()["workflow_id"]
-    client.post(f"/engagements/{b}/approval", json={"decision": "approve"})
+    client.post(f"/engagements/{b}/approval", json={"decision": "approve"},
+                headers={"X-Dev-Roles": "Partner"})
     waiting = client.get("/engagements", params={"status": "awaiting_approval", "limit": 200}).json()
     done = client.get("/engagements", params={"status": "completed", "limit": 200}).json()
     waiting_ids = [i["workflow_id"] for i in waiting["items"]]
@@ -57,15 +58,19 @@ def test_openapi_contract_is_typed_and_stable():
     spec = TestClient(app).get("/openapi.json").json()
     ops = {op["operationId"] for item in spec["paths"].values() for op in item.values()}
     assert ops == {"createEngagement", "listEngagements", "getEngagement", "submitApproval",
-                   "getTrace", "getHealth", "getEvidence", "getTables", "replayRetrieval"}
+                   "getTrace", "getHealth", "getEvidence", "getTables", "replayRetrieval",
+                   "getMe", "listApprovals", "getGuardianLog", "streamEvents"}
     schemas = spec["components"]["schemas"]
     for name in ["EngagementDetail", "EngagementList", "EngagementSummary", "TraceOut", "EngagementState"]:
         assert name in schemas, name
     assert schemas["EngagementDetail"]["properties"]["status"]["enum"] == [
-        "awaiting_approval", "completed", "rejected", "escalated"]
+        "running", "awaiting_approval", "completed", "rejected", "escalated", "failed"]
     for item in spec["paths"].values():  # every operation declares a typed JSON 200 response
         for op in item.values():
-            assert "$ref" in op["responses"]["200"]["content"]["application/json"]["schema"]
+            if op["operationId"] == "streamEvents":  # text/event-stream, documented in prose
+                continue
+            schema = op["responses"]["200"]["content"]["application/json"]["schema"]
+            assert "$ref" in schema or "$ref" in schema.get("items", {})  # object or typed array
 
 
 def test_responses_validate_against_models():

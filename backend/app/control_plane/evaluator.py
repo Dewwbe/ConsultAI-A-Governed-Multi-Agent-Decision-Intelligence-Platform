@@ -19,10 +19,18 @@ class EvaluationReport:
 
     @property
     def quality(self) -> float:
-        outcome = (self.scores["constraint_satisfaction"] + self.scores["completeness"]) / 2
-        evidence = (self.scores["groundedness"] + self.scores["citation_validity"]) / 2
-        safety = self.scores["policy_compliance"]
-        base = 0.4 * outcome + 0.4 * evidence + 0.2 * safety
+        sc = self.scores
+        outcome_parts = [sc["constraint_satisfaction"], sc["completeness"]]
+        if "task_adherence" in sc:
+            outcome_parts.append(sc["task_adherence"])
+        outcome = sum(outcome_parts) / len(outcome_parts)
+        evidence = (sc["groundedness"] + sc["citation_validity"]) / 2
+        safety = sc["policy_compliance"]
+        if "contradiction_free" in sc:  # judged reports also score reliability
+            reliability = (sc["contradiction_free"] + sc.get("tool_call_accuracy", 1.0)) / 2
+            base = 0.35 * outcome + 0.35 * evidence + 0.15 * safety + 0.15 * reliability
+        else:
+            base = 0.4 * outcome + 0.4 * evidence + 0.2 * safety
         return max(0.0, base - sum(self.penalties.values()))
 
 

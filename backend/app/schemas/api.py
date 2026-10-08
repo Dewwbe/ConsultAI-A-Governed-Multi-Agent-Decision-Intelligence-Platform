@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 from .models import Evidence, GuardianDecision, TableColumns
 from .state import EngagementState
 
-Status = Literal["awaiting_approval", "completed", "rejected", "escalated"]
+Status = Literal["running", "awaiting_approval", "completed", "rejected", "escalated", "failed"]
 Classification = Literal["confidential", "internal", "public"]
 
 
@@ -23,8 +23,8 @@ class EngagementRequest(BaseModel):
 
 class ApprovalRequest(BaseModel):
     decision: Literal["approve", "modify", "reject"]
-    changes: dict[str, Any] = Field(default_factory=dict)
-    reason: str = ""
+    changes: dict[str, Any] = Field(default_factory=dict, description="modify only: rationale, assumptions")
+    reason: str = Field(default="", max_length=4000, description="required for modify and reject")
 
 
 class BudgetUsage(BaseModel):
@@ -38,6 +38,7 @@ class EngagementDetail(BaseModel):
     status: Status
     pending_node: list[str]
     halted_reason: str | None = None
+    error: str | None = None
     state: EngagementState
     guardian_decisions: list[GuardianDecision]
     metrics: dict[str, float | int | None]
@@ -144,3 +145,21 @@ class ReplayOut(BaseModel):
     reproduced: bool
     error: str | None = None
     evidence: list[Evidence]
+
+
+class ApprovalRecord(BaseModel):
+    decided_at: str
+    approver_id: str
+    approver_name: str
+    approver_roles: list[str]
+    decision: Literal["approve", "modify", "reject"]
+    reason: str
+    changes: dict[str, Any]
+    resulting_status: str
+
+
+class Me(BaseModel):
+    user_id: str
+    name: str
+    roles: list[str]
+    can_approve: bool

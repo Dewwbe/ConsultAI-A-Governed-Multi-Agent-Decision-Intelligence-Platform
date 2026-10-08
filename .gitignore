@@ -8,3 +8,6 @@ node_modules/
 dist/
 .mypy_cache/
 mlruns/
+*.db
+*.db-journal
+phase1_report.json
