@@ -1,0 +1,29 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.backend
+    env_file: .env
+    ports: ["8000:8000"]
+    depends_on: [postgres]
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: consultai
+      POSTGRES_PASSWORD: consultai
+      POSTGRES_DB: consultai
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+
+  # Phase 5: uncomment to run MLflow and an OTLP collector locally
+  # mlflow:
+  #   image: ghcr.io/mlflow/mlflow
+  #   command: mlflow server --host 0.0.0.0 --port 5000
+  #   ports: ["5000:5000"]
+  # otel-collector:
+  #   image: otel/opentelemetry-collector-contrib
+  #   ports: ["4317:4317"]
+
+volumes:
+  pgdata:

@@ -1,0 +1,52 @@
+version: "2026.10.1"
+
+# Layer 1 — deterministic guardrails. Default is deny.
+agents:
+  discovery_agent:
+    allowed_tools: [schema_validator, engagement_template_store, knowledge_search, dataset_catalog, industry_taxonomy]
+    blocked_tools: [execute_financial_transaction, send_client_email, modify_source_data]
+  research_agent:
+    allowed_tools: [search_public_web, search_knowledge_base]
+    blocked_tools: [execute_financial_transaction, send_client_email]
+  data_agent:
+    allowed_tools: [schema_lookup, run_sql_readonly]
+    blocked_tools: [modify_source_data, send_client_email]
+    allowed_tables: [finance.revenue, finance.costs, sales.customers, ops.kpis]
+  financial_agent:
+    allowed_tools: [query_financial_data, calculate_roi, calculate_npv, calculate_payback, scenario_analysis, sensitivity_analysis]
+    requires_approval: [approve_budget, commit_financial_action]
+  risk_agent:
+    allowed_tools: [risk_lookup, search_knowledge_base]
+  solution_agent:
+    allowed_tools: []
+  report_agent:
+    allowed_tools: [render_report]
+    requires_approval: [send_client_email]
+
+# Layer 3 — risk-based autonomy
+risk_tiers:
+  low:    [document_retrieval, data_cleaning, basic_sql, aggregation, summarization, citation_generation]
+  medium: [market_interpretation, financial_scenario_generation, risk_classification, strategy_alternatives]
+  high:   [financial_commitment, legal_regulatory_conclusion, client_facing_recommendation,
+           production_system_modification, sensitive_data_access, major_strategic_decision, external_communication]
+
+thresholds:
+  financial_commitment_usd: 1000000      # above this -> ESCALATE
+  approval_risk_score: 0.7
+  min_groundedness: 0.75
+  min_constraint_satisfaction: 0.9
+
+# Provider data-handling rules
+data_classification:
+  confidential:
+    allowed_providers: [azure_openai]
+  internal:
+    allowed_providers: [azure_openai, openai]
+  public:
+    allowed_providers: [azure_openai, openai, gemini, local]
+
+timeouts_sec:
+  search: 10
+  database: 15
+  llm: 30
+  workflow: 300
