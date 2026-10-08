@@ -1,0 +1,72 @@
+id: 1
+event: run_started
+data: {"ts": "2026-10-08T08:21:12.635234+00:00"}
+
+id: 2
+event: step_started
+data: {"ts": "2026-10-08T08:21:12.649649+00:00", "name": "discovery_agent", "kind": "agent"}
+
+id: 3
+event: step_finished
+data: {"ts": "2026-10-08T08:21:12.651850+00:00", "name": "discovery_agent", "kind": "agent", "status": "ok", "latency_ms": 2.1}
+
+id: 4
+event: step_started
+data: {"ts": "2026-10-08T08:21:12.654930+00:00", "name": "research_agent", "kind": "agent"}
+
+id: 5
+event: step_finished
+data: {"ts": "2026-10-08T08:21:12.661930+00:00", "name": "research_agent", "kind": "agent", "status": "ok", "latency_ms": 5.9}
+
+id: 6
+event: step_started
+data: {"ts": "2026-10-08T08:21:12.664926+00:00", "name": "data_agent", "kind": "agent"}
+
+id: 7
+event: step_finished
+data: {"ts": "2026-10-08T08:21:12.667445+00:00", "name": "data_agent", "kind": "agent", "status": "ok", "latency_ms": 2.4}
+
+id: 8
+event: step_started
+data: {"ts": "2026-10-08T08:21:12.669445+00:00", "name": "financial_agent", "kind": "agent"}
+
+id: 9
+event: step_finished
+data: {"ts": "2026-10-08T08:21:12.673443+00:00", "name": "financial_agent", "kind": "agent", "status": "ok", "latency_ms": 3.3}
+
+id: 10
+event: step_started
+data: {"ts": "2026-10-08T08:21:12.675444+00:00", "name": "risk_agent", "kind": "agent"}
+
+id: 11
+event: step_finished
+data: {"ts": "2026-10-08T08:21:12.677445+00:00", "name": "risk_agent", "kind": "agent", "status": "ok", "latency_ms": 1.5}
+
+id: 12
+event: step_started
+data: {"ts": "2026-10-08T08:21:12.677955+00:00", "name": "solution_agent", "kind": "agent"}
+
+id: 13
+event: step_finished
+data: {"ts": "2026-10-08T08:21:12.679969+00:00", "name": "solution_agent", "kind": "agent", "status": "ok", "latency_ms": 0.9}
+
+id: 14
+event: step_started
+data: {"ts": "2026-10-08T08:21:12.680998+00:00", "name": "evaluator", "kind": "evaluator"}
+
+id: 15
+event: step_finished
+data: {"ts": "2026-10-08T08:21:12.681968+00:00", "name": "evaluator", "kind": "evaluator", "status": "ok", "latency_ms": 1.0}
+
+id: 16
+event: step_started
+data: {"ts": "2026-10-08T08:21:12.683626+00:00", "name": "guardian", "kind": "guardian"}
+
+id: 17
+event: step_finished
+data: {"ts": "2026-10-08T08:21:12.684631+00:00", "name": "guardian", "kind": "guardian", "status": "ok", "latency_ms": 1.2}
+
+id: 18
+event: approval_requested
+data: {"ts": "2026-10-08T08:21:12.689633+00:00", "status": "awaiting_approval", "risk_level": "high", "recommendation": "Pilot", "halted_reason": null}
+

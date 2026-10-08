@@ -84,11 +84,6 @@ describe("shell and role-aware routing", () => {
     expect(screen.getByRole("link", { name: /back to the dashboard/i })).toHaveAttribute("href", "/");
   });
 
-  it("renders engagement pages as planned screens with the id", async () => {
-    renderApp("/engagements/wf_123");
-    expect(await screen.findByRole("heading", { name: "Engagement wf_123" })).toBeInTheDocument();
-  });
-
   it("offers a skip link and a labelled main landmark", async () => {
     renderApp("/");
     expect(screen.getByRole("link", { name: "Skip to content" })).toHaveAttribute("href", "#main");

@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 import { EmptyState } from "@/components/states/states";
 
 function Planned({ title, stage, description }: { title: string; stage: string; description: string }) {
@@ -9,15 +8,6 @@ function Planned({ title, stage, description }: { title: string; stage: string; 
     </div>
   );
 }
-
-export const Engagements = () => (
-  <Planned title="Engagements" stage="F1" description="Start an engagement, follow it live, and review the results." />
-);
-
-export const EngagementDetail = () => {
-  const { id } = useParams();
-  return <Planned title={`Engagement ${id ?? ""}`} stage="F1" description="The live pipeline view and result panels." />;
-};
 
 export const ControlCenter = () => (
   <Planned

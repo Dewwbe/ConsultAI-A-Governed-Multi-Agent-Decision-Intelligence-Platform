@@ -1,0 +1,27 @@
+{
+ "items": [
+  {
+   "workflow_id": "wf_797bb3031c",
+   "status": "completed",
+   "business_problem": "Should we expand into the UAE market?",
+   "industry": "Retail",
+   "created_at": "2026-10-08T08:21:12.741100+00:00",
+   "risk_level": "high",
+   "recommendation": "Pilot",
+   "cost_usd": 0.092382
+  },
+  {
+   "workflow_id": "wf_4ec8ac081c",
+   "status": "awaiting_approval",
+   "business_problem": "Should we expand into the UAE market?",
+   "industry": "Retail",
+   "created_at": "2026-10-08T08:21:12.632662+00:00",
+   "risk_level": "high",
+   "recommendation": "Pilot",
+   "cost_usd": 0.092382
+  }
+ ],
+ "total": 2,
+ "limit": 50,
+ "offset": 0
+}

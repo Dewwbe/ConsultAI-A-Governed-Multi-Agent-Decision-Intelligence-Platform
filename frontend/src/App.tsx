@@ -10,7 +10,10 @@ import { AppShell } from "@/components/layout/AppShell";
 import { ThemeProvider } from "@/lib/theme";
 import { Dashboard } from "@/pages/Dashboard";
 import { NotFound } from "@/pages/NotFound";
-import { ControlCenter, EngagementDetail, Engagements, Governance } from "@/pages/Placeholders";
+import { ControlCenter, Governance } from "@/pages/Placeholders";
+import { EngagementDetailPage } from "@/features/engagements/EngagementDetailPage";
+import { EngagementsPage } from "@/features/engagements/EngagementsPage";
+import { NewEngagementPage } from "@/features/engagements/NewEngagementPage";
 
 /** The route table. Role-gated routes wrap their page in <RequireRole>. */
 export function AppRoutes() {
@@ -18,8 +21,9 @@ export function AppRoutes() {
     <Routes>
       <Route element={<AppShell />}>
         <Route index element={<Dashboard />} />
-        <Route path="engagements" element={<Engagements />} />
-        <Route path="engagements/:id" element={<EngagementDetail />} />
+        <Route path="engagements" element={<EngagementsPage />} />
+        <Route path="engagements/new" element={<NewEngagementPage />} />
+        <Route path="engagements/:id" element={<EngagementDetailPage />} />
         <Route path="control-center" element={<ControlCenter />} />
         <Route
           path="governance"

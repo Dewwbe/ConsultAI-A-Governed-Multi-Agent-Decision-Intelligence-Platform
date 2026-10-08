@@ -7,10 +7,13 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: { alias: { "@": path.resolve(import.meta.dirname, "src") } },
   server: { port: 5173 },
+  envDir: process.env.VITEST ? false : ".",
   test: {
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
+    // Hermetic: never read a developer's local .env (their API port, auth mode...) in tests.
+    env: { VITE_API_BASE_URL: "http://localhost:8000", VITE_AUTH_MODE: "dev" },
     css: false,
     restoreMocks: true,
   },

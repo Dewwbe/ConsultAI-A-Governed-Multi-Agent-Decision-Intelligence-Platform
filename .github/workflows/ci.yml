@@ -45,3 +45,25 @@ jobs:
         env: { LLM_PROVIDER: stub, DATABASE_URL: "sqlite:///:memory:" }
       - name: Fail if the committed client is stale
         run: git diff --exit-code -- frontend/openapi.json frontend/src/api/schema.d.ts
+
+  # The UI's client, stream reader and pipeline logic against a real backend.
+  frontend-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", cache: npm, cache-dependency-path: frontend/package-lock.json }
+      - run: pip install -e "backend/.[dev]" httpx
+      - run: npm ci --no-audit --no-fund
+        working-directory: frontend
+      - name: Start the backend (stub model, in-memory database)
+        working-directory: backend
+        env: { LLM_PROVIDER: stub, DATABASE_URL: "sqlite:///:memory:", AUTH_MODE: dev, ENVIRONMENT: dev }
+        run: |
+          nohup python -m uvicorn app.main:app --port 8030 > ../uvicorn.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf localhost:8030/health && break; sleep 1; done
+      - run: npm test -- src/test/integration.test.ts
+        working-directory: frontend
+        env: { E2E_API_URL: "http://localhost:8030" }

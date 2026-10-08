@@ -1,0 +1,310 @@
+{
+ "workflow_id": "wf_4ec8ac081c",
+ "claims": [
+  {
+   "claim": "SYNTHETIC DEMO DATA (fictional). Funding and currency in the UAE scenario: the dirham is pegged to the US dollar, so currency risk on revenue is low, and import duties of 5% apply to most retail goods, which affects profitability.",
+   "source": "synthetic://uae-currency-and-duties",
+   "publication_date": "2026-03-01",
+   "retrieved_at": "2026-10-08T08:21:12.655927+00:00",
+   "evidence": "SYNTHETIC DEMO DATA (fictional). Funding and currency in the UAE scenario: the dirham is pegged to the US dollar, so currency risk on revenue is low, and import duties of 5% apply to most retail goods, which affects profitability.",
+   "confidence": 0.7,
+   "relevance": 0.678,
+   "doc_id": "doc_syn_11",
+   "chunk_id": "doc_syn_11#0",
+   "quote": "SYNTHETIC DEMO DATA (fictional). Funding and currency in the UAE scenario: the dirham is pegged to the US dollar, so currency risk on revenue is low, and import duties of 5% apply to most retail goods, which affects profitability.",
+   "verified": true
+  },
+  {
+   "claim": "SYNTHETIC DEMO DATA (fictional). Regulatory requirements and market-entry risks in the UAE scenario: foreign retailers need a trade licence, assumed to take 3 to 6 months and longer if documentation is incomplete. Free-zone entities follow different ownership rules. Market-entry risk is concentrated in licence delays and dependence on a local partner.",
+   "source": "synthetic://uae-market-entry-regulation",
+   "publication_date": "2026-03-01",
+   "retrieved_at": "2026-10-08T08:21:12.655927+00:00",
+   "evidence": "SYNTHETIC DEMO DATA (fictional). Regulatory requirements and market-entry risks in the UAE scenario: foreign retailers need a trade licence, assumed to take 3 to 6 months and longer if documentation is incomplete. Free-zone entities follow different ownership rules. Market-entry risk is concentrated in licence delays and dependence on a local partner.",
+   "confidence": 0.75,
+   "relevance": 0.623,
+   "doc_id": "doc_syn_10",
+   "chunk_id": "doc_syn_10#0",
+   "quote": "SYNTHETIC DEMO DATA (fictional). Regulatory requirements and market-entry risks in the UAE scenario: foreign retailers need a trade licence, assumed to take 3 to 6 months and longer if documentation is incomplete. Free-zone entities follow different ownership rules. Market-entry risk is concentrated in licence delays and dependence on a local partner.",
+   "verified": true
+  },
+  {
+   "claim": "competition competitor landscape market share placeholder demo evidence",
+   "source": "demo://competitor-scan",
+   "publication_date": "2026-01-01",
+   "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+   "evidence": "competition competitor landscape market share placeholder demo evidence",
+   "confidence": 0.7,
+   "relevance": 0.783,
+   "doc_id": "doc_demo_3",
+   "chunk_id": "doc_demo_3#0",
+   "quote": "competition competitor landscape market share placeholder demo evidence",
+   "verified": true
+  },
+  {
+   "claim": "SYNTHETIC DEMO DATA (fictional). In this scenario the UAE competitive landscape is led by three regional operators holding 55% market share. International entrants typically reach 2 to 4% share within three years, and competition is strongest in large shopping malls.",
+   "source": "synthetic://uae-competitor-landscape",
+   "publication_date": "2026-03-01",
+   "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+   "evidence": "SYNTHETIC DEMO DATA (fictional). In this scenario the UAE competitive landscape is led by three regional operators holding 55% market share. International entrants typically reach 2 to 4% share within three years, and competition is strongest in large shopping malls.",
+   "confidence": 0.7,
+   "relevance": 0.758,
+   "doc_id": "doc_syn_7",
+   "chunk_id": "doc_syn_7#0",
+   "quote": "SYNTHETIC DEMO DATA (fictional). In this scenario the UAE competitive landscape is led by three regional operators holding 55% market share. International entrants typically reach 2 to 4% share within three years, and competition is strongest in large shopping malls.",
+   "verified": true
+  },
+  {
+   "claim": "SYNTHETIC DEMO DATA (fictional). In this scenario, UAE retail customer segments are tourists at 25% of spend, resident expatriates at 50% and nationals at 25%. Expatriate customers are the most price sensitive, and demand peaks during the winter tourism season.",
+   "source": "synthetic://uae-customer-segments",
+   "publication_date": "2026-03-01",
+   "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+   "evidence": "SYNTHETIC DEMO DATA (fictional). In this scenario, UAE retail customer segments are tourists at 25% of spend, resident expatriates at 50% and nationals at 25%. Expatriate customers are the most price sensitive, and demand peaks during the winter tourism season.",
+   "confidence": 0.65,
+   "relevance": 0.755,
+   "doc_id": "doc_syn_6",
+   "chunk_id": "doc_syn_6#0",
+   "quote": "SYNTHETIC DEMO DATA (fictional). In this scenario, UAE retail customer segments are tourists at 25% of spend, resident expatriates at 50% and nationals at 25%. Expatriate customers are the most price sensitive, and demand peaks during the winter tourism season.",
+   "verified": true
+  },
+  {
+   "claim": "retail market growth expansion demand placeholder demo evidence",
+   "source": "demo://market-overview",
+   "publication_date": "2026-01-01",
+   "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+   "evidence": "retail market growth expansion demand placeholder demo evidence",
+   "confidence": 0.8,
+   "relevance": 0.484,
+   "doc_id": "doc_demo_1",
+   "chunk_id": "doc_demo_1#0",
+   "quote": "retail market growth expansion demand placeholder demo evidence",
+   "verified": true
+  },
+  {
+   "claim": "regulatory approval licensing timeline risk placeholder demo evidence",
+   "source": "demo://regulatory-guide",
+   "publication_date": "2026-01-01",
+   "retrieved_at": "2026-10-08T08:21:12.659926+00:00",
+   "evidence": "regulatory approval licensing timeline risk placeholder demo evidence",
+   "confidence": 0.75,
+   "relevance": 0.731,
+   "doc_id": "doc_demo_2",
+   "chunk_id": "doc_demo_2#0",
+   "quote": "regulatory approval licensing timeline risk placeholder demo evidence",
+   "verified": true
+  }
+ ],
+ "sources": [
+  {
+   "source": "synthetic://uae-currency-and-duties",
+   "doc_ids": [
+    "doc_syn_11"
+   ],
+   "claims": 1
+  },
+  {
+   "source": "synthetic://uae-market-entry-regulation",
+   "doc_ids": [
+    "doc_syn_10"
+   ],
+   "claims": 1
+  },
+  {
+   "source": "demo://competitor-scan",
+   "doc_ids": [
+    "doc_demo_3"
+   ],
+   "claims": 1
+  },
+  {
+   "source": "synthetic://uae-competitor-landscape",
+   "doc_ids": [
+    "doc_syn_7"
+   ],
+   "claims": 1
+  },
+  {
+   "source": "synthetic://uae-customer-segments",
+   "doc_ids": [
+    "doc_syn_6"
+   ],
+   "claims": 1
+  },
+  {
+   "source": "demo://market-overview",
+   "doc_ids": [
+    "doc_demo_1"
+   ],
+   "claims": 1
+  },
+  {
+   "source": "demo://regulatory-guide",
+   "doc_ids": [
+    "doc_demo_2"
+   ],
+   "claims": 1
+  }
+ ],
+ "retrievals": [
+  {
+   "retrieval_id": "ret_11b376c7",
+   "query": "Market size Should we expand into the UAE market?",
+   "index": "local",
+   "document_ids": [
+    "doc_syn_11",
+    "doc_syn_10"
+   ],
+   "chunk_ids": [
+    "doc_syn_11#0",
+    "doc_syn_10#0"
+   ],
+   "scores": [
+    0.678,
+    0.623
+   ],
+   "content_hashes": [
+    "7effdce0ef88f5a7",
+    "89b30bc81353ed8a"
+   ],
+   "retrieved_at": "2026-10-08T08:21:12.655927+00:00",
+   "filters": {
+    "max_classification": "confidential",
+    "groups": [
+     "all"
+    ]
+   },
+   "embedding_model": "hashing-256-v1",
+   "reranker": "none",
+   "index_version": "2bec824ae7af",
+   "k": 2
+  },
+  {
+   "retrieval_id": "ret_979a1691",
+   "query": "Competition Should we expand into the UAE market?",
+   "index": "local",
+   "document_ids": [
+    "doc_demo_3",
+    "doc_syn_7"
+   ],
+   "chunk_ids": [
+    "doc_demo_3#0",
+    "doc_syn_7#0"
+   ],
+   "scores": [
+    0.783,
+    0.758
+   ],
+   "content_hashes": [
+    "d553e1b541c0513b",
+    "6e6fe49ec139787b"
+   ],
+   "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+   "filters": {
+    "max_classification": "confidential",
+    "groups": [
+     "all"
+    ]
+   },
+   "embedding_model": "hashing-256-v1",
+   "reranker": "none",
+   "index_version": "2bec824ae7af",
+   "k": 2
+  },
+  {
+   "retrieval_id": "ret_a3503d42",
+   "query": "Customer demand Should we expand into the UAE market?",
+   "index": "local",
+   "document_ids": [
+    "doc_syn_6",
+    "doc_demo_1"
+   ],
+   "chunk_ids": [
+    "doc_syn_6#0",
+    "doc_demo_1#0"
+   ],
+   "scores": [
+    0.755,
+    0.484
+   ],
+   "content_hashes": [
+    "8c2034bbc6d9ba3b",
+    "b249dc006022dac2"
+   ],
+   "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+   "filters": {
+    "max_classification": "confidential",
+    "groups": [
+     "all"
+    ]
+   },
+   "embedding_model": "hashing-256-v1",
+   "reranker": "none",
+   "index_version": "2bec824ae7af",
+   "k": 2
+  },
+  {
+   "retrieval_id": "ret_86635e3e",
+   "query": "Financial viability Should we expand into the UAE market?",
+   "index": "local",
+   "document_ids": [
+    "doc_syn_11",
+    "doc_syn_6"
+   ],
+   "chunk_ids": [
+    "doc_syn_11#0",
+    "doc_syn_6#0"
+   ],
+   "scores": [
+    0.702,
+    0.615
+   ],
+   "content_hashes": [
+    "7effdce0ef88f5a7",
+    "8c2034bbc6d9ba3b"
+   ],
+   "retrieved_at": "2026-10-08T08:21:12.658930+00:00",
+   "filters": {
+    "max_classification": "confidential",
+    "groups": [
+     "all"
+    ]
+   },
+   "embedding_model": "hashing-256-v1",
+   "reranker": "none",
+   "index_version": "2bec824ae7af",
+   "k": 2
+  },
+  {
+   "retrieval_id": "ret_25f2a173",
+   "query": "Regulatory risk Should we expand into the UAE market?",
+   "index": "local",
+   "document_ids": [
+    "doc_demo_2",
+    "doc_syn_10"
+   ],
+   "chunk_ids": [
+    "doc_demo_2#0",
+    "doc_syn_10#0"
+   ],
+   "scores": [
+    0.731,
+    0.637
+   ],
+   "content_hashes": [
+    "aedd91cc6bbe5078",
+    "89b30bc81353ed8a"
+   ],
+   "retrieved_at": "2026-10-08T08:21:12.659926+00:00",
+   "filters": {
+    "max_classification": "confidential",
+    "groups": [
+     "all"
+    ]
+   },
+   "embedding_model": "hashing-256-v1",
+   "reranker": "none",
+   "index_version": "2bec824ae7af",
+   "k": 2
+  }
+ ],
+ "rejected_claims": []
+}

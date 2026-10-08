@@ -1,0 +1,922 @@
+{
+ "trace_id": "tr_7a4e4a356df1",
+ "workflow_id": "wf_4ec8ac081c",
+ "span_count": 46,
+ "input_tokens": 7312,
+ "output_tokens": 1263,
+ "cost_usd": 0.092382,
+ "tool_calls": 24,
+ "tool_errors": 0,
+ "spans": [
+  {
+   "span_id": "sp_6a7b715f",
+   "parent_id": null,
+   "name": "discovery_agent",
+   "kind": "agent",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "discovery_agent"
+   },
+   "start": 1791447672.648648,
+   "latency_ms": 2.103300066664815,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_ae88c361",
+   "parent_id": "sp_6a7b715f",
+   "name": "llm:extraction",
+   "kind": "llm",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "discovery_agent",
+    "gen_ai.request.model": "MODEL_SMALL",
+    "gen_ai.system": "azure_openai",
+    "consultai.tier": "small",
+    "consultai.stage": "initial",
+    "consultai.prompt": "discovery@v1",
+    "gen_ai.usage.input_tokens": 379,
+    "gen_ai.usage.output_tokens": 129,
+    "consultai.cost_usd": 0.000254
+   },
+   "start": 1791447672.65185,
+   "latency_ms": 0.5028999876230955,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_b857dfba",
+   "parent_id": null,
+   "name": "research_agent",
+   "kind": "agent",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "research_agent"
+   },
+   "start": 1791447672.65493,
+   "latency_ms": 5.940999952144921,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_d94b7aaf",
+   "parent_id": "sp_b857dfba",
+   "name": "retrieval",
+   "kind": "retrieval",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "consultai.query": "Market size Should we expand into the UAE market?",
+    "consultai.document_ids": [
+     "doc_syn_11",
+     "doc_syn_10"
+    ]
+   },
+   "start": 1791447672.6559272,
+   "latency_ms": 1.3743999879807234,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_63b9421f",
+   "parent_id": "sp_b857dfba",
+   "name": "retrieval",
+   "kind": "retrieval",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "consultai.query": "Competition Should we expand into the UAE market?",
+    "consultai.document_ids": [
+     "doc_demo_3",
+     "doc_syn_7"
+    ]
+   },
+   "start": 1791447672.6579323,
+   "latency_ms": 0.6320999236777425,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_c7192384",
+   "parent_id": "sp_b857dfba",
+   "name": "retrieval",
+   "kind": "retrieval",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "consultai.query": "Customer demand Should we expand into the UAE market?",
+    "consultai.document_ids": [
+     "doc_syn_6",
+     "doc_demo_1"
+    ]
+   },
+   "start": 1791447672.6579323,
+   "latency_ms": 0.6489999359473586,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_0d138eae",
+   "parent_id": "sp_b857dfba",
+   "name": "retrieval",
+   "kind": "retrieval",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "consultai.query": "Financial viability Should we expand into the UAE market?",
+    "consultai.document_ids": [
+     "doc_syn_11",
+     "doc_syn_6"
+    ]
+   },
+   "start": 1791447672.6589305,
+   "latency_ms": 0.6381000857800245,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_e47dd89a",
+   "parent_id": "sp_b857dfba",
+   "name": "retrieval",
+   "kind": "retrieval",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "consultai.query": "Regulatory risk Should we expand into the UAE market?",
+    "consultai.document_ids": [
+     "doc_demo_2",
+     "doc_syn_10"
+    ]
+   },
+   "start": 1791447672.659927,
+   "latency_ms": 0.6032000528648496,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_7a13beb2",
+   "parent_id": "sp_b857dfba",
+   "name": "llm:research_synthesis",
+   "kind": "llm",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "research_agent",
+    "gen_ai.request.model": "MODEL_MEDIUM",
+    "gen_ai.system": "azure_openai",
+    "consultai.tier": "medium",
+    "consultai.stage": "initial",
+    "consultai.prompt": "research@v2",
+    "gen_ai.usage.input_tokens": 849,
+    "gen_ai.usage.output_tokens": 772,
+    "consultai.cost_usd": 0.004863
+   },
+   "start": 1791447672.6609302,
+   "latency_ms": 0.5123000591993332,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_bf1921cd",
+   "parent_id": null,
+   "name": "data_agent",
+   "kind": "agent",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "data_agent"
+   },
+   "start": 1791447672.6649268,
+   "latency_ms": 2.424399950541556,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_d04dfbe4",
+   "parent_id": "sp_bf1921cd",
+   "name": "llm:simple_sql",
+   "kind": "llm",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "data_agent",
+    "gen_ai.request.model": "MODEL_SMALL",
+    "gen_ai.system": "azure_openai",
+    "consultai.tier": "small",
+    "consultai.stage": "initial",
+    "consultai.prompt": "sql_generation@v1",
+    "gen_ai.usage.input_tokens": 612,
+    "gen_ai.usage.output_tokens": 38,
+    "consultai.cost_usd": 0.000325
+   },
+   "start": 1791447672.6649268,
+   "latency_ms": 0.17829996068030596,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_7d2e369e",
+   "parent_id": "sp_bf1921cd",
+   "name": "tool:run_sql_readonly",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.tool.name": "run_sql_readonly",
+    "consultai.sql": "SELECT region, SUM(revenue) AS revenue FROM finance.revenue GROUP BY region",
+    "consultai.purpose": "question"
+   },
+   "start": 1791447672.6664348,
+   "latency_ms": 0.19910000264644623,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_9c5d2272",
+   "parent_id": "sp_bf1921cd",
+   "name": "tool:run_sql_readonly",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.tool.name": "run_sql_readonly",
+    "consultai.sql": "SELECT substr(date, 1, 4) AS year, SUM(revenue) AS revenue FROM finance.revenue GROUP BY substr(date, 1, 4) ORDER BY year",
+    "consultai.purpose": "baseline_revenue"
+   },
+   "start": 1791447672.667445,
+   "latency_ms": 0.10329997166991234,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_9b6cd2da",
+   "parent_id": "sp_bf1921cd",
+   "name": "tool:run_sql_readonly",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.tool.name": "run_sql_readonly",
+    "consultai.sql": "SELECT substr(date, 1, 4) AS year, SUM(cost) AS cost FROM finance.costs GROUP BY substr(date, 1, 4) ORDER BY year",
+    "consultai.purpose": "baseline_cost"
+   },
+   "start": 1791447672.667445,
+   "latency_ms": 0.07589999586343765,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_32ee0c05",
+   "parent_id": null,
+   "name": "financial_agent",
+   "kind": "agent",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent"
+   },
+   "start": 1791447672.669446,
+   "latency_ms": 3.263699938543141,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_0c0460ac",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:calculate_margin",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "calculate_margin",
+    "consultai.tool_arguments": {
+     "revenue": 65208896.42,
+     "cost": 45383873.38
+    },
+    "consultai.risk_level": "low",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6704655,
+   "latency_ms": 0.02619996666908264,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_e4101bc6",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:calculate_growth",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "calculate_growth",
+    "consultai.tool_arguments": {
+     "previous": 57617914.3,
+     "current": 65208896.42
+    },
+    "consultai.risk_level": "low",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6704655,
+   "latency_ms": 0.0171000137925148,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_597655db",
+   "parent_id": "sp_32ee0c05",
+   "name": "llm:financial",
+   "kind": "llm",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.request.model": "MODEL_REASONING",
+    "gen_ai.system": "azure_openai",
+    "consultai.tier": "reasoning",
+    "consultai.stage": "initial",
+    "consultai.prompt": "financial_cases@v3",
+    "gen_ai.usage.input_tokens": 657,
+    "gen_ai.usage.output_tokens": 129,
+    "consultai.cost_usd": 0.011789999999999998
+   },
+   "start": 1791447672.6714497,
+   "latency_ms": 0.38159999530762434,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_0f7f0dca",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:derive_annual_benefit",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "derive_annual_benefit",
+    "consultai.tool_arguments": {
+     "baseline_revenue": 65208896.42,
+     "uplift_pct": 0.12105912790908918,
+     "margin": 0.3040232871341698
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6724424,
+   "latency_ms": 0.0241999514400959,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_fcb68210",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:calculate_roi",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "calculate_roi",
+    "consultai.tool_arguments": {
+     "investment": 8000000,
+     "annual_benefit": 2400000.0,
+     "years": 5
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6724424,
+   "latency_ms": 0.01750001683831215,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_843eff4e",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:calculate_payback",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "calculate_payback",
+    "consultai.tool_arguments": {
+     "investment": 8000000,
+     "annual_benefit": 2400000.0
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6724424,
+   "latency_ms": 0.014699995517730713,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_67347e79",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:calculate_npv",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "calculate_npv",
+    "consultai.tool_arguments": {
+     "rate": 0.1,
+     "cashflows": [
+      -8000000,
+      2400000.0,
+      2400000.0,
+      2400000.0,
+      2400000.0,
+      2400000.0
+     ]
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6724424,
+   "latency_ms": 0.02450007013976574,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_bdb36404",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:scenario_analysis",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "scenario_analysis",
+    "consultai.tool_arguments": {
+     "investment": 8000000,
+     "annual_benefit": 2400000.0,
+     "years": 5
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6724424,
+   "latency_ms": 0.021400046534836292,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_82dd01a0",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:sensitivity_analysis",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "sensitivity_analysis",
+    "consultai.tool_arguments": {
+     "investment": 8000000,
+     "annual_benefit": 2400000.0,
+     "years": 5
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6724424,
+   "latency_ms": 0.019700033590197563,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_c37c6d15",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:derive_annual_benefit",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "derive_annual_benefit",
+    "consultai.tool_arguments": {
+     "baseline_revenue": 65208896.42,
+     "uplift_pct": 0.03530891230681768,
+     "margin": 0.3040232871341698
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6724424,
+   "latency_ms": 0.01650000922381878,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_4a649015",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:calculate_roi",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "calculate_roi",
+    "consultai.tool_arguments": {
+     "investment": 2000000,
+     "annual_benefit": 700000.0,
+     "years": 5
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6724424,
+   "latency_ms": 0.014599994756281376,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_b663a06a",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:calculate_payback",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "calculate_payback",
+    "consultai.tool_arguments": {
+     "investment": 2000000,
+     "annual_benefit": 700000.0
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6724424,
+   "latency_ms": 0.014199991710484028,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_70282dcf",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:calculate_npv",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "calculate_npv",
+    "consultai.tool_arguments": {
+     "rate": 0.1,
+     "cashflows": [
+      -2000000,
+      700000.0,
+      700000.0,
+      700000.0,
+      700000.0,
+      700000.0
+     ]
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6734436,
+   "latency_ms": 0.01850002445280552,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_c4c17251",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:scenario_analysis",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "scenario_analysis",
+    "consultai.tool_arguments": {
+     "investment": 2000000,
+     "annual_benefit": 700000.0,
+     "years": 5
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6734436,
+   "latency_ms": 0.019200029782950878,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_9086f20e",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:sensitivity_analysis",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "sensitivity_analysis",
+    "consultai.tool_arguments": {
+     "investment": 2000000,
+     "annual_benefit": 700000.0,
+     "years": 5
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6734436,
+   "latency_ms": 0.023000058718025684,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_bcf91302",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:derive_annual_benefit",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "derive_annual_benefit",
+    "consultai.tool_arguments": {
+     "baseline_revenue": 65208896.42,
+     "uplift_pct": 0.04539717296590844,
+     "margin": 0.3040232871341698
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6734436,
+   "latency_ms": 0.016000005416572094,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_312808b5",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:calculate_roi",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "calculate_roi",
+    "consultai.tool_arguments": {
+     "investment": 3000000,
+     "annual_benefit": 900000.0,
+     "years": 5
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6734436,
+   "latency_ms": 0.01309998333454132,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_9eb953da",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:calculate_payback",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "calculate_payback",
+    "consultai.tool_arguments": {
+     "investment": 3000000,
+     "annual_benefit": 900000.0
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6734436,
+   "latency_ms": 0.012299977242946625,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_484f88c8",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:calculate_npv",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "calculate_npv",
+    "consultai.tool_arguments": {
+     "rate": 0.1,
+     "cashflows": [
+      -3000000,
+      900000.0,
+      900000.0,
+      900000.0,
+      900000.0,
+      900000.0
+     ]
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6734436,
+   "latency_ms": 0.017700018361210823,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_9939ea10",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:scenario_analysis",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "scenario_analysis",
+    "consultai.tool_arguments": {
+     "investment": 3000000,
+     "annual_benefit": 900000.0,
+     "years": 5
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6734436,
+   "latency_ms": 0.01850002445280552,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_4b78e2ba",
+   "parent_id": "sp_32ee0c05",
+   "name": "tool:sensitivity_analysis",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "financial_agent",
+    "gen_ai.tool.name": "sensitivity_analysis",
+    "consultai.tool_arguments": {
+     "investment": 3000000,
+     "annual_benefit": 900000.0,
+     "years": 5
+    },
+    "consultai.risk_level": "medium",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6734436,
+   "latency_ms": 0.016200006939470768,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_60847f8b",
+   "parent_id": null,
+   "name": "risk_agent",
+   "kind": "agent",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "risk_agent"
+   },
+   "start": 1791447672.674443,
+   "latency_ms": 1.5051999362185597,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_7564c66e",
+   "parent_id": "sp_60847f8b",
+   "name": "tool:risk_lookup",
+   "kind": "tool",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "risk_agent",
+    "gen_ai.tool.name": "risk_lookup",
+    "consultai.tool_arguments": {
+     "query": "Should we expand into the UAE market? Budget under $10M Launch within 18 months"
+    },
+    "consultai.risk_level": "low",
+    "consultai.cost_usd": 0.0
+   },
+   "start": 1791447672.6754444,
+   "latency_ms": 0.15700003132224083,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_5bca0d0a",
+   "parent_id": "sp_60847f8b",
+   "name": "llm:risk",
+   "kind": "llm",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "risk_agent",
+    "gen_ai.request.model": "MODEL_REASONING",
+    "gen_ai.system": "azure_openai",
+    "consultai.tier": "reasoning",
+    "consultai.stage": "initial",
+    "consultai.prompt": "risk_assessment@v2",
+    "gen_ai.usage.input_tokens": 1305,
+    "gen_ai.usage.output_tokens": 119,
+    "consultai.cost_usd": 0.02136
+   },
+   "start": 1791447672.6764421,
+   "latency_ms": 0.2674999414011836,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_2c7033a4",
+   "parent_id": null,
+   "name": "solution_agent",
+   "kind": "agent",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "solution_agent"
+   },
+   "start": 1791447672.6779556,
+   "latency_ms": 0.9171001147478819,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_7b71ef61",
+   "parent_id": "sp_2c7033a4",
+   "name": "llm:strategy",
+   "kind": "llm",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "solution_agent",
+    "gen_ai.request.model": "MODEL_REASONING",
+    "gen_ai.system": "azure_openai",
+    "consultai.tier": "reasoning",
+    "consultai.stage": "initial",
+    "consultai.prompt": "solution_rationale@v3",
+    "gen_ai.usage.input_tokens": 890,
+    "gen_ai.usage.output_tokens": 30,
+    "consultai.cost_usd": 0.0138
+   },
+   "start": 1791447672.6799698,
+   "latency_ms": 0.13429997488856316,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_9eea709e",
+   "parent_id": null,
+   "name": "evaluator",
+   "kind": "evaluator",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c"
+   },
+   "start": 1791447672.6809983,
+   "latency_ms": 0.9781999979168177,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_da75444c",
+   "parent_id": "sp_9eea709e",
+   "name": "llm:guardian_eval",
+   "kind": "llm",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "evaluator",
+    "gen_ai.request.model": "MODEL_REASONING",
+    "gen_ai.system": "azure_openai",
+    "consultai.tier": "reasoning",
+    "consultai.stage": "initial",
+    "consultai.prompt": "judge_evaluation@v1",
+    "gen_ai.usage.input_tokens": 1574,
+    "gen_ai.usage.output_tokens": 25,
+    "consultai.cost_usd": 0.023985
+   },
+   "start": 1791447672.6819687,
+   "latency_ms": 0.13520009815692902,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_bb4bf9dd",
+   "parent_id": null,
+   "name": "guardian",
+   "kind": "guardian",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c"
+   },
+   "start": 1791447672.6836267,
+   "latency_ms": 1.2190999696031213,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_3596d815",
+   "parent_id": "sp_bb4bf9dd",
+   "name": "llm:guardian_eval",
+   "kind": "llm",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c",
+    "gen_ai.agent.name": "guardian",
+    "gen_ai.request.model": "MODEL_REASONING",
+    "gen_ai.system": "azure_openai",
+    "consultai.tier": "reasoning",
+    "consultai.stage": "initial",
+    "consultai.prompt": "guardian_review@v1",
+    "gen_ai.usage.input_tokens": 1046,
+    "gen_ai.usage.output_tokens": 21,
+    "consultai.cost_usd": 0.016005
+   },
+   "start": 1791447672.684631,
+   "latency_ms": 0.1729000359773636,
+   "status": "ok",
+   "error": null
+  },
+  {
+   "span_id": "sp_4d1d3631",
+   "parent_id": null,
+   "name": "human_approval",
+   "kind": "approval",
+   "attributes": {
+    "consultai.workflow_id": "wf_4ec8ac081c"
+   },
+   "start": 1791447672.686633,
+   "latency_ms": 0.11969998013228178,
+   "status": "error",
+   "error": "GraphInterrupt((Interrupt(value={'recommendation': {'id': 'B', 'name': 'Pilot', 'cost_usd': 2000000, 'roi': 0.75, 'npv': 653550.7385859131, 'payback_years': 2.857142857142857, 'risk_score': 0.325, 'risk': 'Medium', 'launch_months': 9, 'constraint_violations': [], 'within_budget': True, 'within_timeline': True, 'within_constraints': True, 'rationale': 'Option B (Pilot) offers the best risk-adjusted return within the stated constraints.', 'alternatives_considered': 3, 'assumptions': ['Benefits are flat over the 5-year horizon, discounted at 10%', 'Baseline is 2025 revenue of $65,208,896 at a 30.4% operating margin, from the data warehouse', 'Annual benefit assumes a 3.5% revenue uplift: Stub placeholder']}, 'scores': {'groundedness': 1.0, 'citation_validity': 1.0, 'constraint_satisfaction': 1.0, 'completeness': 1.0, 'policy_compliance': 1.0, 'avg_evidence_confidence': 0.7214285714285714, 'task_adherence': 1.0, 'contradiction_free': 1.0, 'tool_call_accuracy': 1.0, 'judge_coverage': 1.0, 'quality': 1.0}, 'risk_level': 'high', 'guardian': [{'action': 'ESCALATE', 'risk_level': 'high', 'risk_score': 0.9, 'reasons': ['financial commitment $2,000,000 exceeds policy threshold', 'client-facing recommendation is a high-risk action', '1 risk(s) flagged for human review'], 'subject': 'workflow', 'source': 'deterministic', 'modifications': {}, 'feedback': ''}], 'cost_usd': 0.0924}, id='c42672f53392106c90fb89cd6a8f75dd', response_schema=None),))"
+  }
+ ]
+}

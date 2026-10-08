@@ -1,0 +1,1169 @@
+{
+ "workflow_id": "wf_4ec8ac081c",
+ "status": "awaiting_approval",
+ "pending_node": [
+  "approval"
+ ],
+ "halted_reason": null,
+ "error": null,
+ "state": {
+  "conversation_id": "conv_4ec8ac081c",
+  "workflow_id": "wf_4ec8ac081c",
+  "engagement_id": "wf_4ec8ac081c",
+  "user_id": "pat",
+  "preferences": {},
+  "data_classification": "confidential",
+  "business_problem": "Should we expand into the UAE market?",
+  "industry": "Retail",
+  "objectives": [
+   "Increase revenue"
+  ],
+  "constraints": [
+   "Budget under $10M",
+   "Launch within 18 months"
+  ],
+  "engagement_spec": {
+   "business_objective": "Increase revenue",
+   "decision_question": "Should we expand into the UAE market?",
+   "success_metrics": [
+    "Revenue growth",
+    "ROI",
+    "Payback period"
+   ],
+   "constraints": [
+    "Budget under $10M",
+    "Launch within 18 months"
+   ],
+   "required_analysis": [
+    "Market size",
+    "Competition",
+    "Customer demand",
+    "Financial viability",
+    "Regulatory risk"
+   ],
+   "required_data": [
+    "Market reports",
+    "Historical revenue",
+    "Operating costs",
+    "Competitor data"
+   ],
+   "required_agents": [
+    "research",
+    "data",
+    "financial",
+    "risk",
+    "solution"
+   ]
+  },
+  "questions": [
+   "Clarify: Market size",
+   "Clarify: Competition",
+   "Clarify: Customer demand"
+  ],
+  "required_data": [
+   "Market reports",
+   "Historical revenue",
+   "Operating costs",
+   "Competitor data"
+  ],
+  "research_results": [
+   {
+    "claim": "SYNTHETIC DEMO DATA (fictional). Funding and currency in the UAE scenario: the dirham is pegged to the US dollar, so currency risk on revenue is low, and import duties of 5% apply to most retail goods, which affects profitability.",
+    "source": "synthetic://uae-currency-and-duties",
+    "publication_date": "2026-03-01",
+    "retrieved_at": "2026-10-08T08:21:12.655927+00:00",
+    "evidence": "SYNTHETIC DEMO DATA (fictional). Funding and currency in the UAE scenario: the dirham is pegged to the US dollar, so currency risk on revenue is low, and import duties of 5% apply to most retail goods, which affects profitability.",
+    "confidence": 0.7,
+    "relevance": 0.678,
+    "doc_id": "doc_syn_11",
+    "chunk_id": "doc_syn_11#0",
+    "quote": "SYNTHETIC DEMO DATA (fictional). Funding and currency in the UAE scenario: the dirham is pegged to the US dollar, so currency risk on revenue is low, and import duties of 5% apply to most retail goods, which affects profitability.",
+    "verified": true
+   },
+   {
+    "claim": "SYNTHETIC DEMO DATA (fictional). Regulatory requirements and market-entry risks in the UAE scenario: foreign retailers need a trade licence, assumed to take 3 to 6 months and longer if documentation is incomplete. Free-zone entities follow different ownership rules. Market-entry risk is concentrated in licence delays and dependence on a local partner.",
+    "source": "synthetic://uae-market-entry-regulation",
+    "publication_date": "2026-03-01",
+    "retrieved_at": "2026-10-08T08:21:12.655927+00:00",
+    "evidence": "SYNTHETIC DEMO DATA (fictional). Regulatory requirements and market-entry risks in the UAE scenario: foreign retailers need a trade licence, assumed to take 3 to 6 months and longer if documentation is incomplete. Free-zone entities follow different ownership rules. Market-entry risk is concentrated in licence delays and dependence on a local partner.",
+    "confidence": 0.75,
+    "relevance": 0.623,
+    "doc_id": "doc_syn_10",
+    "chunk_id": "doc_syn_10#0",
+    "quote": "SYNTHETIC DEMO DATA (fictional). Regulatory requirements and market-entry risks in the UAE scenario: foreign retailers need a trade licence, assumed to take 3 to 6 months and longer if documentation is incomplete. Free-zone entities follow different ownership rules. Market-entry risk is concentrated in licence delays and dependence on a local partner.",
+    "verified": true
+   },
+   {
+    "claim": "competition competitor landscape market share placeholder demo evidence",
+    "source": "demo://competitor-scan",
+    "publication_date": "2026-01-01",
+    "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+    "evidence": "competition competitor landscape market share placeholder demo evidence",
+    "confidence": 0.7,
+    "relevance": 0.783,
+    "doc_id": "doc_demo_3",
+    "chunk_id": "doc_demo_3#0",
+    "quote": "competition competitor landscape market share placeholder demo evidence",
+    "verified": true
+   },
+   {
+    "claim": "SYNTHETIC DEMO DATA (fictional). In this scenario the UAE competitive landscape is led by three regional operators holding 55% market share. International entrants typically reach 2 to 4% share within three years, and competition is strongest in large shopping malls.",
+    "source": "synthetic://uae-competitor-landscape",
+    "publication_date": "2026-03-01",
+    "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+    "evidence": "SYNTHETIC DEMO DATA (fictional). In this scenario the UAE competitive landscape is led by three regional operators holding 55% market share. International entrants typically reach 2 to 4% share within three years, and competition is strongest in large shopping malls.",
+    "confidence": 0.7,
+    "relevance": 0.758,
+    "doc_id": "doc_syn_7",
+    "chunk_id": "doc_syn_7#0",
+    "quote": "SYNTHETIC DEMO DATA (fictional). In this scenario the UAE competitive landscape is led by three regional operators holding 55% market share. International entrants typically reach 2 to 4% share within three years, and competition is strongest in large shopping malls.",
+    "verified": true
+   },
+   {
+    "claim": "SYNTHETIC DEMO DATA (fictional). In this scenario, UAE retail customer segments are tourists at 25% of spend, resident expatriates at 50% and nationals at 25%. Expatriate customers are the most price sensitive, and demand peaks during the winter tourism season.",
+    "source": "synthetic://uae-customer-segments",
+    "publication_date": "2026-03-01",
+    "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+    "evidence": "SYNTHETIC DEMO DATA (fictional). In this scenario, UAE retail customer segments are tourists at 25% of spend, resident expatriates at 50% and nationals at 25%. Expatriate customers are the most price sensitive, and demand peaks during the winter tourism season.",
+    "confidence": 0.65,
+    "relevance": 0.755,
+    "doc_id": "doc_syn_6",
+    "chunk_id": "doc_syn_6#0",
+    "quote": "SYNTHETIC DEMO DATA (fictional). In this scenario, UAE retail customer segments are tourists at 25% of spend, resident expatriates at 50% and nationals at 25%. Expatriate customers are the most price sensitive, and demand peaks during the winter tourism season.",
+    "verified": true
+   },
+   {
+    "claim": "retail market growth expansion demand placeholder demo evidence",
+    "source": "demo://market-overview",
+    "publication_date": "2026-01-01",
+    "retrieved_at": "2026-10-08T08:21:12.657932+00:00",
+    "evidence": "retail market growth expansion demand placeholder demo evidence",
+    "confidence": 0.8,
+    "relevance": 0.484,
+    "doc_id": "doc_demo_1",
+    "chunk_id": "doc_demo_1#0",
+    "quote": "retail market growth expansion demand placeholder demo evidence",
+    "verified": true
+   },
+   {
+    "claim": "regulatory approval licensing timeline risk placeholder demo evidence",
+    "source": "demo://regulatory-guide",
+    "publication_date": "2026-01-01",
+    "retrieved_at": "2026-10-08T08:21:12.659926+00:00",
+    "evidence": "regulatory approval licensing timeline risk placeholder demo evidence",
+    "confidence": 0.75,
+    "relevance": 0.731,
+    "doc_id": "doc_demo_2",
+    "chunk_id": "doc_demo_2#0",
+    "quote": "regulatory approval licensing timeline risk placeholder demo evidence",
+    "verified": true
+   }
+  ],
+  "citations": [
+   "demo://competitor-scan",
+   "demo://market-overview",
+   "demo://regulatory-guide",
+   "synthetic://uae-competitor-landscape",
+   "synthetic://uae-currency-and-duties",
+   "synthetic://uae-customer-segments",
+   "synthetic://uae-market-entry-regulation"
+  ],
+  "datasets": [
+   "finance.revenue",
+   "finance.costs"
+  ],
+  "table_context": {
+   "finance.revenue": {
+    "description": "Recognised monthly revenue by region",
+    "columns": {
+     "date": "Month of recognition (first day) [TEXT]",
+     "region": "Sales region [TEXT]",
+     "revenue": "Total recognised revenue, USD [REAL]"
+    },
+    "owner": "finance",
+    "sensitivity": "internal"
+   },
+   "finance.costs": {
+    "description": "Operating costs by region",
+    "columns": {
+     "date": "Month the cost was incurred [TEXT]",
+     "region": "Region [TEXT]",
+     "cost": "Operating cost, USD [REAL]"
+    },
+    "owner": "finance",
+    "sensitivity": "internal"
+   }
+  },
+  "analysis_results": [
+   {
+    "query": "SELECT region, SUM(revenue) AS revenue FROM finance.revenue GROUP BY region",
+    "rows": [
+     {
+      "region": "east",
+      "revenue": 36743064.14
+     },
+     {
+      "region": "home",
+      "revenue": 24740832.06
+     },
+     {
+      "region": "north",
+      "revenue": 28998984.13
+     },
+     {
+      "region": "south",
+      "revenue": 32343930.39
+     }
+    ],
+    "purpose": "question"
+   },
+   {
+    "query": "SELECT substr(date, 1, 4) AS year, SUM(revenue) AS revenue FROM finance.revenue GROUP BY substr(date, 1, 4) ORDER BY year",
+    "rows": [
+     {
+      "year": "2024",
+      "revenue": 57617914.3
+     },
+     {
+      "year": "2025",
+      "revenue": 65208896.42
+     }
+    ],
+    "purpose": "baseline_revenue"
+   },
+   {
+    "query": "SELECT substr(date, 1, 4) AS year, SUM(cost) AS cost FROM finance.costs GROUP BY substr(date, 1, 4) ORDER BY year",
+    "rows": [
+     {
+      "year": "2024",
+      "cost": 40452072.28
+     },
+     {
+      "year": "2025",
+      "cost": 45383873.38
+     }
+    ],
+    "purpose": "baseline_cost"
+   }
+  ],
+  "financial_models": [
+   {
+    "id": "A",
+    "label": "Full expansion",
+    "investment": 8000000.0,
+    "annual_benefit": 2400000.0,
+    "years": 5,
+    "launch_months": 18.0,
+    "uplift_pct": 0.12105912790908918,
+    "benefit_assumption": "Stub placeholder",
+    "roi": 0.5,
+    "total_benefit": 12000000.0,
+    "net_gain": 4000000.0,
+    "payback_years": 3.3333333333333335,
+    "npv": 1097888.2465802738,
+    "rate": 0.1,
+    "periods": 6,
+    "scenarios": {
+     "conservative": 0.05,
+     "base": 0.5,
+     "optimistic": 0.8
+    },
+    "sensitivity": [
+     {
+      "benefit_delta": -0.2,
+      "roi": 0.2
+     },
+     {
+      "benefit_delta": -0.1,
+      "roi": 0.35
+     },
+     {
+      "benefit_delta": 0.0,
+      "roi": 0.5
+     },
+     {
+      "benefit_delta": 0.1,
+      "roi": 0.65
+     },
+     {
+      "benefit_delta": 0.2,
+      "roi": 0.8
+     }
+    ],
+    "assumptions": {
+     "discount_rate": 0.1,
+     "benefit_flat": true,
+     "baseline_year": "2025",
+     "baseline_revenue": 65208896.42,
+     "baseline_margin": 0.3040232871341698
+    }
+   },
+   {
+    "id": "B",
+    "label": "Pilot",
+    "investment": 2000000.0,
+    "annual_benefit": 700000.0,
+    "years": 5,
+    "launch_months": 9.0,
+    "uplift_pct": 0.03530891230681768,
+    "benefit_assumption": "Stub placeholder",
+    "roi": 0.75,
+    "total_benefit": 3500000.0,
+    "net_gain": 1500000.0,
+    "payback_years": 2.857142857142857,
+    "npv": 653550.7385859131,
+    "rate": 0.1,
+    "periods": 6,
+    "scenarios": {
+     "conservative": 0.22499999999999976,
+     "base": 0.75,
+     "optimistic": 1.1
+    },
+    "sensitivity": [
+     {
+      "benefit_delta": -0.2,
+      "roi": 0.4
+     },
+     {
+      "benefit_delta": -0.1,
+      "roi": 0.575
+     },
+     {
+      "benefit_delta": 0.0,
+      "roi": 0.75
+     },
+     {
+      "benefit_delta": 0.1,
+      "roi": 0.9250000000000003
+     },
+     {
+      "benefit_delta": 0.2,
+      "roi": 1.1
+     }
+    ],
+    "assumptions": {
+     "discount_rate": 0.1,
+     "benefit_flat": true,
+     "baseline_year": "2025",
+     "baseline_revenue": 65208896.42,
+     "baseline_margin": 0.3040232871341698
+    }
+   },
+   {
+    "id": "C",
+    "label": "Partnership",
+    "investment": 3000000.0,
+    "annual_benefit": 900000.0,
+    "years": 5,
+    "launch_months": 12.0,
+    "uplift_pct": 0.04539717296590844,
+    "benefit_assumption": "Stub placeholder",
+    "roi": 0.5,
+    "total_benefit": 4500000.0,
+    "net_gain": 1500000.0,
+    "payback_years": 3.3333333333333335,
+    "npv": 411708.0924676028,
+    "rate": 0.1,
+    "periods": 6,
+    "scenarios": {
+     "conservative": 0.05,
+     "base": 0.5,
+     "optimistic": 0.8
+    },
+    "sensitivity": [
+     {
+      "benefit_delta": -0.2,
+      "roi": 0.2
+     },
+     {
+      "benefit_delta": -0.1,
+      "roi": 0.35
+     },
+     {
+      "benefit_delta": 0.0,
+      "roi": 0.5
+     },
+     {
+      "benefit_delta": 0.1,
+      "roi": 0.6500000000000004
+     },
+     {
+      "benefit_delta": 0.2,
+      "roi": 0.8
+     }
+    ],
+    "assumptions": {
+     "discount_rate": 0.1,
+     "benefit_flat": true,
+     "baseline_year": "2025",
+     "baseline_revenue": 65208896.42,
+     "baseline_margin": 0.3040232871341698
+    }
+   }
+  ],
+  "risks": [
+   {
+    "risk": "Regulatory approval delay",
+    "category": "Regulatory",
+    "probability": 0.65,
+    "impact": 0.8,
+    "mitigation": "Engage local counsel early; stage licensing",
+    "risk_score": 0.52,
+    "evidence": [
+     "synthetic://uae-currency-and-duties",
+     "synthetic://uae-market-entry-regulation"
+    ],
+    "requires_human_review": true,
+    "precedents": [
+     "hist_001"
+    ]
+   },
+   {
+    "risk": "Demand shortfall vs plan",
+    "category": "Market",
+    "probability": 0.4,
+    "impact": 0.6,
+    "mitigation": "Pilot first; stage-gate further investment",
+    "risk_score": 0.24,
+    "evidence": [
+     "synthetic://uae-currency-and-duties",
+     "synthetic://uae-market-entry-regulation"
+    ],
+    "requires_human_review": false,
+    "precedents": [
+     "hist_002"
+    ]
+   },
+   {
+    "risk": "Partner execution risk",
+    "category": "Third-party",
+    "probability": 0.3,
+    "impact": 0.5,
+    "mitigation": "Performance-linked contract terms",
+    "risk_score": 0.15,
+    "evidence": [
+     "synthetic://uae-currency-and-duties",
+     "synthetic://uae-market-entry-regulation"
+    ],
+    "requires_human_review": false,
+    "precedents": [
+     "hist_003"
+    ]
+   }
+  ],
+  "options": [
+   {
+    "id": "A",
+    "name": "Full expansion",
+    "cost_usd": 8000000.0,
+    "roi": 0.5,
+    "npv": 1097888.2465802738,
+    "payback_years": 3.3333333333333335,
+    "risk_score": 0.52,
+    "risk": "High",
+    "within_budget": true,
+    "launch_months": 18.0,
+    "within_timeline": true,
+    "within_constraints": true,
+    "constraint_violations": []
+   },
+   {
+    "id": "B",
+    "name": "Pilot",
+    "cost_usd": 2000000.0,
+    "roi": 0.75,
+    "npv": 653550.7385859131,
+    "payback_years": 2.857142857142857,
+    "risk_score": 0.325,
+    "risk": "Medium",
+    "within_budget": true,
+    "launch_months": 9.0,
+    "within_timeline": true,
+    "within_constraints": true,
+    "constraint_violations": []
+   },
+   {
+    "id": "C",
+    "name": "Partnership",
+    "cost_usd": 3000000.0,
+    "roi": 0.5,
+    "npv": 411708.0924676028,
+    "payback_years": 3.3333333333333335,
+    "risk_score": 0.358,
+    "risk": "Medium",
+    "within_budget": true,
+    "launch_months": 12.0,
+    "within_timeline": true,
+    "within_constraints": true,
+    "constraint_violations": []
+   }
+  ],
+  "recommendation": {
+   "id": "B",
+   "name": "Pilot",
+   "cost_usd": 2000000.0,
+   "roi": 0.75,
+   "npv": 653550.7385859131,
+   "payback_years": 2.857142857142857,
+   "risk_score": 0.325,
+   "risk": "Medium",
+   "within_budget": true,
+   "launch_months": 9.0,
+   "within_timeline": true,
+   "within_constraints": true,
+   "constraint_violations": [],
+   "rationale": "Option B (Pilot) offers the best risk-adjusted return within the stated constraints.",
+   "alternatives_considered": 3,
+   "assumptions": [
+    "Benefits are flat over the 5-year horizon, discounted at 10%",
+    "Baseline is 2025 revenue of $65,208,896 at a 30.4% operating margin, from the data warehouse",
+    "Annual benefit assumes a 3.5% revenue uplift: Stub placeholder"
+   ]
+  },
+  "evaluation_scores": {
+   "groundedness": 1.0,
+   "citation_validity": 1.0,
+   "constraint_satisfaction": 1.0,
+   "completeness": 1.0,
+   "policy_compliance": 1.0,
+   "avg_evidence_confidence": 0.7214285714285714,
+   "task_adherence": 1.0,
+   "contradiction_free": 1.0,
+   "tool_call_accuracy": 1.0,
+   "judge_coverage": 1.0,
+   "quality": 1.0
+  },
+  "risk_level": "high",
+  "approval_required": true,
+  "approval_status": "pending",
+  "guardian_decisions": [
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "data_agent.run_sql_readonly",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "data_agent.run_sql_readonly",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "data_agent.run_sql_readonly",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.calculate_margin",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.calculate_growth",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.derive_annual_benefit",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.calculate_roi",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.calculate_payback",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.calculate_npv",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.scenario_analysis",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.sensitivity_analysis",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.derive_annual_benefit",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.calculate_roi",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.calculate_payback",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.calculate_npv",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.scenario_analysis",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.sensitivity_analysis",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.derive_annual_benefit",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.calculate_roi",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.calculate_payback",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.calculate_npv",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.scenario_analysis",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "financial_agent.sensitivity_analysis",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ALLOW",
+    "risk_level": "low",
+    "risk_score": 0.1,
+    "reasons": [
+     "allowed by policy"
+    ],
+    "subject": "risk_agent.risk_lookup",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   },
+   {
+    "action": "ESCALATE",
+    "risk_level": "high",
+    "risk_score": 0.9,
+    "reasons": [
+     "financial commitment $2,000,000 exceeds policy threshold",
+     "client-facing recommendation is a high-risk action",
+     "1 risk(s) flagged for human review"
+    ],
+    "subject": "workflow",
+    "source": "deterministic",
+    "modifications": {},
+    "feedback": ""
+   }
+  ],
+  "guardian_feedback": "",
+  "guardian_route": "approval",
+  "failures": []
+ },
+ "guardian_decisions": [
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "data_agent.run_sql_readonly",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "data_agent.run_sql_readonly",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "data_agent.run_sql_readonly",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.calculate_margin",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.calculate_growth",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.derive_annual_benefit",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.calculate_roi",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.calculate_payback",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.calculate_npv",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.scenario_analysis",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.sensitivity_analysis",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.derive_annual_benefit",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.calculate_roi",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.calculate_payback",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.calculate_npv",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.scenario_analysis",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.sensitivity_analysis",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.derive_annual_benefit",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.calculate_roi",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.calculate_payback",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.calculate_npv",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.scenario_analysis",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "financial_agent.sensitivity_analysis",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ALLOW",
+   "risk_level": "low",
+   "risk_score": 0.1,
+   "reasons": [
+    "allowed by policy"
+   ],
+   "subject": "risk_agent.risk_lookup",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  },
+  {
+   "action": "ESCALATE",
+   "risk_level": "high",
+   "risk_score": 0.9,
+   "reasons": [
+    "financial commitment $2,000,000 exceeds policy threshold",
+    "client-facing recommendation is a high-risk action",
+    "1 risk(s) flagged for human review"
+   ],
+   "subject": "workflow",
+   "source": "deterministic",
+   "modifications": {},
+   "feedback": ""
+  }
+ ],
+ "metrics": {
+  "tool_call_success_rate": 1.0,
+  "invalid_schema_rate": 0.0,
+  "schema_escalations": 0,
+  "escalation_rate": 0.04,
+  "unauthorized_action_rate": 0.0,
+  "task_completion_rate": 1.0,
+  "input_tokens": 7312,
+  "output_tokens": 1263,
+  "total_engagement_cost": 0.092382,
+  "cost_per_task": 0.015397000000000001,
+  "cost_per_successful_task": 0.015397000000000001
+ },
+ "budget": {
+  "tokens": 8575,
+  "cost_usd": 0.092382,
+  "tool_calls": 24
+ }
+}

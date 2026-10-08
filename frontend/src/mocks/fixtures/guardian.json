@@ -1,0 +1,304 @@
+[
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "data_agent.run_sql_readonly",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "data_agent.run_sql_readonly",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "data_agent.run_sql_readonly",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.calculate_margin",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.calculate_growth",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.derive_annual_benefit",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.calculate_roi",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.calculate_payback",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.calculate_npv",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.scenario_analysis",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.sensitivity_analysis",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.derive_annual_benefit",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.calculate_roi",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.calculate_payback",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.calculate_npv",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.scenario_analysis",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.sensitivity_analysis",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.derive_annual_benefit",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.calculate_roi",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.calculate_payback",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.calculate_npv",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.scenario_analysis",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "financial_agent.sensitivity_analysis",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ALLOW",
+  "risk_level": "low",
+  "risk_score": 0.1,
+  "reasons": [
+   "allowed by policy"
+  ],
+  "subject": "risk_agent.risk_lookup",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ },
+ {
+  "action": "ESCALATE",
+  "risk_level": "high",
+  "risk_score": 0.9,
+  "reasons": [
+   "financial commitment $2,000,000 exceeds policy threshold",
+   "client-facing recommendation is a high-risk action",
+   "1 risk(s) flagged for human review"
+  ],
+  "subject": "workflow",
+  "source": "deterministic",
+  "modifications": {},
+  "feedback": ""
+ }
+]

@@ -1,0 +1,43 @@
+{
+ "workflow_id": "wf_4ec8ac081c",
+ "datasets": [
+  "finance.revenue",
+  "finance.costs"
+ ],
+ "table_context": {
+  "finance.revenue": {
+   "description": "Recognised monthly revenue by region",
+   "columns": {
+    "date": "Month of recognition (first day) [TEXT]",
+    "region": "Sales region [TEXT]",
+    "revenue": "Total recognised revenue, USD [REAL]"
+   },
+   "owner": "finance",
+   "sensitivity": "internal"
+  },
+  "finance.costs": {
+   "description": "Operating costs by region",
+   "columns": {
+    "date": "Month the cost was incurred [TEXT]",
+    "region": "Region [TEXT]",
+    "cost": "Operating cost, USD [REAL]"
+   },
+   "owner": "finance",
+   "sensitivity": "internal"
+  }
+ },
+ "queries": [
+  {
+   "query": "SELECT region, SUM(revenue) AS revenue FROM finance.revenue GROUP BY region",
+   "row_count": 4
+  },
+  {
+   "query": "SELECT substr(date, 1, 4) AS year, SUM(revenue) AS revenue FROM finance.revenue GROUP BY substr(date, 1, 4) ORDER BY year",
+   "row_count": 2
+  },
+  {
+   "query": "SELECT substr(date, 1, 4) AS year, SUM(cost) AS cost FROM finance.costs GROUP BY substr(date, 1, 4) ORDER BY year",
+   "row_count": 2
+  }
+ ]
+}
