@@ -17,3 +17,6 @@ app.add_middleware(CORSMiddleware, allow_origins=cors_origin_list(settings),
 app.state.authenticator = build_authenticator(settings)  # refuses AUTH_MODE=dev outside ENVIRONMENT=dev
 app.state.service = EngagementService(settings)
 app.include_router(router)
+if settings.demo_seed:
+    from app.demo_seed import seed_in_background
+    seed_in_background(app.state.service)

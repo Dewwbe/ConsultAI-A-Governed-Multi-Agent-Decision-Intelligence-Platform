@@ -41,4 +41,9 @@ def build_tracer_provider(settings: Any, exporter: SpanExporter | None = None) -
     provider = TracerProvider(resource=Resource.create({
         "service.name": "consultai", "deployment.environment": settings.environment}))
     provider.add_span_processor(SimpleSpanProcessor(chosen) if exporter is not None else BatchSpanProcessor(chosen))
+    if exporter is None:
+        # The Azure exporter reads the service name from the *global* provider; without this every span arrives in
+        # Application Insights as "unknown_service" and it logs a warning on each export.
+        from opentelemetry import trace
+        trace.set_tracer_provider(provider)
     return provider

@@ -62,6 +62,7 @@ class Settings(BaseSettings):
     cosmos_database: str = "consultai"
     cosmos_container: str = "memory"
 
+    demo_seed: bool = False  # fill an empty database with sample engagements at start-up (public demo)
     cors_origins: str = "http://localhost:5173,http://localhost:3000"  # comma-separated
 
     def __repr_args__(self):  # a stray print or log of the settings must not leak a key
