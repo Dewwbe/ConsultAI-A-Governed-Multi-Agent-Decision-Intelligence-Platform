@@ -30,7 +30,7 @@ class DataAnalystAgent(BaseAgent):
 
     def __init__(self, ctx, source: DataSource | None = None):
         super().__init__(ctx)
-        self.source = source or SqliteDataSource()
+        self.source = source or getattr(ctx, "data_source", None) or SqliteDataSource()
 
     def execute(self, view: dict[str, Any]) -> dict[str, Any]:
         allowed = self.ctx.policy.agent_spec(self.name).get("allowed_tables", [])

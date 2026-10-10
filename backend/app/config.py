@@ -41,10 +41,32 @@ class Settings(BaseSettings):
     model_medium: str = ""
     model_reasoning: str = ""
 
+    # Where knowledge, enterprise data and memory live. The defaults are offline stand-ins; set these to use Azure.
+    retriever: str = "local"  # local | azure_search
+    azure_search_endpoint: str = ""
+    azure_search_index: str = "consultai-chunks"
+    azure_search_api_key: str = ""  # empty -> Microsoft Entra ID
+    embedding_deployment: str = ""  # Azure OpenAI embedding deployment; empty keeps the offline hashing embedder
+    embedding_dimensions: int = 0  # 0 = the model's default size
+    adls_account_url: str = ""  # https://<account>.dfs.core.windows.net
+    adls_container: str = ""
+    adls_prefix: str = ""
+    data_source: str = "sqlite"  # sqlite | databricks
+    databricks_host: str = ""
+    databricks_http_path: str = ""
+    databricks_token: str = ""  # empty -> Microsoft Entra ID
+    databricks_catalog: str = "main"
+    memory_store: str = "memory"  # memory | cosmos
+    cosmos_endpoint: str = ""
+    cosmos_key: str = ""  # empty -> Microsoft Entra ID
+    cosmos_database: str = "consultai"
+    cosmos_container: str = "memory"
+
     cors_origins: str = "http://localhost:5173,http://localhost:3000"  # comma-separated
 
     def __repr_args__(self):  # a stray print or log of the settings must not leak a key
-        secret = {"azure_openai_api_key", "applicationinsights_connection_string", "database_url"}
+        secret = {"azure_openai_api_key", "applicationinsights_connection_string", "database_url", "azure_search_api_key",
+                  "databricks_token", "cosmos_key"}
         for key, value in super().__repr_args__():
             yield key, ("***" if key in secret and value else value)
 

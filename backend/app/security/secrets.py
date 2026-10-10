@@ -14,7 +14,8 @@ from typing import Any, Protocol
 
 REF_PREFIX = "keyvault:"
 # Settings fields that may hold a secret, and so may be a keyvault: reference.
-SECRET_FIELDS = ("azure_openai_api_key", "applicationinsights_connection_string", "database_url")
+SECRET_FIELDS = ("azure_openai_api_key", "applicationinsights_connection_string", "database_url", "azure_search_api_key",
+                 "databricks_token", "cosmos_key")
 
 
 class SecretError(RuntimeError):

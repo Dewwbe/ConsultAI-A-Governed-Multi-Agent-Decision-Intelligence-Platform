@@ -19,6 +19,7 @@ from typing import Any
 
 from langgraph.types import Command
 
+from app.adapters import build_backends
 from app.agents.base import RuntimeContext
 from app.config import Settings, get_settings
 from app.control_plane.budget import Budget
@@ -32,10 +33,8 @@ from app.control_plane.providers import BreakerRegistry, FallbackLog
 from app.control_plane.router import ModelRouter
 from app.control_plane.tool_registry import default_registry
 from app.knowledge.cached import CachedRetriever
-from app.knowledge.demo_corpus import DEMO_CORPUS
-from app.knowledge.retriever import LocalRetriever, ReplayMismatch, RetrievalRecord
+from app.knowledge.retriever import ReplayMismatch, RetrievalRecord
 from app.knowledge.semantic_cache import SemanticCache
-from app.memory.store import MemoryStore
 from app.observability import aggregate
 from app.observability.export import build_tracer_provider
 from app.observability.metrics import engagement_metrics
@@ -79,9 +78,9 @@ class EngagementService:
         if self.policy.sha256:
             self.db.record_policy(self.policy.version, self.policy.sha256, self.policy.source_text)
         self.graph = build_graph(checkpointer or make_checkpointer(self.settings.database_url))
-        self.memory = MemoryStore()
-        self.index_retriever = LocalRetriever(DEMO_CORPUS)  # built once; Azure AI Search later
-        self.cache = SemanticCache(self.index_retriever.embedder)
+        backends = build_backends(self.settings)
+        self.memory, self.index_retriever, self.data_source = backends.memory, backends.retriever, backends.data_source
+        self.cache = SemanticCache(backends.embedder)
         self.registry = default_registry()
         # Provider health is a fact about the provider, so breakers and the fallback log are shared by every run.
         self.breakers = BreakerRegistry()
@@ -143,7 +142,8 @@ class EngagementService:
                          pii_mode=self.policy.pii_mode)
         tools = ToolExecutor(self.registry, guardian, budget, trace, log)
         return RuntimeContext(workflow_id, self.policy, guardian, budget, trace, llm, tools,
-                              CachedRetriever(self.index_retriever, self.cache), self.memory, log, degradation)
+                              CachedRetriever(self.index_retriever, self.cache), self.memory, log, degradation,
+                              data_source=self.data_source)
 
     def _restore_degradation(self) -> DegradationState:
         """After a restart, carry on at the level we were at (it is part of how cautious to be)."""

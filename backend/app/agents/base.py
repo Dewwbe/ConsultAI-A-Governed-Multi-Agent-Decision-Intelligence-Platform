@@ -36,6 +36,7 @@ class RuntimeContext:
     memory: MemoryStore
     log: dict[str, list]  # guardian_decisions, failures (shared with ToolExecutor)
     degradation: DegradationState = field(default_factory=DegradationState)  # how cautious to be for this run
+    data_source: Any = None  # enterprise data (Databricks or the offline stand-in); None -> the agent default
 
 
 class BaseAgent(ABC):

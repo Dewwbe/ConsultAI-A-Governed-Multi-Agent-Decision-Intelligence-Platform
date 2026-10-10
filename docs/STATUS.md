@@ -6,7 +6,7 @@ Last updated 2026-10-08. Everything that can be built and verified without cloud
 
 | Suite | Result |
 |---|---|
-| Backend (`pytest`) | 323 passed, 1 skipped (the optional Postgres test, which needs a server) |
+| Backend (`pytest`) | 365 passed, 1 skipped (the optional Postgres test, which needs a server) |
 | Frontend unit, component and accessibility (`npm test`) | 230 passed, 2 skipped (live-backend contract test, run in CI) |
 | End to end (`npm run e2e`) | 8 passed: approve, reject, modify, role limits, Control Center, Governance, tablet layout |
 | Static checks | `ruff`, `eslint`, `tsc --strict` and the production build are clean |
@@ -24,17 +24,29 @@ Last updated 2026-10-08. Everything that can be built and verified without cloud
 | Frontend | New engagement, live pipeline, evidence and data views, partner review and approval, Control Center (overview and run), Governance, Entra sign-in, dark mode, axe-tested pages, tablet layouts |
 | Demo | `python backend/scripts/demo.py`: API, seeded data and UI in one command |
 
+## Built, tested against fakes, waiting for a live check
+
+These are written and unit-tested against in-memory fakes of the Azure SDK clients (365 backend tests). What a fake
+cannot prove is that the real service accepts them, so each has a live check in `scripts/verify_azure.py`.
+
+| Item | Code | Switch on with | Live check |
+|---|---|---|---|
+| Azure AI Search retriever (hybrid search, security trimming in the query, replay by content hash), embeddings | `knowledge/azure_search.py`, `scripts/ingest_corpus.py` | `RETRIEVER=azure_search`, `AZURE_SEARCH_ENDPOINT`, `EMBEDDING_DEPLOYMENT` | `verify_azure.py --only search` |
+| ADLS corpus reader | `knowledge/adls.py` | `ingest_corpus.py --adls`, `ADLS_ACCOUNT_URL`, `ADLS_CONTAINER` | `--only adls` |
+| Databricks `DataSource` (single read-only SELECT, row cap, semantic layer from Unity Catalog) | `data/databricks_source.py` | `DATA_SOURCE=databricks`, `DATABRICKS_HOST`, `DATABRICKS_HTTP_PATH` | `--only databricks` |
+| Cosmos DB `MemoryStore` (same rules as the in-memory store; TTL on facts) | `memory/cosmos_store.py` | `MEMORY_STORE=cosmos`, `COSMOS_ENDPOINT` | `--only cosmos` |
+| Azure Monitor export | `observability/export.py` | `APPLICATIONINSIGHTS_CONNECTION_STRING` | `--only monitor` prints the query that finds the test span |
+| Judge calibration | `control_plane/calibration.py`, `scripts/calibrate_judge.py` | needs real decisions | run the script; it states when the sample is too thin |
+| Docker images | `infra/docker`, `frontend/Dockerfile` | `docker build` | API image built and answered `/health` |
+
 ## Not done: needs real services or real people
 
 | Item | Why it is open |
 |---|---|
-| Azure AI Search retriever, ADLS ingestion, embeddings | Needs an Azure Search index and a storage account; the retriever interface and a local stub exist |
-| Databricks `DataSource` | Needs a workspace; a local SQL source exists behind the same interface |
-| Cosmos DB `MemoryStore` | Needs a Cosmos account; an in-process store exists behind the interface |
-| Formal 20-run Phase 1 measurement | About 10 real-model runs showed 0% invalid structured output; the 20-run record was shortened on request. Run `backend/scripts/measure_schema_validity.py` to complete it |
-| Judge calibration against real partner decisions | Needs real decisions; the decision dataset is recorded and exportable (`scripts/export_decisions.py`) |
-| Azure Monitor and Foundry evaluator verification | Exporters are written and unit-tested against fakes; not run against live Azure |
-| Docker image build and Postgres test | Both need the Docker daemon or a Postgres server running locally; CI covers the Python and Node steps |
+| A live run of `verify_azure.py` | Needs your Azure resources and credentials; nothing above has touched a real Search, ADLS, Databricks, Cosmos or Application Insights service yet |
+| Formal 20-run Phase 1 measurement | About 10 real-model runs showed 0% invalid structured output. Run `backend/scripts/measure_schema_validity.py` to complete the record |
+| Judge calibration result | Needs at least 30 approved and 30 not-approved partner decisions on real runs. With fewer, the script reports "thin sample" |
+| Foundry evaluators | The LLM judge, bounded by deterministic checks, is the evaluator; Foundry is not wired |
 
 ## Known limits
 
