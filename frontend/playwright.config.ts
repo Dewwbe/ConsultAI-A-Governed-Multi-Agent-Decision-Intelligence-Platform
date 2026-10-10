@@ -30,6 +30,7 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
       timeout: 60_000,
       env: {
+        CONSULTAI_IGNORE_DOTENV: "1", // never use the live Azure services a developer's backend/.env may point at
         LLM_PROVIDER: "stub",
         AUTH_MODE: "dev",
         ENVIRONMENT: "dev",

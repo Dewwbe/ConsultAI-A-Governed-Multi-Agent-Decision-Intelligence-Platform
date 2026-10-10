@@ -1,6 +1,6 @@
 import { LoaderCircle, Play, Wand2 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCreateEngagement } from "@/api/hooks";
 import { ValidationError } from "@/api/errors";
 import { ErrorState } from "@/components/states/states";
@@ -57,7 +57,10 @@ function Field({
 export function NewEngagementPage() {
   const navigate = useNavigate();
   const create = useCreateEngagement();
-  const [form, setForm] = useState<EngagementForm>(EMPTY_FORM);
+  const location = useLocation();
+  // a question picked on the dashboard arrives pre-filled; the user can still edit everything
+  const prefill = (location.state as { prefill?: EngagementForm } | null)?.prefill;
+  const [form, setForm] = useState<EngagementForm>(() => prefill ?? EMPTY_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const summaryRef = useRef<HTMLDivElement>(null);
   const [submitted, setSubmitted] = useState(false);

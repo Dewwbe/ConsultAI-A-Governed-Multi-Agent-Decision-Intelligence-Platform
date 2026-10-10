@@ -11,7 +11,7 @@ param(
   [Parameter(Mandatory)] [string] $ResourceGroup,
   [string] $Location = "uksouth",
   [Parameter(Mandatory)] [string] $Suffix,
-  [string] $StaticWebAppLocation = "westeurope"
+  [string] $StaticWebAppLocation = ""   # empty: try each Static Web Apps region until one is accepted
 )
 # Not "Stop": Windows PowerShell 5 would abort on any text az writes to stderr (warnings included), even on success.
 # Every step is checked by its exit code in Run instead.
@@ -32,7 +32,8 @@ $acr = "consultaiacr$Suffix"          # letters and digits only
 $env_name = "consultai-env"
 $app = "consultai-api-$Suffix"
 $swa = "consultai-web-$Suffix"
-$image = "$acr.azurecr.io/consultai-api:latest"
+# a new tag per deploy, so Container Apps always starts a new revision with the new code
+$image = "$acr.azurecr.io/consultai-api:" + (Get-Date -Format "yyyyMMdd-HHmmss")
 
 Step "Providers"
 foreach ($ns in "Microsoft.App", "Microsoft.ContainerRegistry", "Microsoft.OperationalInsights", "Microsoft.Web") {
@@ -61,7 +62,18 @@ Step "Container Apps environment"
 if (-not (Exists az containerapp env show --name $env_name --resource-group $ResourceGroup)) { Run az containerapp env create --name $env_name --resource-group $ResourceGroup --location $Location }
 
 Step "Static Web App for the UI ($swa)"
-if (-not (Exists az staticwebapp show --name $swa --resource-group $ResourceGroup)) { Run az staticwebapp create --name $swa --resource-group $ResourceGroup --location $StaticWebAppLocation --sku Free }
+if (-not (Exists az staticwebapp show --name $swa --resource-group $ResourceGroup)) {
+  # Static Web Apps exists in only a few regions, and some subscriptions are refused in some of them. The region only
+  # holds the app's settings: the site itself is served from Azure's global edge, so any region is fine for visitors.
+  $regions = if ($StaticWebAppLocation) { @($StaticWebAppLocation) } else { @("westeurope", "eastus2", "centralus", "westus2", "eastasia") }
+  $created = $false
+  foreach ($r in $regions) {
+    Write-Host "trying $r"
+    az staticwebapp create --name $swa --resource-group $ResourceGroup --location $r --sku Free --output none
+    if ($LASTEXITCODE -eq 0) { $created = $true; Write-Host "created in $r"; break }
+  }
+  if (-not $created) { throw "no Static Web Apps region accepted this subscription: $($regions -join ', ')" }
+}
 $webHost = az staticwebapp show --name $swa --resource-group $ResourceGroup --query defaultHostname -o tsv
 if (-not $webHost) { throw "could not read the Static Web App address" }
 $webUrl = "https://$webHost"

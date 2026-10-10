@@ -34,14 +34,15 @@ describe("dashboard", () => {
 
   it("shows the server's view of the user, including the approver capability", async () => {
     renderApp("/", { user: "pat", roles: ["Partner"] });
-    expect(await screen.findByText("pat", { selector: "dd" })).toBeInTheDocument();
-    expect(screen.getByText("Partner", { selector: "span" })).toBeInTheDocument();
-    expect(screen.getByText("Yes")).toBeInTheDocument();
+    const welcome = await screen.findByRole("region", { name: "Your access" });
+    expect(await within(welcome).findByText("pat")).toBeInTheDocument();
+    expect(within(welcome).getByText("Partner")).toBeInTheDocument();
+    expect(within(welcome).getByText("Can approve")).toBeInTheDocument();
   });
 
   it("says 'No' when the user cannot approve", async () => {
     renderApp("/", { user: "ann", roles: ["Analyst"] });
-    expect(await screen.findByText("No")).toBeInTheDocument();
+    expect(await screen.findByText("Cannot approve")).toBeInTheDocument();
   });
 });
 
@@ -95,10 +96,10 @@ describe("shell and role-aware routing", () => {
 describe("dev identity switcher", () => {
   it("changes the identity the API sees and refetches", async () => {
     renderApp("/", { user: "ann", roles: [] });
-    expect(await screen.findByText("No")).toBeInTheDocument();
+    expect(await screen.findByText("Cannot approve")).toBeInTheDocument();
     await userEvent.click(screen.getByText("ann", { selector: "summary span" }));
     await userEvent.click(screen.getByRole("checkbox", { name: "Partner" }));
-    await waitFor(() => expect(screen.getByText("Yes")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Can approve")).toBeInTheDocument());
     expect(window.localStorage.getItem("consultai.devIdentity")).toContain("Partner");
   });
 });

@@ -14,6 +14,7 @@ from pathlib import Path
 
 BACKEND = Path(__file__).resolve().parents[1]
 OUTPUT = Path(sys.argv[1]).resolve() if len(sys.argv) == 2 else None  # resolve before chdir
+os.environ["CONSULTAI_IGNORE_DOTENV"] = "1"  # never reach a live service from backend/.env
 os.environ["LLM_PROVIDER"] = "stub"
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 os.environ["AUTH_MODE"] = "dev"

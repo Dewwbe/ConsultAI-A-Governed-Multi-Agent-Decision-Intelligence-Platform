@@ -41,8 +41,8 @@
   "success_rate": 0.3333,
   "cost_per_successful_task": 0.320024,
   "avg_tokens": 9523.3333,
-  "p50_duration_sec": 0.031,
-  "p95_duration_sec": 0.031,
+  "p50_duration_sec": 0.032,
+  "p95_duration_sec": 0.0329,
   "cost_by_agent": [
    {
     "agent": "data_agent",

@@ -15,7 +15,7 @@ VIEWS: dict[str, tuple[str, ...]] = {
     "risk_agent": _BASE + ("engagement_spec", "research_results", "financial_models", "analysis_results"),
     "solution_agent": _BASE + ("engagement_spec", "research_results", "analysis_results",
                                "financial_models", "risks", "guardian_feedback"),
-    "report_agent": _BASE + ("engagement_spec", "recommendation", "options", "evaluation_scores",
+    "report_agent": _BASE + ("engagement_spec", "recommendation", "options", "risks", "evaluation_scores",
                              "approval_status", "approval_feedback"),
 }
 

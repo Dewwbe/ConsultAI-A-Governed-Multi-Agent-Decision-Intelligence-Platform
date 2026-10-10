@@ -1,11 +1,16 @@
+import os
 from functools import lru_cache
 from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Offline tools (fixture recording, the demo, end-to-end tests, the OpenAPI export) set this so a developer's .env, which
+# may point at live Azure services, can never leak into them.
+IGNORE_DOTENV = os.environ.get("CONSULTAI_IGNORE_DOTENV", "").lower() in {"1", "true", "yes"}
+
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=None if IGNORE_DOTENV else ".env", extra="ignore")
 
     llm_provider: str = "stub"  # stub | azure_openai
     environment: str = "dev"

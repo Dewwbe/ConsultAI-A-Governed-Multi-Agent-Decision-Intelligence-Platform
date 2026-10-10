@@ -1,7 +1,9 @@
 """Tests must be hermetic: never read backend/.env, call a real model, or touch a real Azure service."""
 import os
 
-from app.config import Settings
+os.environ["CONSULTAI_IGNORE_DOTENV"] = "1"
+
+from app.config import Settings  # imported after the switch above, which it reads
 
 # A developer's .env can hold live keys and point at real Azure services (search, Databricks, Cosmos...). Tests must
 # never read it, so the file is switched off for every Settings object a test creates.

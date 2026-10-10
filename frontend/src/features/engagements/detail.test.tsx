@@ -162,8 +162,18 @@ describe("engagement detail: result panels", () => {
     open(COMPLETED);
     expect(await screen.findByText("Completed", { selector: "span" })).toBeInTheDocument();
     await tab("Report");
+    // each part of the report is its own titled section
+    for (const name of ["1. Recommendation", "2. Partner decision", "3. Options considered", "4. Key risks", "5. Assumptions", "6. Quality checks", "Report text"]) {
+      expect(await screen.findByRole("heading", { name })).toBeInTheDocument();
+    }
+    expect(screen.getByText("Approved", { selector: "span" })).toBeInTheDocument();
+    const options = screen.getByRole("table", { name: "Options considered" });
+    expect(within(options).getByText("Recommended").closest("tr")).toHaveTextContent("Pilot");
+    expect(screen.getByText("Return on investment", { selector: "dt" }).nextElementSibling).toHaveTextContent("75%");
+    // and the text version is folded away below, for download or pasting
+    await userEvent.click(screen.getByRole("button", { name: "Show the full text" }));
     expect(await screen.findByRole("heading", { name: /Engagement Report: Should we expand into the UAE market\?/ })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Options considered" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /download/i })).toBeInTheDocument();
   });
 
   it("report: markdown cannot inject HTML", async () => {
@@ -171,6 +181,7 @@ describe("engagement detail: result panels", () => {
     server.use(http.get(`${API}/engagements/:id`, () => HttpResponse.json(evil)));
     const { container } = open(COMPLETED);
     await tab("Report");
+    await userEvent.click(await screen.findByRole("button", { name: "Show the full text" }));
     await screen.findByRole("heading", { name: "Title" });
     expect(container.querySelector("img")).toBeNull();
     expect(container.querySelector("script")).toBeNull();

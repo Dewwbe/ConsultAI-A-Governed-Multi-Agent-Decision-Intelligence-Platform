@@ -45,14 +45,37 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
   );
 }
 
-export function Section({ title, description, children, ...props }: { title: string; description?: string } & HTMLAttributes<HTMLElement>) {
+/** A titled block. The purple bar beside the heading marks where one section ends and the next begins. */
+export function Section({ title, description, children, className, ...props }: { title: string; description?: string } & HTMLAttributes<HTMLElement>) {
   return (
-    <section className="space-y-3" {...props}>
-      <div>
+    <section className={cn("space-y-3", className)} {...props}>
+      <div className="border-l-4 border-primary pl-3">
         <h2 className="text-sm font-semibold">{title}</h2>
         {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </div>
       {children}
+    </section>
+  );
+}
+
+/** A section in its own card, for pages that read as a document (the report) or a dashboard: each block is
+ *  visibly separate, with a tinted header strip. */
+export function SectionCard({ title, description, icon, actions, children, className }: {
+  title: string; description?: string; icon?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string;
+}) {
+  return (
+    <section className={cn("overflow-hidden rounded-xl border bg-card shadow-sm", className)}>
+      <div className="flex items-start justify-between gap-3 border-b bg-accent-soft px-4 py-3">
+        <div className="flex items-start gap-2.5">
+          {icon && <span aria-hidden="true" className="mt-0.5 text-primary">{icon}</span>}
+          <div>
+            <h2 className="text-sm font-semibold">{title}</h2>
+            {description && <p className="text-xs text-muted-foreground">{description}</p>}
+          </div>
+        </div>
+        {actions}
+      </div>
+      <div className="p-4">{children}</div>
     </section>
   );
 }

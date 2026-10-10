@@ -13,15 +13,20 @@
   --muted-foreground: #556070;
   --border: #d9dfe8;
   --input: #c5cddb;
-  --primary: #2456d6;
+  --primary: #6b3fa0; /* brand purple: white text on it is 7.4:1 */
   --primary-foreground: #ffffff;
-  --secondary: #e6ebf3;
+  --secondary: #ece6f5;
   --secondary-foreground: #1b2438;
   --destructive: #b91c1c;
   --destructive-foreground: #ffffff;
   --success: #15803d;
   --warning: #92400e;
-  --ring: #2456d6;
+  --ring: #6b3fa0;
+  /* the purple band on the dashboard and page headers; white text on both ends is at least 6:1 */
+  --brand-from: #4a2783;
+  --brand-to: #7b4fb0;
+  --brand-foreground: #ffffff;
+  --accent-soft: #f1ebf9; /* tinted section headers */
   --radius: 0.625rem;
   /* Chart palette: the validated categorical order (validate_palette.js: all gates pass on this surface; the
      light-mode contrast WARN for aqua/yellow/magenta is met by visible labels, legends and table views). */
@@ -45,15 +50,19 @@
   --muted-foreground: #9aa6bb;
   --border: #26324a;
   --input: #34415c;
-  --primary: #7aa2ff;
-  --primary-foreground: #0b1220;
+  --primary: #c4a5f2;
+  --primary-foreground: #1a1029;
   --secondary: #1f2a40;
   --secondary-foreground: #e6eaf2;
   --destructive: #f87171;
   --destructive-foreground: #0b1220;
   --success: #4ade80;
   --warning: #fbbf24;
-  --ring: #7aa2ff;
+  --ring: #c4a5f2;
+  --brand-from: #3a1f68;
+  --brand-to: #5f3a92;
+  --brand-foreground: #ffffff;
+  --accent-soft: #221a36;
   --series-1: #3987e5;
   --series-2: #d95926;
   --series-3: #199e70;
@@ -83,6 +92,10 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-ring: var(--ring);
+  --color-brand-from: var(--brand-from);
+  --color-brand-to: var(--brand-to);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-accent-soft: var(--accent-soft);
   --color-series-1: var(--series-1);
   --color-series-2: var(--series-2);
   --color-series-3: var(--series-3);

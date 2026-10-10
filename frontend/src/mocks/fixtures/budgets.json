@@ -8,7 +8,7 @@
  "running": [],
  "recent": [
   {
-   "workflow_id": "wf_0cee1a7a92",
+   "workflow_id": "wf_7b0f1f6e0e",
    "status": "awaiting_approval",
    "tokens": 8575,
    "cost_usd": 0.092382,
@@ -19,7 +19,7 @@
    "near_limit": false
   },
   {
-   "workflow_id": "wf_7471ce689d",
+   "workflow_id": "wf_65be9cd5f6",
    "status": "rejected",
    "tokens": 11420,
    "cost_usd": 0.13526,
@@ -30,7 +30,7 @@
    "near_limit": false
   },
   {
-   "workflow_id": "wf_f9d2cfb8a7",
+   "workflow_id": "wf_cbda594ea7",
    "status": "completed",
    "tokens": 8575,
    "cost_usd": 0.092382,

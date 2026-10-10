@@ -15,7 +15,7 @@ from pathlib import Path
 
 BACKEND = Path(__file__).resolve().parents[1]
 OUT = Path(sys.argv[1]).resolve() if len(sys.argv) == 2 else None  # resolve before chdir
-os.environ.update(LLM_PROVIDER="stub", DATABASE_URL="sqlite:///:memory:", AUTH_MODE="dev", ENVIRONMENT="dev")
+os.environ.update(CONSULTAI_IGNORE_DOTENV="1", LLM_PROVIDER="stub", DATABASE_URL="sqlite:///:memory:", AUTH_MODE="dev", ENVIRONMENT="dev")
 os.chdir(BACKEND)
 sys.path.insert(0, str(BACKEND))
 

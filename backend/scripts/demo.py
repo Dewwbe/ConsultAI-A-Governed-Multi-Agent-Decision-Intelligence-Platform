@@ -82,7 +82,7 @@ def main() -> int:
     db = BACKEND / "demo.db"
     for suffix in ("", "-wal", "-shm"):
         Path(f"{db}{suffix}").unlink(missing_ok=True)
-    env = {**os.environ, "LLM_PROVIDER": "stub", "AUTH_MODE": "dev", "ENVIRONMENT": "dev",
+    env = {**os.environ, "CONSULTAI_IGNORE_DOTENV": "1", "LLM_PROVIDER": "stub", "AUTH_MODE": "dev", "ENVIRONMENT": "dev",
            "DATABASE_URL": f"sqlite:///{db.as_posix()}",
            "CORS_ORIGINS": f"http://localhost:{args.ui_port},http://127.0.0.1:{args.ui_port}"}
     procs: list[subprocess.Popen] = []

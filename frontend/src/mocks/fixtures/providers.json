@@ -20,9 +20,9 @@
     "last_error_at": null
    },
    "limits": {
-    "requests_available": 576.5,
+    "requests_available": 577.3,
     "requests_capacity": 600.0,
-    "tokens_available": 105096.0,
+    "tokens_available": 105291.0,
     "tokens_capacity": 150000.0,
     "in_flight": 0,
     "max_concurrent": 8,
@@ -92,17 +92,17 @@
  "routing": [
   {
    "tier": "small",
-   "deployment": "small",
+   "deployment": "(stub or not set)",
    "price_per_1k_usd": 0.0005
   },
   {
    "tier": "medium",
-   "deployment": "medium",
+   "deployment": "(stub or not set)",
    "price_per_1k_usd": 0.003
   },
   {
    "tier": "reasoning",
-   "deployment": "reasoning",
+   "deployment": "(stub or not set)",
    "price_per_1k_usd": 0.015
   }
  ],

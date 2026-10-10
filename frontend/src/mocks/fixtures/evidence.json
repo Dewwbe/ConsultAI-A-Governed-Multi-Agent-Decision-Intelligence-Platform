@@ -1,11 +1,11 @@
 {
- "workflow_id": "wf_0cee1a7a92",
+ "workflow_id": "wf_7b0f1f6e0e",
  "claims": [
   {
    "claim": "SYNTHETIC DEMO DATA (fictional). Funding and currency in the UAE scenario: the dirham is pegged to the US dollar, so currency risk on revenue is low, and import duties of 5% apply to most retail goods, which affects profitability.",
    "source": "synthetic://uae-currency-and-duties",
    "publication_date": "2026-03-01",
-   "retrieved_at": "2026-10-08T10:46:43.118295+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "evidence": "SYNTHETIC DEMO DATA (fictional). Funding and currency in the UAE scenario: the dirham is pegged to the US dollar, so currency risk on revenue is low, and import duties of 5% apply to most retail goods, which affects profitability.",
    "confidence": 0.7,
    "relevance": 0.678,
@@ -18,7 +18,7 @@
    "claim": "SYNTHETIC DEMO DATA (fictional). Regulatory requirements and market-entry risks in the UAE scenario: foreign retailers need a trade licence, assumed to take 3 to 6 months and longer if documentation is incomplete. Free-zone entities follow different ownership rules. Market-entry risk is concentrated in licence delays and dependence on a local partner.",
    "source": "synthetic://uae-market-entry-regulation",
    "publication_date": "2026-03-01",
-   "retrieved_at": "2026-10-08T10:46:43.118295+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "evidence": "SYNTHETIC DEMO DATA (fictional). Regulatory requirements and market-entry risks in the UAE scenario: foreign retailers need a trade licence, assumed to take 3 to 6 months and longer if documentation is incomplete. Free-zone entities follow different ownership rules. Market-entry risk is concentrated in licence delays and dependence on a local partner.",
    "confidence": 0.75,
    "relevance": 0.623,
@@ -31,7 +31,7 @@
    "claim": "competition competitor landscape market share placeholder demo evidence",
    "source": "demo://competitor-scan",
    "publication_date": "2026-01-01",
-   "retrieved_at": "2026-10-08T10:46:43.119281+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "evidence": "competition competitor landscape market share placeholder demo evidence",
    "confidence": 0.7,
    "relevance": 0.783,
@@ -44,7 +44,7 @@
    "claim": "SYNTHETIC DEMO DATA (fictional). In this scenario the UAE competitive landscape is led by three regional operators holding 55% market share. International entrants typically reach 2 to 4% share within three years, and competition is strongest in large shopping malls.",
    "source": "synthetic://uae-competitor-landscape",
    "publication_date": "2026-03-01",
-   "retrieved_at": "2026-10-08T10:46:43.119281+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "evidence": "SYNTHETIC DEMO DATA (fictional). In this scenario the UAE competitive landscape is led by three regional operators holding 55% market share. International entrants typically reach 2 to 4% share within three years, and competition is strongest in large shopping malls.",
    "confidence": 0.7,
    "relevance": 0.758,
@@ -57,7 +57,7 @@
    "claim": "SYNTHETIC DEMO DATA (fictional). In this scenario, UAE retail customer segments are tourists at 25% of spend, resident expatriates at 50% and nationals at 25%. Expatriate customers are the most price sensitive, and demand peaks during the winter tourism season.",
    "source": "synthetic://uae-customer-segments",
    "publication_date": "2026-03-01",
-   "retrieved_at": "2026-10-08T10:46:43.119281+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "evidence": "SYNTHETIC DEMO DATA (fictional). In this scenario, UAE retail customer segments are tourists at 25% of spend, resident expatriates at 50% and nationals at 25%. Expatriate customers are the most price sensitive, and demand peaks during the winter tourism season.",
    "confidence": 0.65,
    "relevance": 0.755,
@@ -70,7 +70,7 @@
    "claim": "retail market growth expansion demand placeholder demo evidence",
    "source": "demo://market-overview",
    "publication_date": "2026-01-01",
-   "retrieved_at": "2026-10-08T10:46:43.119281+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "evidence": "retail market growth expansion demand placeholder demo evidence",
    "confidence": 0.8,
    "relevance": 0.484,
@@ -83,7 +83,7 @@
    "claim": "regulatory approval licensing timeline risk placeholder demo evidence",
    "source": "demo://regulatory-guide",
    "publication_date": "2026-01-01",
-   "retrieved_at": "2026-10-08T10:46:43.121281+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "evidence": "regulatory approval licensing timeline risk placeholder demo evidence",
    "confidence": 0.75,
    "relevance": 0.731,
@@ -165,7 +165,7 @@
     "7effdce0ef88f5a7",
     "89b30bc81353ed8a"
    ],
-   "retrieved_at": "2026-10-08T10:46:43.118295+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "filters": {
     "max_classification": "confidential",
     "groups": [
@@ -197,7 +197,7 @@
     "d553e1b541c0513b",
     "6e6fe49ec139787b"
    ],
-   "retrieved_at": "2026-10-08T10:46:43.119281+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "filters": {
     "max_classification": "confidential",
     "groups": [
@@ -229,7 +229,7 @@
     "8c2034bbc6d9ba3b",
     "b249dc006022dac2"
    ],
-   "retrieved_at": "2026-10-08T10:46:43.119281+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "filters": {
     "max_classification": "confidential",
     "groups": [
@@ -261,7 +261,7 @@
     "7effdce0ef88f5a7",
     "8c2034bbc6d9ba3b"
    ],
-   "retrieved_at": "2026-10-08T10:46:43.120280+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "filters": {
     "max_classification": "confidential",
     "groups": [
@@ -293,7 +293,7 @@
     "aedd91cc6bbe5078",
     "89b30bc81353ed8a"
    ],
-   "retrieved_at": "2026-10-08T10:46:43.121281+00:00",
+   "retrieved_at": "2026-10-10T09:29:10.265243+00:00",
    "filters": {
     "max_classification": "confidential",
     "groups": [

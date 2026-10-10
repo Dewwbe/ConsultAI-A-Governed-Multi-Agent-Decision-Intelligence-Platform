@@ -19,6 +19,10 @@ test("README screenshots", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await signInAs(page, "pat", ["Partner", "Admin"]);
 
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: /agents that work on every engagement/i })).toBeVisible();
+  await shot(page, "00-dashboard");
+
   await page.goto("/engagements/new");
   await page.getByRole("button", { name: /use the uae example/i }).click();
   await shot(page, "01-new-engagement");
@@ -37,6 +41,14 @@ test("README screenshots", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await page.getByRole("radio", { name: /^approve/i }).check();
   await shot(page, "04-partner-review");
+
+  await page.getByRole("radio", { name: /^approve/i }).check();
+  await page.getByRole("button", { name: /review decision/i }).click();
+  await page.getByRole("dialog").getByRole("button", { name: "Approve" }).click();
+  await expect(page.getByText("Decision recorded")).toBeVisible();
+  await page.getByRole("tab", { name: /report/i }).click();
+  await expect(page.getByRole("heading", { name: "1. Recommendation" })).toBeVisible();
+  await shot(page, "11-report");
 
   await page.goto(`/control-center/${id}`);
   await page.getByRole("tab", { name: /^trace/i }).click();

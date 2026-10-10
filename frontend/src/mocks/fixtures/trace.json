@@ -1,6 +1,6 @@
 {
- "trace_id": "tr_7f51956303e7",
- "workflow_id": "wf_0cee1a7a92",
+ "trace_id": "tr_b37ec43283f7",
+ "workflow_id": "wf_7b0f1f6e0e",
  "span_count": 46,
  "input_tokens": 7312,
  "output_tokens": 1263,
@@ -9,26 +9,26 @@
  "tool_errors": 0,
  "spans": [
   {
-   "span_id": "sp_6c585aa6",
+   "span_id": "sp_4e391f97",
    "parent_id": null,
    "name": "discovery_agent",
    "kind": "agent",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "discovery_agent"
    },
-   "start": 1791456403.2606988,
-   "latency_ms": 0.8958999533206224,
+   "start": 1791624550.4280891,
+   "latency_ms": 0.964100006967783,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_9b3ac518",
-   "parent_id": "sp_6c585aa6",
+   "span_id": "sp_3994ff01",
+   "parent_id": "sp_4e391f97",
    "name": "llm:extraction",
    "kind": "llm",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "discovery_agent",
     "gen_ai.request.model": "MODEL_SMALL",
     "gen_ai.system": "azure_openai",
@@ -39,32 +39,32 @@
     "gen_ai.usage.output_tokens": 129,
     "consultai.cost_usd": 0.000254
    },
-   "start": 1791456403.261703,
-   "latency_ms": 0.44070009607821703,
+   "start": 1791624550.429098,
+   "latency_ms": 0.4843000788241625,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_6f41a795",
+   "span_id": "sp_2f997404",
    "parent_id": null,
    "name": "research_agent",
    "kind": "agent",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "research_agent"
    },
-   "start": 1791456403.2637048,
-   "latency_ms": 2.6403999654576182,
+   "start": 1791624550.4300985,
+   "latency_ms": 2.988200052641332,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_102e4246",
-   "parent_id": "sp_6f41a795",
+   "span_id": "sp_15d40b1b",
+   "parent_id": "sp_2f997404",
    "name": "retrieval",
    "kind": "retrieval",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "consultai.query": "Market size Should we expand into the UAE market?",
     "consultai.document_ids": [
      "doc_syn_11",
@@ -101,18 +101,18 @@
      ]
     }
    },
-   "start": 1791456403.2648034,
-   "latency_ms": 0.22479996550828218,
+   "start": 1791624550.431604,
+   "latency_ms": 0.2452000044286251,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_f72a7f72",
-   "parent_id": "sp_6f41a795",
+   "span_id": "sp_f38feda1",
+   "parent_id": "sp_2f997404",
    "name": "retrieval",
    "kind": "retrieval",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "consultai.query": "Competition Should we expand into the UAE market?",
     "consultai.document_ids": [
      "doc_demo_3",
@@ -149,18 +149,18 @@
      ]
     }
    },
-   "start": 1791456403.2648034,
-   "latency_ms": 0.16649998724460602,
+   "start": 1791624550.431604,
+   "latency_ms": 0.1829999964684248,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_08a8f173",
-   "parent_id": "sp_6f41a795",
+   "span_id": "sp_945bb639",
+   "parent_id": "sp_2f997404",
    "name": "retrieval",
    "kind": "retrieval",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "consultai.query": "Customer demand Should we expand into the UAE market?",
     "consultai.document_ids": [
      "doc_syn_6",
@@ -197,18 +197,18 @@
      ]
     }
    },
-   "start": 1791456403.2648034,
-   "latency_ms": 0.16309996135532856,
+   "start": 1791624550.431604,
+   "latency_ms": 0.18149998504668474,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_150023c3",
-   "parent_id": "sp_6f41a795",
+   "span_id": "sp_e62157b5",
+   "parent_id": "sp_2f997404",
    "name": "retrieval",
    "kind": "retrieval",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "consultai.query": "Financial viability Should we expand into the UAE market?",
     "consultai.document_ids": [
      "doc_syn_11",
@@ -245,18 +245,18 @@
      ]
     }
    },
-   "start": 1791456403.2648034,
-   "latency_ms": 0.16870000399649143,
+   "start": 1791624550.4326098,
+   "latency_ms": 0.1818999880924821,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_e0ba2618",
-   "parent_id": "sp_6f41a795",
+   "span_id": "sp_137c82f5",
+   "parent_id": "sp_2f997404",
    "name": "retrieval",
    "kind": "retrieval",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "consultai.query": "Regulatory risk Should we expand into the UAE market?",
     "consultai.document_ids": [
      "doc_demo_2",
@@ -293,18 +293,18 @@
      ]
     }
    },
-   "start": 1791456403.2657907,
-   "latency_ms": 0.17509993631392717,
+   "start": 1791624550.4326098,
+   "latency_ms": 0.18580001778900623,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_9445bd80",
-   "parent_id": "sp_6f41a795",
+   "span_id": "sp_978ec666",
+   "parent_id": "sp_2f997404",
    "name": "llm:research_synthesis",
    "kind": "llm",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "research_agent",
     "gen_ai.request.model": "MODEL_MEDIUM",
     "gen_ai.system": "azure_openai",
@@ -315,32 +315,32 @@
     "gen_ai.usage.output_tokens": 772,
     "consultai.cost_usd": 0.004863
    },
-   "start": 1791456403.2657907,
-   "latency_ms": 0.8888000156730413,
+   "start": 1791624550.4336107,
+   "latency_ms": 1.032999949529767,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_a6775217",
+   "span_id": "sp_d64b1910",
    "parent_id": null,
    "name": "data_agent",
    "kind": "agent",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "data_agent"
    },
-   "start": 1791456403.2687864,
-   "latency_ms": 1.474199932999909,
+   "start": 1791624550.4366646,
+   "latency_ms": 1.8263999372720718,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_7793b9ad",
-   "parent_id": "sp_a6775217",
+   "span_id": "sp_6686737f",
+   "parent_id": "sp_d64b1910",
    "name": "llm:simple_sql",
    "kind": "llm",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "data_agent",
     "gen_ai.request.model": "MODEL_SMALL",
     "gen_ai.system": "azure_openai",
@@ -351,18 +351,18 @@
     "gen_ai.usage.output_tokens": 38,
     "consultai.cost_usd": 0.000325
    },
-   "start": 1791456403.2687864,
-   "latency_ms": 0.5108999321237206,
+   "start": 1791624550.4366646,
+   "latency_ms": 0.5837000207975507,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_8b013269",
-   "parent_id": "sp_a6775217",
+   "span_id": "sp_a8883159",
+   "parent_id": "sp_d64b1910",
    "name": "tool:run_sql_readonly",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "data_agent",
     "gen_ai.tool.name": "run_sql_readonly",
     "consultai.sql": "SELECT region, SUM(revenue) AS revenue FROM finance.revenue GROUP BY region",
@@ -396,18 +396,18 @@
      ]
     }
    },
-   "start": 1791456403.2697024,
-   "latency_ms": 0.08759996853768826,
+   "start": 1791624550.4377263,
+   "latency_ms": 0.13239996042102575,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_a27dcc18",
-   "parent_id": "sp_a6775217",
+   "span_id": "sp_6d61d348",
+   "parent_id": "sp_d64b1910",
    "name": "tool:run_sql_readonly",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "data_agent",
     "gen_ai.tool.name": "run_sql_readonly",
     "consultai.sql": "SELECT substr(date, 1, 4) AS year, SUM(revenue) AS revenue FROM finance.revenue GROUP BY substr(date, 1, 4) ORDER BY year",
@@ -433,18 +433,18 @@
      ]
     }
    },
-   "start": 1791456403.2697024,
-   "latency_ms": 0.07619999814778566,
+   "start": 1791624550.4377263,
+   "latency_ms": 0.09560002945363522,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_3199b0c5",
-   "parent_id": "sp_a6775217",
+   "span_id": "sp_cea953a9",
+   "parent_id": "sp_d64b1910",
    "name": "tool:run_sql_readonly",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "data_agent",
     "gen_ai.tool.name": "run_sql_readonly",
     "consultai.sql": "SELECT substr(date, 1, 4) AS year, SUM(cost) AS cost FROM finance.costs GROUP BY substr(date, 1, 4) ORDER BY year",
@@ -470,32 +470,32 @@
      ]
     }
    },
-   "start": 1791456403.2697024,
-   "latency_ms": 0.06430002395063639,
+   "start": 1791624550.4387252,
+   "latency_ms": 0.07489998824894428,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_3e4cd1d2",
+   "span_id": "sp_751676d6",
    "parent_id": null,
    "name": "financial_agent",
    "kind": "agent",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent"
    },
-   "start": 1791456403.2716992,
-   "latency_ms": 12.416800018399954,
+   "start": 1791624550.439724,
+   "latency_ms": 17.00460002757609,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_3ff9d490",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_00cf0079",
+   "parent_id": "sp_751676d6",
    "name": "tool:calculate_margin",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "calculate_margin",
     "consultai.tool_arguments": {
@@ -529,18 +529,18 @@
      "margin": 0.3040232871341698
     }
    },
-   "start": 1791456403.2716992,
-   "latency_ms": 0.7281999569386244,
+   "start": 1791624550.439724,
+   "latency_ms": 0.5122000584378839,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_60cea15a",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_8eac1069",
+   "parent_id": "sp_751676d6",
    "name": "tool:calculate_growth",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "calculate_growth",
     "consultai.tool_arguments": {
@@ -574,18 +574,18 @@
      "growth": 0.13174690913794507
     }
    },
-   "start": 1791456403.272705,
-   "latency_ms": 0.43320003896951675,
+   "start": 1791624550.4410644,
+   "latency_ms": 0.4224000731483102,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_7b69a0b1",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_080c47c0",
+   "parent_id": "sp_751676d6",
    "name": "llm:financial",
    "kind": "llm",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.request.model": "MODEL_REASONING",
     "gen_ai.system": "azure_openai",
@@ -596,18 +596,18 @@
     "gen_ai.usage.output_tokens": 129,
     "consultai.cost_usd": 0.011789999999999998
    },
-   "start": 1791456403.2736998,
-   "latency_ms": 0.7057000184431672,
+   "start": 1791624550.4420724,
+   "latency_ms": 1.6290999483317137,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_f5dac2cc",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_f783ea35",
+   "parent_id": "sp_751676d6",
    "name": "tool:derive_annual_benefit",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "derive_annual_benefit",
     "consultai.tool_arguments": {
@@ -645,18 +645,18 @@
      "margin": 0.3040232871341698
     }
    },
-   "start": 1791456403.2746985,
-   "latency_ms": 0.6653000600636005,
+   "start": 1791624550.4436228,
+   "latency_ms": 0.6034999387338758,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_5794314e",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_ef36216d",
+   "parent_id": "sp_751676d6",
    "name": "tool:calculate_roi",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "calculate_roi",
     "consultai.tool_arguments": {
@@ -693,18 +693,18 @@
      "net_gain": 4000000.0
     }
    },
-   "start": 1791456403.275004,
-   "latency_ms": 0.4368999507278204,
+   "start": 1791624550.4436228,
+   "latency_ms": 0.5294999573379755,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_43be2c42",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_2dc65f22",
+   "parent_id": "sp_751676d6",
    "name": "tool:calculate_payback",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "calculate_payback",
     "consultai.tool_arguments": {
@@ -738,18 +738,18 @@
      "payback_years": 3.3333333333333335
     }
    },
-   "start": 1791456403.2760658,
-   "latency_ms": 0.3485999768599868,
+   "start": 1791624550.4456687,
+   "latency_ms": 0.5111000500619411,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_a9d9d1d7",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_9d7e1b59",
+   "parent_id": "sp_751676d6",
    "name": "tool:calculate_npv",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "calculate_npv",
     "consultai.tool_arguments": {
@@ -792,18 +792,18 @@
      "periods": 6
     }
    },
-   "start": 1791456403.2770677,
-   "latency_ms": 0.3489000955596566,
+   "start": 1791624550.4466786,
+   "latency_ms": 0.46179990749806166,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_f4c53c34",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_58c6da9a",
+   "parent_id": "sp_751676d6",
    "name": "tool:scenario_analysis",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "scenario_analysis",
     "consultai.tool_arguments": {
@@ -840,18 +840,18 @@
      "optimistic": 0.8
     }
    },
-   "start": 1791456403.2770677,
-   "latency_ms": 0.3700999077409506,
+   "start": 1791624550.4476855,
+   "latency_ms": 0.3720000386238098,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_fe2362a2",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_a1f332b9",
+   "parent_id": "sp_751676d6",
    "name": "tool:sensitivity_analysis",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "sensitivity_analysis",
     "consultai.tool_arguments": {
@@ -905,18 +905,18 @@
      }
     ]
    },
-   "start": 1791456403.278068,
-   "latency_ms": 0.3192999865859747,
+   "start": 1791624550.4476855,
+   "latency_ms": 0.4588000010699034,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_c03949be",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_f6c769b0",
+   "parent_id": "sp_751676d6",
    "name": "tool:derive_annual_benefit",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "derive_annual_benefit",
     "consultai.tool_arguments": {
@@ -954,18 +954,18 @@
      "margin": 0.3040232871341698
     }
    },
-   "start": 1791456403.278068,
-   "latency_ms": 0.33130007795989513,
+   "start": 1791624550.4486837,
+   "latency_ms": 0.5134999519214034,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_04a4af94",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_7bb940e5",
+   "parent_id": "sp_751676d6",
    "name": "tool:calculate_roi",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "calculate_roi",
     "consultai.tool_arguments": {
@@ -1002,18 +1002,18 @@
      "net_gain": 1500000.0
     }
    },
-   "start": 1791456403.2790673,
-   "latency_ms": 0.3013999667018652,
+   "start": 1791624550.4486837,
+   "latency_ms": 0.4514999454841018,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_1841fa7d",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_4c4a9309",
+   "parent_id": "sp_751676d6",
    "name": "tool:calculate_payback",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "calculate_payback",
     "consultai.tool_arguments": {
@@ -1047,18 +1047,18 @@
      "payback_years": 2.857142857142857
     }
    },
-   "start": 1791456403.2790673,
-   "latency_ms": 0.3586000530049205,
+   "start": 1791624550.4501786,
+   "latency_ms": 0.4275999963283539,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_9fb1da25",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_cc750d7e",
+   "parent_id": "sp_751676d6",
    "name": "tool:calculate_npv",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "calculate_npv",
     "consultai.tool_arguments": {
@@ -1101,18 +1101,18 @@
      "periods": 6
     }
    },
-   "start": 1791456403.2790673,
-   "latency_ms": 0.36509998608380556,
+   "start": 1791624550.4511855,
+   "latency_ms": 0.7215000223368406,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_4c9a8451",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_db940de6",
+   "parent_id": "sp_751676d6",
    "name": "tool:scenario_analysis",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "scenario_analysis",
     "consultai.tool_arguments": {
@@ -1149,18 +1149,18 @@
      "optimistic": 1.1
     }
    },
-   "start": 1791456403.2800677,
-   "latency_ms": 0.3226000117138028,
+   "start": 1791624550.4521883,
+   "latency_ms": 0.47019997145980597,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_83819c35",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_7ba6ed86",
+   "parent_id": "sp_751676d6",
    "name": "tool:sensitivity_analysis",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "sensitivity_analysis",
     "consultai.tool_arguments": {
@@ -1214,18 +1214,18 @@
      }
     ]
    },
-   "start": 1791456403.2800677,
-   "latency_ms": 0.4974999465048313,
+   "start": 1791624550.4521883,
+   "latency_ms": 0.46659994404762983,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_cacbb583",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_284fb4e9",
+   "parent_id": "sp_751676d6",
    "name": "tool:derive_annual_benefit",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "derive_annual_benefit",
     "consultai.tool_arguments": {
@@ -1263,18 +1263,18 @@
      "margin": 0.3040232871341698
     }
    },
-   "start": 1791456403.2810676,
-   "latency_ms": 0.31669996678829193,
+   "start": 1791624550.4531848,
+   "latency_ms": 0.4023000365123153,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_93c8581d",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_083366e1",
+   "parent_id": "sp_751676d6",
    "name": "tool:calculate_roi",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "calculate_roi",
     "consultai.tool_arguments": {
@@ -1311,18 +1311,18 @@
      "net_gain": 1500000.0
     }
    },
-   "start": 1791456403.2820733,
-   "latency_ms": 0.3635999746620655,
+   "start": 1791624550.4531848,
+   "latency_ms": 0.36880001425743103,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_7519b642",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_eea55a6f",
+   "parent_id": "sp_751676d6",
    "name": "tool:calculate_payback",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "calculate_payback",
     "consultai.tool_arguments": {
@@ -1356,18 +1356,18 @@
      "payback_years": 3.3333333333333335
     }
    },
-   "start": 1791456403.2820733,
-   "latency_ms": 0.291300006210804,
+   "start": 1791624550.4543743,
+   "latency_ms": 0.404300051741302,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_139c4b4b",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_b8643ba3",
+   "parent_id": "sp_751676d6",
    "name": "tool:calculate_npv",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "calculate_npv",
     "consultai.tool_arguments": {
@@ -1410,18 +1410,18 @@
      "periods": 6
     }
    },
-   "start": 1791456403.2830844,
-   "latency_ms": 0.34030003007501364,
+   "start": 1791624550.4543743,
+   "latency_ms": 0.48459996469318867,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_102d3775",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_55a1a63f",
+   "parent_id": "sp_751676d6",
    "name": "tool:scenario_analysis",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "scenario_analysis",
     "consultai.tool_arguments": {
@@ -1458,18 +1458,18 @@
      "optimistic": 0.8
     }
    },
-   "start": 1791456403.2830844,
-   "latency_ms": 0.3133000573143363,
+   "start": 1791624550.4555075,
+   "latency_ms": 0.4718999844044447,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_d914f9ba",
-   "parent_id": "sp_3e4cd1d2",
+   "span_id": "sp_c40a830e",
+   "parent_id": "sp_751676d6",
    "name": "tool:sensitivity_analysis",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "financial_agent",
     "gen_ai.tool.name": "sensitivity_analysis",
     "consultai.tool_arguments": {
@@ -1523,32 +1523,32 @@
      }
     ]
    },
-   "start": 1791456403.2840729,
-   "latency_ms": 0.37160003557801247,
+   "start": 1791624550.4555075,
+   "latency_ms": 0.41280000004917383,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_720254e0",
+   "span_id": "sp_85294603",
    "parent_id": null,
    "name": "risk_agent",
    "kind": "agent",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "risk_agent"
    },
-   "start": 1791456403.2851596,
-   "latency_ms": 2.4830999318510294,
+   "start": 1791624550.4580119,
+   "latency_ms": 3.971199970692396,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_f622d5f9",
-   "parent_id": "sp_720254e0",
+   "span_id": "sp_d8d23270",
+   "parent_id": "sp_85294603",
    "name": "tool:risk_lookup",
    "kind": "tool",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "risk_agent",
     "gen_ai.tool.name": "risk_lookup",
     "consultai.tool_arguments": {
@@ -1733,18 +1733,18 @@
      ]
     }
    },
-   "start": 1791456403.2851596,
-   "latency_ms": 0.636399956420064,
+   "start": 1791624550.459008,
+   "latency_ms": 1.0043999645859003,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_ace6915b",
-   "parent_id": "sp_720254e0",
+   "span_id": "sp_08a6d17a",
+   "parent_id": "sp_85294603",
    "name": "llm:risk",
    "kind": "llm",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "risk_agent",
     "gen_ai.request.model": "MODEL_REASONING",
     "gen_ai.system": "azure_openai",
@@ -1755,32 +1755,32 @@
     "gen_ai.usage.output_tokens": 119,
     "consultai.cost_usd": 0.02136
    },
-   "start": 1791456403.286077,
-   "latency_ms": 1.222899998538196,
+   "start": 1791624550.4605684,
+   "latency_ms": 1.8182999920099974,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_9384518c",
+   "span_id": "sp_6463962f",
    "parent_id": null,
    "name": "solution_agent",
    "kind": "agent",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "solution_agent"
    },
-   "start": 1791456403.2881587,
-   "latency_ms": 1.5718999784439802,
+   "start": 1791624550.4643257,
+   "latency_ms": 1.7499999376013875,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_1da3312e",
-   "parent_id": "sp_9384518c",
+   "span_id": "sp_c35b6e2b",
+   "parent_id": "sp_6463962f",
    "name": "llm:strategy",
    "kind": "llm",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "solution_agent",
     "gen_ai.request.model": "MODEL_REASONING",
     "gen_ai.system": "azure_openai",
@@ -1791,31 +1791,31 @@
     "gen_ai.usage.output_tokens": 30,
     "consultai.cost_usd": 0.0138
    },
-   "start": 1791456403.2891583,
-   "latency_ms": 0.7760999724268913,
+   "start": 1791624550.4643257,
+   "latency_ms": 1.0711000068113208,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_174328a1",
+   "span_id": "sp_9d503b74",
    "parent_id": null,
    "name": "evaluator",
    "kind": "evaluator",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92"
+    "consultai.workflow_id": "wf_7b0f1f6e0e"
    },
-   "start": 1791456403.292073,
-   "latency_ms": 2.25360004696995,
+   "start": 1791624550.4677987,
+   "latency_ms": 2.8301000129431486,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_e791d704",
-   "parent_id": "sp_174328a1",
+   "span_id": "sp_eca17a24",
+   "parent_id": "sp_9d503b74",
    "name": "llm:guardian_eval",
    "kind": "llm",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "evaluator",
     "gen_ai.request.model": "MODEL_REASONING",
     "gen_ai.system": "azure_openai",
@@ -1826,31 +1826,31 @@
     "gen_ai.usage.output_tokens": 25,
     "consultai.cost_usd": 0.023985
    },
-   "start": 1791456403.2930746,
-   "latency_ms": 1.4118999242782593,
+   "start": 1791624550.4688065,
+   "latency_ms": 1.869400031864643,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_5ba0710c",
+   "span_id": "sp_52d0d4f5",
    "parent_id": null,
    "name": "guardian",
    "kind": "guardian",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92"
+    "consultai.workflow_id": "wf_7b0f1f6e0e"
    },
-   "start": 1791456403.2951574,
-   "latency_ms": 1.5718999784439802,
+   "start": 1791624550.4710622,
+   "latency_ms": 1.893599983304739,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_a986a364",
-   "parent_id": "sp_5ba0710c",
+   "span_id": "sp_1deff7c1",
+   "parent_id": "sp_52d0d4f5",
    "name": "llm:guardian_eval",
    "kind": "llm",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92",
+    "consultai.workflow_id": "wf_7b0f1f6e0e",
     "gen_ai.agent.name": "guardian",
     "gen_ai.request.model": "MODEL_REASONING",
     "gen_ai.system": "azure_openai",
@@ -1861,23 +1861,23 @@
     "gen_ai.usage.output_tokens": 21,
     "consultai.cost_usd": 0.016005
    },
-   "start": 1791456403.2951574,
-   "latency_ms": 0.9268999565392733,
+   "start": 1791624550.4724824,
+   "latency_ms": 1.164900022558868,
    "status": "ok",
    "error": null
   },
   {
-   "span_id": "sp_d5669290",
+   "span_id": "sp_cf06b153",
    "parent_id": null,
    "name": "human_approval",
    "kind": "approval",
    "attributes": {
-    "consultai.workflow_id": "wf_0cee1a7a92"
+    "consultai.workflow_id": "wf_7b0f1f6e0e"
    },
-   "start": 1791456403.2978168,
-   "latency_ms": 0.06400002166628838,
+   "start": 1791624550.4749947,
+   "latency_ms": 0.08309993427246809,
    "status": "error",
-   "error": "GraphInterrupt((Interrupt(value={'recommendation': {'id': 'B', 'name': 'Pilot', 'cost_usd': 2000000, 'roi': 0.75, 'npv': 653550.7385859131, 'payback_years': 2.857142857142857, 'risk_score': 0.325, 'risk': 'Medium', 'launch_months': 9, 'constraint_violations': [], 'within_budget': True, 'within_timeline': True, 'within_constraints': True, 'rationale': 'Option B (Pilot) offers the best risk-adjusted return within the stated constraints.', 'alternatives_considered': 3, 'assumptions': ['Benefits are flat over the 5-year horizon, discounted at 10%', 'Baseline is 2025 revenue of $65,208,896 at a 30.4% operating margin, from the data warehouse', 'Annual benefit assumes a 3.5% revenue uplift: Stub placeholder']}, 'scores': {'groundedness': 1.0, 'citation_validity': 1.0, 'constraint_satisfaction': 1.0, 'completeness': 1.0, 'policy_compliance': 1.0, 'avg_evidence_confidence': 0.7214285714285714, 'task_adherence': 1.0, 'contradiction_free': 1.0, 'tool_call_accuracy': 1.0, 'judge_coverage': 1.0, 'quality': 1.0}, 'risk_level': 'high', 'guardian': [{'action': 'ESCALATE', 'risk_level': 'high', 'risk_score': 0.9, 'reasons': ['financial commitment $2,000,000 exceeds policy threshold', 'client-facing recommendation is a high-risk action', '1 risk(s) flagged for human review'], 'subject': 'workflow', 'source': 'deterministic', 'modifications': {}, 'feedback': '', 'policy_version': '2026.10.7'}], 'cost_usd': 0.0924}, id='50e40bcd43ced4e090a1de80f3609ecd', response_schema=None),))"
+   "error": "GraphInterrupt((Interrupt(value={'recommendation': {'id': 'B', 'name': 'Pilot', 'cost_usd': 2000000, 'roi': 0.75, 'npv': 653550.7385859131, 'payback_years': 2.857142857142857, 'risk_score': 0.325, 'risk': 'Medium', 'launch_months': 9, 'constraint_violations': [], 'within_budget': True, 'within_timeline': True, 'within_constraints': True, 'rationale': 'Option B (Pilot) offers the best risk-adjusted return within the stated constraints.', 'alternatives_considered': 3, 'assumptions': ['Benefits are flat over the 5-year horizon, discounted at 10%', 'Baseline is 2025 revenue of $65,208,896 at a 30.4% operating margin, from the data warehouse', 'Annual benefit assumes a 3.5% revenue uplift: Stub placeholder']}, 'scores': {'groundedness': 1.0, 'citation_validity': 1.0, 'constraint_satisfaction': 1.0, 'completeness': 1.0, 'policy_compliance': 1.0, 'avg_evidence_confidence': 0.7214285714285714, 'task_adherence': 1.0, 'contradiction_free': 1.0, 'tool_call_accuracy': 1.0, 'judge_coverage': 1.0, 'quality': 1.0}, 'risk_level': 'high', 'guardian': [{'action': 'ESCALATE', 'risk_level': 'high', 'risk_score': 0.9, 'reasons': ['financial commitment $2,000,000 exceeds policy threshold', 'client-facing recommendation is a high-risk action', '1 risk(s) flagged for human review'], 'subject': 'workflow', 'source': 'deterministic', 'modifications': {}, 'feedback': '', 'policy_version': '2026.10.7'}], 'cost_usd': 0.0924}, id='5a71a658f7d0c8a95792d00b9b57eb0a', response_schema=None),))"
   }
  ],
  "redaction": {
